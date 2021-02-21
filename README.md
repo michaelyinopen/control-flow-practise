@@ -16,6 +16,10 @@
 ## Error handling
 How to handle error at each step
 
+- Service Error (Proxy throws exception)
+- Response header errors
+- Conformance NO, with ConformanceMessage of Level Error
+
 ## From http request's perspective
 What is a successful response mean\
 What is the response in case of error
@@ -41,6 +45,9 @@ Warranty service of the manufacturer needs a record of some details
 - Transaction date time
 - Warranty amount ($)
 
+All unique products, now a warranty case only has one order,\
+and each order only has one product
+
 ### Warranty service
 - Create warranty case
 - Verify/ Ask for estimate/ Check for update/ Query/ Call/ Make updates
@@ -53,6 +60,11 @@ Warranty service of the manufacturer needs a record of some details
     - cancelled
 - Commit (money is reserved, committed to pay)
 - Cancel
+
+Header, body
+conformance indicator = conformance messages, level error warning information
+
+Warranties the entire order, not individual products
 
 # Design
 
@@ -77,3 +89,6 @@ Not have a Client project, to avoid coupling bwtween this service and consumer,\
 and cannot avoid to manually track what models are exposed and what was updated
 
 Models converted to Data Model inside Data project
+
+## Syntax
+use nullable reference type and have constructors to initialize non-nullable properties, because cannot use C# 9 features like record type
