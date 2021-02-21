@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ControlFlowPractise
+namespace ControlFlowPractise.Api
 {
     public class Startup
     {

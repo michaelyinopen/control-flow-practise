@@ -1,6 +1,6 @@
 using System;
 
-namespace ControlFlowPractise
+namespace ControlFlowPractise.Api
 {
     public class WeatherForecast
     {

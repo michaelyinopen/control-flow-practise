@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise", "ControlFlowPractise\ControlFlowPractise.csproj", "{C4436EAA-E4E3-4BD8-93A1-9EF08B1F6138}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Api", "ControlFlowPractise.Api\ControlFlowPractise.Api.csproj", "{C4436EAA-E4E3-4BD8-93A1-9EF08B1F6138}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Shared", "ControlFlowPractise.Shared\ControlFlowPractise.Shared.csproj", "{FBECDD3A-F5FC-4522-842C-215DAD30A01D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Data", "ControlFlowPractise.Data\ControlFlowPractise.Data.csproj", "{54059816-8F9B-46E4-83D8-C322AB3033CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlFlowPractise.Data", "ControlFlowPractise.Data\ControlFlowPractise.Data.csproj", "{54059816-8F9B-46E4-83D8-C322AB3033CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Common", "ControlFlowPractise.Common\ControlFlowPractise.Common.csproj", "{D1C33BFA-9E35-43E0-AE40-5BF85FADCF0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlFlowPractise.Common", "ControlFlowPractise.Common\ControlFlowPractise.Common.csproj", "{D1C33BFA-9E35-43E0-AE40-5BF85FADCF0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Core", "ControlFlowPractise.Core\ControlFlowPractise.Core.csproj", "{3C26CB6A-B731-4396-A5FF-71DDB331808B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.ExternalParty", "ControlFlowPractise.ExternalParty\ControlFlowPractise.ExternalParty.csproj", "{4780C05D-FF1E-496B-BED1-1379D3BA1E5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Core.Tests", "Tests\ControlFlowPractise.Core.Tests\ControlFlowPractise.Core.Tests.csproj", "{D4F55783-977E-4C25-8D79-B82E5A00C593}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{95BDD896-2500-4206-B4C9-E497754D1BAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlFlowPractise.Data.Tests", "Tests\ControlFlowPractise.Data.Tests\ControlFlowPractise.Data.Tests.csproj", "{53890937-F2E1-4A1D-8A06-4E9343E350E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +29,6 @@ Global
 		{C4436EAA-E4E3-4BD8-93A1-9EF08B1F6138}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4436EAA-E4E3-4BD8-93A1-9EF08B1F6138}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4436EAA-E4E3-4BD8-93A1-9EF08B1F6138}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FBECDD3A-F5FC-4522-842C-215DAD30A01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FBECDD3A-F5FC-4522-842C-215DAD30A01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FBECDD3A-F5FC-4522-842C-215DAD30A01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FBECDD3A-F5FC-4522-842C-215DAD30A01D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{54059816-8F9B-46E4-83D8-C322AB3033CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{54059816-8F9B-46E4-83D8-C322AB3033CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54059816-8F9B-46E4-83D8-C322AB3033CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,9 +37,29 @@ Global
 		{D1C33BFA-9E35-43E0-AE40-5BF85FADCF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C33BFA-9E35-43E0-AE40-5BF85FADCF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1C33BFA-9E35-43E0-AE40-5BF85FADCF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C26CB6A-B731-4396-A5FF-71DDB331808B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C26CB6A-B731-4396-A5FF-71DDB331808B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C26CB6A-B731-4396-A5FF-71DDB331808B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C26CB6A-B731-4396-A5FF-71DDB331808B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4780C05D-FF1E-496B-BED1-1379D3BA1E5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4780C05D-FF1E-496B-BED1-1379D3BA1E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4780C05D-FF1E-496B-BED1-1379D3BA1E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4780C05D-FF1E-496B-BED1-1379D3BA1E5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4F55783-977E-4C25-8D79-B82E5A00C593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4F55783-977E-4C25-8D79-B82E5A00C593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4F55783-977E-4C25-8D79-B82E5A00C593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4F55783-977E-4C25-8D79-B82E5A00C593}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53890937-F2E1-4A1D-8A06-4E9343E350E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53890937-F2E1-4A1D-8A06-4E9343E350E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53890937-F2E1-4A1D-8A06-4E9343E350E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53890937-F2E1-4A1D-8A06-4E9343E350E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D4F55783-977E-4C25-8D79-B82E5A00C593} = {95BDD896-2500-4206-B4C9-E497754D1BAC}
+		{53890937-F2E1-4A1D-8A06-4E9343E350E6} = {95BDD896-2500-4206-B4C9-E497754D1BAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {338009EA-ED75-4EFF-9ED9-4C415FD64762}
