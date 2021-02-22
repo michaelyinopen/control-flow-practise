@@ -45,6 +45,7 @@ namespace ControlFlowPractise.ExternalParty
         public decimal? WarrantyAmount { get; set; }
         public List<ConformanceMessage> ConformanceMessages { get; set; } =
             new List<ConformanceMessage>();
+        public string? WarrantyProof { get; set; } // only in response of commit
     }
 
     public enum WarrantyResponseErrorType

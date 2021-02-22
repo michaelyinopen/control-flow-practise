@@ -22,13 +22,12 @@ namespace ControlFlowPractise.ExternalParty
 
     public class ProductDetail
     {
-        public ProductDetail(string productId, string specification)
+        public ProductDetail(string productId)
         {
             ProductId = productId;
-            Specification = specification;
         }
         public string ProductId { get; set; }
-        public string Specification { get; set; }
+        public string? Specification { get; set; }
     }
 
     public class PurchaserDetail
@@ -79,6 +78,7 @@ namespace ControlFlowPractise.ExternalParty
             new List<ProductDetail>();
         public PurchaserDetail PurchaserDetail { get; set; }
         public VendorDetail VendorDetail { get; set; }
+        public string? OrderTrackingNumber { get; set; } // only needed for commit
     }
 
     public class WarrantyRequest
@@ -90,7 +90,7 @@ namespace ControlFlowPractise.ExternalParty
         public WarrantyRequestType RequestType { get; set; }
         public WarrantyRequestAction? Action { get; set; }
         public string? WarrantyCaseId { get; set; }
-        public string TransactionDate { get; set; }
+        public string TransactionDate { get; set; } // convert to AEST
         public List<OrderDetail> OrderDetails { get; set; } =
             new List<OrderDetail>();
     }

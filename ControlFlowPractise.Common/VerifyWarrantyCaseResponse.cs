@@ -4,7 +4,8 @@ using System.Text;
 
 namespace ControlFlowPractise.Common
 {
-    class CreateWarrantyCaseRequest
+    public class VerifyWarrantyCaseResponse
     {
+        public WarrantyCaseOperation Operation { get; set; }
     }
 }
