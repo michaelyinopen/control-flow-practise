@@ -43,17 +43,55 @@ namespace ControlFlowPractise.ExternalParty
         public decimal? WarrantyEstimatedAmount { get; set; }
         // When ConformanceIndicator is YES, WarrantyAmount is the final quote
         public decimal? WarrantyAmount { get; set; }
-        public List<ConformanceMessage> ConformanceMessages { get; set; } = new List<ConformanceMessage>();
+        public List<ConformanceMessage> ConformanceMessages { get; set; } =
+            new List<ConformanceMessage>();
     }
 
-    public class WarrantyResponse
+    public enum WarrantyResponseErrorType
     {
-        public WarrantyResponse(string conformanceIndicator)
+        ServiceNotAvailable = 0,
+        InvalidRequest = 1,
+        InternalError = 2,
+    }
+
+    public class WarrantyResponseError
+    {
+        public WarrantyResponseError(string message)
+        {
+            Message = message;
+        }
+        public WarrantyResponseErrorType Type { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class WarrantyResponseHeader
+    {
+        public WarrantyRequestType RequestType { get; set; }
+        public WarrantyRequestAction? Action { get; set; }
+        public string? WarrantyCaseId { get; set; }
+        public List<WarrantyResponseError> WarrantyResponseErrors { get; set; } =
+            new List<WarrantyResponseError>();
+    }
+
+    public class WarrantyResponseBody
+    {
+        public WarrantyResponseBody(string conformanceIndicator)
         {
             ConformanceIndicator = conformanceIndicator;
         }
         public CaseStatus CaseStatus { get; set; }
         public string ConformanceIndicator { get; set; } // YES or NO
-        public List<OrderReport> OrderReports { get; set; } = new List<OrderReport>();
+        public List<OrderReport> OrderReports { get; set; } =
+            new List<OrderReport>();
+    }
+
+    public class WarrantyResponse
+    {
+        public WarrantyResponse(WarrantyResponseHeader header)
+        {
+            Header = header;
+        }
+        public WarrantyResponseHeader Header { get; set; }
+        public WarrantyResponseBody? Body { get; set; }
     }
 }
