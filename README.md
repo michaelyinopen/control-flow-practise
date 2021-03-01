@@ -5,13 +5,14 @@
 1. Handle http request
 2. Validate request
 3. Convert request
-4. Call some external party service
-5. Interpret response
+4. Save request
+5. Call some external party service
+6. Interpret response
     1. Validate response
     2. Convert response
-6. Save raw and converted response
-7. Return http response
-8. (Reconcille service)
+7. Save raw and converted response
+8. Return http response
+9. (Reconcille service)
 
 ## Error handling
 How to handle error at each step
