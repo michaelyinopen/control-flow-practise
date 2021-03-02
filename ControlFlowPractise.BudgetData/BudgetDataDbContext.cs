@@ -1,8 +1,6 @@
 ﻿using ControlFlowPractise.BudgetData.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ControlFlowPractise.BudgetData
 {
@@ -13,6 +11,16 @@ namespace ControlFlowPractise.BudgetData
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // ExternalPartyRequest
+            modelBuilder
+                .Entity<ExternalPartyRequest>()
+                .Property(req => req.DateTime)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("GETUTCDATE()")
+                .HasConversion(
+                    v => v,
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
             modelBuilder
                 .Entity<ExternalPartyRequest>()
                 .Property(req => req.Operation)
@@ -24,6 +32,21 @@ namespace ControlFlowPractise.BudgetData
                 .HasConversion<string>();
 
             modelBuilder
+                .Entity<ExternalPartyRequest>()
+                .HasIndex(req => new { req.OrderId, req.RequestId })
+                .IsUnique();
+
+            // ExternalPartyResponse
+            modelBuilder
+                .Entity<ExternalPartyResponse>()
+                .Property(req => req.DateTime)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("GETUTCDATE()")
+                .HasConversion(
+                    v => v,
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+            modelBuilder
                 .Entity<ExternalPartyResponse>()
                 .Property(res => res.Operation)
                 .HasConversion<string>();
@@ -32,6 +55,11 @@ namespace ControlFlowPractise.BudgetData
                 .Entity<ExternalPartyResponse>()
                 .Property(req => req.RequestId)
                 .HasConversion<string>();
+
+            modelBuilder
+                .Entity<ExternalPartyResponse>()
+                .HasIndex(req => new { req.OrderId, req.RequestId })
+                .IsUnique();
         }
 
         public BudgetDataDbContext(DbContextOptions<BudgetDataDbContext> options)

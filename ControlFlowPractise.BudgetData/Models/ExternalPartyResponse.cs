@@ -1,8 +1,5 @@
 ﻿using ControlFlowPractise.Common;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace ControlFlowPractise.BudgetData.Models
 {
@@ -10,10 +7,9 @@ namespace ControlFlowPractise.BudgetData.Models
     {
         public int Id { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime DateTime { get; set; } // add index? and combined index?
+        public DateTime DateTime { get; set; }
 
-        public string OrderId { get; set; } // add index? and combined index?
+        public string OrderId { get; set; }
 
         public WarrantyCaseOperation Operation { get; set; }
 

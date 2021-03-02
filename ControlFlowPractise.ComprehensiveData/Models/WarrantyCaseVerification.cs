@@ -11,7 +11,7 @@ namespace ControlFlowPractise.ComprehensiveData.Models
         public int Id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime DateTime { get; set; } // add index?
+        public DateTime DateTime { get; set; } // add index? // follow budgetdata
 
         public string OrderId { get; set; } // add index? and combined index?
 

@@ -42,8 +42,7 @@ namespace ControlFlowPractise.Core
 
         // generates requestId
         // Calls PerformVerifyAction
-        // Saves warrantyCaseVerification in ComprehensiveData,
-        // regardless of PerformVerifyAction is success or failure
+        // Saves warrantyCaseVerification in ComprehensiveData, regardless of PerformVerifyAction is success or failure
         public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> Verify(
             VerifyWarrantyCaseRequest request)
         {
