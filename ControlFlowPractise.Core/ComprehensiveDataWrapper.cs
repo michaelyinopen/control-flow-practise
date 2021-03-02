@@ -31,13 +31,15 @@ namespace ControlFlowPractise.Core
             catch (Exception e)
             {
                 return new Result<Unit, SaveWarrantyCaseVerificationFailure>(
-                    new SaveWarrantyCaseVerificationFailure(e.Message, null));
+                    new SaveWarrantyCaseVerificationFailure(
+                        e.Message,
+                        calledExternalParty: null));
             }
         }
 
         // current means the state other parts of application should use
         // current != latest iff there are failed calls
-        public async Task<Result<WarrantyCaseVerification, IFailure>> GetCurrentWarrantyCaseVerification(
+        public async Task<Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>> GetCurrentWarrantyCaseVerification(
             string orderId)
         {
             try
@@ -45,21 +47,22 @@ namespace ControlFlowPractise.Core
                 var warrantyCaseVerification = await ComprehensiveDataDbContext.WarrantyCaseVerification
                     .Where(v => v.OrderId == orderId)
                     .OrderByDescending(v => v.DateTime)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(); // todo more logic
                 if (warrantyCaseVerification is null)
                 {
-                    return new Result<WarrantyCaseVerification, IFailure>(
-                        new WarrantyCaseVerificationNotFoundFailure($"WarrantyCaseVerification of OrderId: `{orderId}` is not found"));
+                    return new Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>(
+                        new GetWarrantyCaseVerificationFailure(
+                            $"WarrantyCaseVerification of OrderId: `{orderId}` is not found",
+                            isNotFound: true));
                 }
-                else
-                {
-                    return new Result<WarrantyCaseVerification, IFailure>(warrantyCaseVerification);
-                }
+                return new Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>(warrantyCaseVerification);
             }
             catch (Exception e)
             {
-                return new Result<WarrantyCaseVerification, IFailure>(
-                    new ReadWarrantyCaseVerificationFailure(e.Message));
+                return new Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>(
+                    new GetWarrantyCaseVerificationFailure(
+                        e.Message,
+                        isNotFound: false));
             }
         }
 

@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ControlFlowPractise.BudgetData\ControlFlowPractise.BudgetData.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.Common\ControlFlowPractise.Common.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.ComprehensiveData\ControlFlowPractise.ComprehensiveData.csproj" />

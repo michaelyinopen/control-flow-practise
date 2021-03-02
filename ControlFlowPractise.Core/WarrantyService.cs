@@ -1,6 +1,8 @@
-﻿using ControlFlowPractise.Common;
+﻿using ControlFlowPractise.BudgetData.Models;
+using ControlFlowPractise.Common;
 using ControlFlowPractise.Common.ControlFlow;
 using ControlFlowPractise.ComprehensiveData.Models;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -12,6 +14,7 @@ namespace ControlFlowPractise.Core
         internal WarrantyService(
             FailureClassification failureClassification,
             ComprehensiveDataWrapper comprehensiveDataWrapper,
+            BudgetDataWrapper budgetDataWrapper,
             RequestValidator requestValidator,
             RequestBuilder requestBuilder,
             ExternalPartyWrapper externalPartyWrapper,
@@ -20,6 +23,7 @@ namespace ControlFlowPractise.Core
         {
             FailureClassification = failureClassification;
             ComprehensiveDataWrapper = comprehensiveDataWrapper;
+            BudgetDataWrapper = budgetDataWrapper;
             RequestValidator = requestValidator;
             RequestBuilder = requestBuilder;
             ExternalPartyWrapper = externalPartyWrapper;
@@ -29,6 +33,7 @@ namespace ControlFlowPractise.Core
 
         private FailureClassification FailureClassification { get; }
         private ComprehensiveDataWrapper ComprehensiveDataWrapper { get; }
+        private BudgetDataWrapper BudgetDataWrapper { get; }
         private RequestValidator RequestValidator { get; }
         private RequestBuilder RequestBuilder { get; }
         private ExternalPartyWrapper ExternalPartyWrapper { get; }
@@ -106,14 +111,32 @@ namespace ControlFlowPractise.Core
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(build.Failure!);
             var warrantyRequest = build.Success!;
 
-            // Save request
+            var saveWarrantyRequest = await BudgetDataWrapper.SaveExternalPartyRequest(
+                new ExternalPartyRequest(
+                    orderId: request.OrderId,
+                    request: JsonConvert.SerializeObject(warrantyRequest))
+                {
+                    Operation = request.Operation,
+                    RequestId = requestId,
+                });
+            if (!saveWarrantyRequest.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
 
             var call = await ExternalPartyWrapper.Call(warrantyRequest);
             if (!call.IsSuccess)
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(call.Failure!);
             var rawResponse = call.Success!;
 
-            // Save raw response
+            var saveWarrantyResponse = await BudgetDataWrapper.SaveExternalPartyResponse(
+                new ExternalPartyResponse(
+                    orderId: request.OrderId,
+                    response: JsonConvert.SerializeObject(rawResponse))
+                {
+                    Operation = request.Operation,
+                    RequestId = requestId,
+                });
+            if (!saveWarrantyResponse.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
 
             var validateResponse = ResponseValidator.Validate(rawResponse);
             if (!validateResponse.IsSuccess)

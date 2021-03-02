@@ -14,6 +14,7 @@
 8. Save converted response
 9. Return http response
 10. (Reconcille service)
+11. daily report?
 
 ## Error handling
 How to handle error at each step
@@ -95,3 +96,26 @@ Models converted to Data Model inside Data project
 
 ## Syntax
 use nullable reference type and have constructors to initialize non-nullable properties, because cannot use C# 9 features like record type
+
+## Functional Programming
+Just use `Result` and some version of `Unit`. Yes the maps, binds are missing, and code is imperitive. But it has not become second nature for me to write those, so i go with the easy way, while leveraging the clarity that `Result` provides.
+
+## Data storage
+Each accepted request has an entry, regardless of successful or fail.\
+Each raw request is an entry.\
+Each raw response is an entry.\
+WarrantyProof is separated.
+
+Two databases: budget and comprehensive.
+
+Have dateTime column.\
+Log style, keep all accepted requests.\
+Need a head table? to record the latest correct result? No.\
+Saving raw request and raw response are write only operations, and will not be concerrency blocked.\
+Raw request and raw resposne can be correlated by requestId.\
+Concurrency will be last write wins.
+
+# todo
+
+add index to databases
+naming warranty request/ esternal party request

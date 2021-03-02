@@ -8,10 +8,11 @@ namespace ControlFlowPractise.Common
     {
         RequestValidationFailure,
         RequestConversionFailure,
-        WarrantyCaseVerificationNotFoundFailure,
-        ReadWarrantyCaseVerificationFailure,
+        GetWarrantyCaseVerificationFailure,
         SaveExternalPartyRequestFailure,
+        GetExternalPartyRequestFailure,
         SaveExternalPartyResponseFailure,
+        GetExternalPartyResponseFailure,
         ResponseValidationFailure,
         ResponseConversionFailure,
         SaveWarrantyCaseVerificationFailure,
@@ -48,24 +49,15 @@ namespace ControlFlowPractise.Common
         }
     }
 
-    public class WarrantyCaseVerificationNotFoundFailure : IFailure
+    public class GetWarrantyCaseVerificationFailure : IFailure
     {
-        public FailureType FailureType { get; } = FailureType.WarrantyCaseVerificationNotFoundFailure;
+        public FailureType FailureType { get; } = FailureType.GetWarrantyCaseVerificationFailure;
         public string Message { get; }
-        public WarrantyCaseVerificationNotFoundFailure(string message)
+        public bool IsNotFound { get; }
+        public GetWarrantyCaseVerificationFailure(string message, bool isNotFound)
         {
             Message = message;
-        }
-    }
-
-    // excludes notFound
-    public class ReadWarrantyCaseVerificationFailure : IFailure
-    {
-        public FailureType FailureType { get; } = FailureType.ReadWarrantyCaseVerificationFailure;
-        public string Message { get; }
-        public ReadWarrantyCaseVerificationFailure(string message)
-        {
-            Message = message;
+            IsNotFound = isNotFound;
         }
     }
 
@@ -79,6 +71,18 @@ namespace ControlFlowPractise.Common
         }
     }
 
+    public class GetExternalPartyRequestFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.GetExternalPartyRequestFailure;
+        public string Message { get; }
+        public bool IsNotFound { get; }
+        public GetExternalPartyRequestFailure(string message, bool isNotFound)
+        {
+            Message = message;
+            IsNotFound = isNotFound;
+        }
+    }
+
     public class SaveExternalPartyResponseFailure : IFailure
     {
         public FailureType FailureType { get; } = FailureType.SaveExternalPartyResponseFailure;
@@ -86,6 +90,18 @@ namespace ControlFlowPractise.Common
         public SaveExternalPartyResponseFailure(string message)
         {
             Message = message;
+        }
+    }
+
+    public class GetExternalPartyResponseFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.GetExternalPartyResponseFailure;
+        public string Message { get; }
+        public bool IsNotFound { get; }
+        public GetExternalPartyResponseFailure(string message, bool isNotFound)
+        {
+            Message = message;
+            IsNotFound = isNotFound;
         }
     }
 
