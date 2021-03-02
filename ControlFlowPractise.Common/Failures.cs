@@ -4,94 +4,130 @@ using System.Text;
 
 namespace ControlFlowPractise.Common
 {
-    public interface IFailures
+    public enum FailureType
     {
+        RequestValidationFailure,
+        RequestConversionFailure,
+        WarrantyCaseVerificationNotFoundFailure,
+        ReadWarrantyCaseVerificationFailure,
+        SaveExternalPartyRequestFailure,
+        SaveExternalPartyResponseFailure,
+        ResponseValidationFailure,
+        ResponseConversionFailure,
+        SaveWarrantyCaseVerificationFailure,
+        NetworkFailure,
+        ServiceNotAvailableFailure,
+        InvalidRequestFailure,
+        WarrantyServiceInternalErrorFailure,
+    }
+
+    public interface IFailure
+    {
+        public FailureType FailureType { get; }
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
     }
 
     #region internal failures
-    public class RequestValidationFailure : IFailures
+    public class RequestValidationFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.RequestValidationFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
         public RequestValidationFailure(string message)
         {
             Message = message;
         }
     }
 
-    public class RequestConversionFailure : IFailures
+    public class RequestConversionFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.RequestConversionFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
         public RequestConversionFailure(string message)
         {
             Message = message;
         }
     }
 
-    // read old request failure
-
-    // other create request failure
-
-    public class SaveRequestFailure : IFailures
+    public class WarrantyCaseVerificationNotFoundFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.WarrantyCaseVerificationNotFoundFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
-        public SaveRequestFailure(string message)
+        public WarrantyCaseVerificationNotFoundFailure(string message)
         {
             Message = message;
         }
     }
 
-    #region FailureAfterCallingExternalParty
-    public class SaveRawResponseFailure : IFailures
+    // excludes notFound
+    public class ReadWarrantyCaseVerificationFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.ReadWarrantyCaseVerificationFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; } = true;
-        public SaveRawResponseFailure(string message)
+        public ReadWarrantyCaseVerificationFailure(string message)
         {
             Message = message;
         }
     }
-    public class ResponseValidationFailure : IFailures
+
+    public class SaveExternalPartyRequestFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.SaveExternalPartyRequestFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; } = true;
+        public SaveExternalPartyRequestFailure(string message)
+        {
+            Message = message;
+        }
+    }
+
+    public class SaveExternalPartyResponseFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.SaveExternalPartyResponseFailure;
+        public string Message { get; }
+        public SaveExternalPartyResponseFailure(string message)
+        {
+            Message = message;
+        }
+    }
+
+    public class ResponseValidationFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.ResponseValidationFailure;
+        public string Message { get; }
         public ResponseValidationFailure(string message)
         {
             Message = message;
         }
     }
 
-    public class ResponseConversionFailure : IFailures
+    public class ResponseConversionFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.ResponseConversionFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; } = true;
         public ResponseConversionFailure(string message)
         {
             Message = message;
         }
     }
 
-    public class SaveConvertedResponseFailure : IFailures
+    public class SaveWarrantyCaseVerificationFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.SaveWarrantyCaseVerificationFailure;
         public string Message { get; }
-        public bool IsAfterCallingExternalParty { get; } = true;
-        public bool FailureAfterCallingExternalParty { get; } = true;
-        public SaveConvertedResponseFailure(string message)
+        public bool? CalledExternalParty { get; } // ture, false or unknown
+        public SaveWarrantyCaseVerificationFailure(
+            string message,
+            bool? calledExternalParty)
         {
             Message = message;
+            CalledExternalParty = calledExternalParty;
         }
     }
-    #endregion FailureAfterCallingExternalParty
     #endregion internal failures
 
-    public class NetworkFailure : IFailures
+    public class NetworkFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.NetworkFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
         public NetworkFailure(string message)
         {
             Message = message;
@@ -99,30 +135,30 @@ namespace ControlFlowPractise.Common
     }
 
     #region external party returned failures
-    public class ServiceNotAvailableFailure : IFailures
+    public class ServiceNotAvailableFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.ServiceNotAvailableFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
         public ServiceNotAvailableFailure(string message)
         {
             Message = message;
         }
     }
 
-    public class InvalidRequestFailure : IFailures
+    public class InvalidRequestFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.InvalidRequestFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
         public InvalidRequestFailure(string message)
         {
             Message = message;
         }
     }
 
-    public class WarrantyServiceInternalErrorFailure : IFailures
+    public class WarrantyServiceInternalErrorFailure : IFailure
     {
+        public FailureType FailureType { get; } = FailureType.WarrantyServiceInternalErrorFailure;
         public string Message { get; }
-        public bool FailureAfterCallingExternalParty { get; }
         public WarrantyServiceInternalErrorFailure(string message)
         {
             Message = message;

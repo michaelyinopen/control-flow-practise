@@ -7,5 +7,6 @@ namespace ControlFlowPractise.Common
     public class VerifyWarrantyCaseResponse
     {
         public WarrantyCaseOperation Operation { get; set; }
+        public string RequestId { get; set; }
     }
 }

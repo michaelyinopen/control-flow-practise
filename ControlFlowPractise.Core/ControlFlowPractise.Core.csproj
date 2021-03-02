@@ -9,7 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ControlFlowPractise.BudgetData\ControlFlowPractise.BudgetData.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.Common\ControlFlowPractise.Common.csproj" />
+    <ProjectReference Include="..\ControlFlowPractise.ComprehensiveData\ControlFlowPractise.ComprehensiveData.csproj" />
+    <ProjectReference Include="..\ControlFlowPractise.ExternalParty\ControlFlowPractise.ExternalParty.csproj" />
   </ItemGroup>
 
 </Project>

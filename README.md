@@ -2,17 +2,18 @@
 
 ## Objective
 
-1. Handle http request
+1. Accept http request
 2. Validate request
 3. Convert request
 4. Save request
 5. Call some external party service
-6. Interpret response
+6. Save raw response
+7. Interpret response
     1. Validate response
     2. Convert response
-7. Save raw and converted response
-8. Return http response
-9. (Reconcille service)
+8. Save converted response
+9. Return http response
+10. (Reconcille service)
 
 ## Error handling
 How to handle error at each step
@@ -34,6 +35,7 @@ Endpoints to read data
 3. Different request types
 4. Compliance/Case Status
 5. Original Request Type
+6. commit sends more infor and saves additional info separately
 
 ## Story
 Buing a machine, ask for the price of the warranty\

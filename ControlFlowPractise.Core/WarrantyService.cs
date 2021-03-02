@@ -1,18 +1,140 @@
 ﻿using ControlFlowPractise.Common;
+using ControlFlowPractise.Common.ControlFlow;
+using ControlFlowPractise.ComprehensiveData.Models;
 using System;
 using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core
 {
+    // add extension method for DI registration of this service
     public class WarrantyService
     {
-        // result type, to handle errors? Monadic?
-        public async Task<VerifyWarrantyCaseResponse> Verify(VerifyWarrantyCaseRequest request)
+        internal WarrantyService(
+            FailureClassification failureClassification,
+            ComprehensiveDataWrapper comprehensiveDataWrapper,
+            RequestValidator requestValidator,
+            RequestBuilder requestBuilder,
+            ExternalPartyWrapper externalPartyWrapper,
+            ResponseValidator responseValidator,
+            ResponseConverter responseConverter)
+        {
+            FailureClassification = failureClassification;
+            ComprehensiveDataWrapper = comprehensiveDataWrapper;
+            RequestValidator = requestValidator;
+            RequestBuilder = requestBuilder;
+            ExternalPartyWrapper = externalPartyWrapper;
+            ResponseValidator = responseValidator;
+            ResponseConverter = responseConverter;
+        }
+
+        private FailureClassification FailureClassification { get; }
+        private ComprehensiveDataWrapper ComprehensiveDataWrapper { get; }
+        private RequestValidator RequestValidator { get; }
+        private RequestBuilder RequestBuilder { get; }
+        private ExternalPartyWrapper ExternalPartyWrapper { get; }
+        private ResponseValidator ResponseValidator { get; }
+        private ResponseConverter ResponseConverter { get; }
+
+        // generates requestId
+        // Calls PerformVerifyAction
+        // Saves warrantyCaseVerification in ComprehensiveData,
+        // regardless of PerformVerifyAction is success or failure
+        public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> Verify(
+            VerifyWarrantyCaseRequest request)
+        {
+            var requestId = Guid.NewGuid();
+            var performVerifyActionResult = await PerformVerifyAction(request, requestId);
+            if (performVerifyActionResult.IsSuccess)
+            {
+                var verifyWarrantyCaseResponse = performVerifyActionResult.Success!;
+                var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
+                {
+                    Operation = request.Operation,
+                    RequestId = requestId,
+                    CalledExternalParty = true,
+                    CalledWithResponse = true,
+                    ResponseHasNoError = true
+                };
+                var saveWarrantyCaseVerification =
+                    await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
+                if (!saveWarrantyCaseVerification.IsSuccess)
+                {
+                    return new Result<VerifyWarrantyCaseResponse, IFailure>(
+                        new SaveWarrantyCaseVerificationFailure(
+                            saveWarrantyCaseVerification.Failure!.Message,
+                            calledExternalParty: true));
+                }
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(verifyWarrantyCaseResponse);
+            }
+            else
+            {
+                var performVerifyActionFailure = performVerifyActionResult.Failure!;
+                bool calledExternalParty = FailureClassification.CalledExternalParty(performVerifyActionFailure);
+                bool calledWithResponse = FailureClassification.CalledWithResponse(performVerifyActionFailure);
+                bool responseHasNoError = FailureClassification.ResponseHasNoError(performVerifyActionFailure);
+                var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
+                {
+                    Operation = request.Operation,
+                    RequestId = requestId,
+                    CalledExternalParty = calledExternalParty,
+                    CalledWithResponse = calledWithResponse,
+                    ResponseHasNoError = responseHasNoError,
+                };
+                var saveWarrantyCaseVerification =
+                    await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
+                if (!saveWarrantyCaseVerification.IsSuccess)
+                {
+                    return new Result<VerifyWarrantyCaseResponse, IFailure>(
+                        new SaveWarrantyCaseVerificationFailure(
+                            saveWarrantyCaseVerification.Failure!.Message,
+                            calledExternalParty: calledExternalParty));
+                }
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(performVerifyActionFailure);
+            }
+        }
+
+        internal async Task<Result<VerifyWarrantyCaseResponse, IFailure>> PerformVerifyAction(
+            VerifyWarrantyCaseRequest request,
+            Guid requestId)
+        {
+            var validateRequest = RequestValidator.Validate(request);
+            if (!validateRequest.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(validateRequest.Failure!);
+
+            var build = RequestBuilder.Build(request, requestId);
+            if (!build.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(build.Failure!);
+            var warrantyRequest = build.Success!;
+
+            // Save request
+
+            var call = await ExternalPartyWrapper.Call(warrantyRequest);
+            if (!call.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(call.Failure!);
+            var rawResponse = call.Success!;
+
+            // Save raw response
+
+            var validateResponse = ResponseValidator.Validate(rawResponse);
+            if (!validateResponse.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(validateResponse.Failure!);
+
+            var convertResponse = ResponseConverter.Convert(rawResponse);
+            if (!convertResponse.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(convertResponse.Failure!);
+            var convertedResponse = convertResponse.Success!;
+
+            // save warranty proof
+
+            return new Result<VerifyWarrantyCaseResponse, IFailure>(convertedResponse);
+        }
+
+        public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> GetVerificationResult(string orderId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<VerifyWarrantyCaseResponse> GetVerificationResult(string orderId)
+        public async Task<Result<WarrantyProof, IFailure>> GetWarrantyProof(string orderId)
         {
             throw new NotImplementedException();
         }

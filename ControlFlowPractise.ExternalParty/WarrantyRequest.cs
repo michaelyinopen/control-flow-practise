@@ -87,6 +87,7 @@ namespace ControlFlowPractise.ExternalParty
         {
             TransactionDate = transactionDate;
         }
+        public Guid RequestId { get; set; }
         public WarrantyRequestType RequestType { get; set; }
         public WarrantyRequestAction? Action { get; set; }
         public string? WarrantyCaseId { get; set; }
