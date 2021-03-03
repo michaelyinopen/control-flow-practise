@@ -43,6 +43,10 @@ namespace ControlFlowPractise.Core
         // generates requestId
         // Calls PerformVerifyAction
         // Saves warrantyCaseVerification in ComprehensiveData, regardless of PerformVerifyAction is success or failure
+        //
+        // todo handle cases where PerformVerifyAction is successful, but ConformanceIndicator/CaseStatus doe not meet requirement for success
+        // e.g. Commit but CaseStatus remains at Certified
+        // e.g. Cancel but CaseStatus remains at Claimed
         public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> Verify(
             VerifyWarrantyCaseRequest request)
         {
@@ -57,7 +61,8 @@ namespace ControlFlowPractise.Core
                     RequestId = requestId,
                     CalledExternalParty = true,
                     CalledWithResponse = true,
-                    ResponseHasNoError = true
+                    ResponseHasNoError = true,
+                    ConvertedResponse = JsonConvert.SerializeObject(verifyWarrantyCaseResponse)
                 };
                 var saveWarrantyCaseVerification =
                     await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
@@ -83,6 +88,8 @@ namespace ControlFlowPractise.Core
                     CalledExternalParty = calledExternalParty,
                     CalledWithResponse = calledWithResponse,
                     ResponseHasNoError = responseHasNoError,
+                    // FailureType
+                    // FailureMessage
                 };
                 var saveWarrantyCaseVerification =
                     await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
@@ -153,15 +160,24 @@ namespace ControlFlowPractise.Core
 
         public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> GetVerificationResult(string orderId)
         {
-            var currentWarrantyCaseVerification = await ComprehensiveDataWrapper.GetCurrentWarrantyCaseVerification(orderId);
-            if (!currentWarrantyCaseVerification.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(currentWarrantyCaseVerification.Failure!);
+            var warrantyCaseVerificationResult = await ComprehensiveDataWrapper.GetCurrentWarrantyCaseVerification(orderId);
+            if (!warrantyCaseVerificationResult.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(warrantyCaseVerificationResult.Failure!);
+            var warrantyCaseVerification = warrantyCaseVerificationResult.Success!;
 
-            return new Result<VerifyWarrantyCaseResponse, IFailure>(
-                new VerifyWarrantyCaseResponse
-                {
-                    // todo convert currentWarrantyCaseVerification to VerifyWarrantyCaseResponse
-                });
+            try
+            {
+                var verifyWarrantyCaseResponse = JsonConvert.DeserializeObject<VerifyWarrantyCaseResponse>(
+                    warrantyCaseVerification.ConvertedResponse!);
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(verifyWarrantyCaseResponse);
+            }
+            catch (JsonException)
+            {
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(
+                    new GetWarrantyCaseVerificationFailure(
+                        $"VerificationResult of OrderId: `{orderId}` has cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`.",
+                        isNotFound: false));
+            }
         }
 
         public async Task<Result<WarrantyProof, IFailure>> GetWarrantyProof(string orderId)

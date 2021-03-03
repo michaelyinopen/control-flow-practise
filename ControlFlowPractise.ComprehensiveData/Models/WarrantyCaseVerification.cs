@@ -15,6 +15,8 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public string OrderId { get; set; } // add index? and combined index?
 
+        public string? WarrantyCaseId { get; set; }
+
         public WarrantyCaseOperation Operation { get; set; } // make it save as string
 
         public Guid RequestId { get; set; }
@@ -25,7 +27,7 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public bool? ResponseHasNoError { get; set; } // can still be not conformant and have ConformanceMessageError
 
-        public FailureType? FailureType { get; set; }
+        public FailureType? FailureType { get; set; } // make it save as string
 
         public string? FailureMessage { get; set; }
 

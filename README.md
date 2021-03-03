@@ -23,6 +23,33 @@ How to handle error at each step
 - Response header errors
 - Conformance NO, with ConformanceMessage of Level Error
 
+Failure after called external party will have requestId
+
+**ConformanceIndicator and CaseStatus always refers to the WarrantyCase, never refers to the latest request.**
+
+Whether of not a request is successful, depends on the updated CaseStatus of response.
+
+E.g. 1 updating order to some wrong information, will change complianceIndicator to `No`, CaseStatus will revert to `Claimed`
+
+E.g. 2 attempt to Commit with wrong date, will respond with complianceIndicator `Yes` and CaseStatus remains at `Certified`. However, CaseStatus does not progress to Committed.
+
+Each action will have its expected response, if unsatisfied, means the http request overall is a failure.
+
+Success Condition
+| Operation  | Expected Indicator | Expected CaseStatus | Expected |
+|------------|--------------------|---------------------|----------|
+| Create | No | WaitingForClaim | WarrantyCaseId generated |
+| Verify | - | - | -
+| Verify before Commit | Yes | Certified |
+|    | Yes | Committed (or Completed) | 
+| Cancel | No | Cancelled
+
+Conformance messages can have either meanings
+1. Could have subject of the latest request; or
+2. Or subject of the case status
+
+Always showing all messages could show the messages specifically for the latest request.
+
 ## From http request's perspective
 What is a successful response mean\
 What is the response in case of error
@@ -98,7 +125,21 @@ Models converted to Data Model inside Data project
 use nullable reference type and have constructors to initialize non-nullable properties, because cannot use C# 9 features like record type
 
 ## Functional Programming
-Just use `Result` and some version of `Unit`. Yes the maps, binds are missing, and code is imperitive. But it has not become second nature for me to write those, so i go with the easy way, while leveraging the clarity that `Result` provides.
+Just use `Result` and `Unit`. Yes, the maps, binds are missing, and code is imperitive. But it has not become a second nature for me to write those, so i go with the easy way, while leveraging the clarity that `Result` provides.
+
+There could be cases where successful response, but expected `Indicator` and `CaseStatus` does not meet the condition for success, therefore overall is a failure. Need a way to represent this. (Failure with VerifyWarrantyCaseResponse as a property?)
+
+Http response structure
+```
+{
+  Success: bool
+  // can have value even if there is failure
+  Respose?: VerifyWarrantyCaseResponse
+  Failure?: something,
+}
+```
+
+Non-conformance is a success, except when violating success condition
 
 ## Data storage
 Each accepted request has an entry, regardless of successful or fail.\

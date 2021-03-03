@@ -46,6 +46,8 @@ namespace ControlFlowPractise.Core
             {
                 var warrantyCaseVerification = await ComprehensiveDataDbContext.WarrantyCaseVerification
                     .Where(v => v.OrderId == orderId)
+                    .Where(v => v.ResponseHasNoError == true)
+                    .Where(v => v.FailureType == null)
                     .OrderByDescending(v => v.DateTime)
                     .FirstOrDefaultAsync(); // todo more logic
                 if (warrantyCaseVerification is null)
