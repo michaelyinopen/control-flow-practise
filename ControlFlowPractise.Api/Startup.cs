@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ControlFlowPractise.BudgetData;
+using ControlFlowPractise.ComprehensiveData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +30,8 @@ namespace ControlFlowPractise.Api
         {
             services.AddDbContext<BudgetDataDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("BudgetDataDb")));
+            services.AddDbContext<ComprehensiveDataDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("ComprehensiveDataDb")));
             services.AddControllers();
         }
 

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ControlFlowPractise.BudgetData\ControlFlowPractise.BudgetData.csproj" />
+    <ProjectReference Include="..\ControlFlowPractise.ComprehensiveData\ControlFlowPractise.ComprehensiveData.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.Core\ControlFlowPractise.Core.csproj" />
   </ItemGroup>
 

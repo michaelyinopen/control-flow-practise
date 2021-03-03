@@ -121,11 +121,11 @@ need to be able to create localDb for the tests
 ### How to Add Database Migrate
 1. In Visual Studio PAckage MAnager Console, set Api as startup project
 2. Set the Data project as Default project
-3. Add-Migration \<name>
+3. `Add-Migration <name> -Context ComprehensiveDataDbContext`
 4. how to apply migration??
 
 # todo
 
 add index to databases
-naming warranty request/ esternal party request
+naming warranty request/ external party request
 

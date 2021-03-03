@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ControlFlowPractise.BudgetData\ControlFlowPractise.BudgetData.csproj" />
+    <ProjectReference Include="..\..\ControlFlowPractise.ComprehensiveData\ControlFlowPractise.ComprehensiveData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
