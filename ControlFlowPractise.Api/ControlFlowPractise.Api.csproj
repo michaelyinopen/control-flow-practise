@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControlFlowPractise.BudgetData\ControlFlowPractise.BudgetData.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.Core\ControlFlowPractise.Core.csproj" />
   </ItemGroup>
 

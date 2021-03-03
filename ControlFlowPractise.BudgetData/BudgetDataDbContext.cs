@@ -28,11 +28,6 @@ namespace ControlFlowPractise.BudgetData
 
             modelBuilder
                 .Entity<ExternalPartyRequest>()
-                .Property(req => req.RequestId)
-                .HasConversion<string>();
-
-            modelBuilder
-                .Entity<ExternalPartyRequest>()
                 .HasIndex(req => new { req.OrderId, req.RequestId })
                 .IsUnique();
 
@@ -49,11 +44,6 @@ namespace ControlFlowPractise.BudgetData
             modelBuilder
                 .Entity<ExternalPartyResponse>()
                 .Property(res => res.Operation)
-                .HasConversion<string>();
-
-            modelBuilder
-                .Entity<ExternalPartyResponse>()
-                .Property(req => req.RequestId)
                 .HasConversion<string>();
 
             modelBuilder

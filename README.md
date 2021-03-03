@@ -115,7 +115,17 @@ Saving raw request and raw response are write only operations, and will not be c
 Raw request and raw resposne can be correlated by requestId.\
 Concurrency will be last write wins.
 
+### Test uses localDb
+need to be able to create localDb for the tests
+
+### How to Add Database Migrate
+1. In Visual Studio PAckage MAnager Console, set Api as startup project
+2. Set the Data project as Default project
+3. Add-Migration \<name>
+4. how to apply migration??
+
 # todo
 
 add index to databases
 naming warranty request/ esternal party request
+

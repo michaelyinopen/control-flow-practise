@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{95BDD896
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.ComprehensiveData", "ControlFlowPractise.ComprehensiveData\ControlFlowPractise.ComprehensiveData.csproj", "{5F2B5839-DC39-4E06-B50B-011F9356482F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlFlowPractise.Data.Tests", "Tests\ControlFlowPractise.Data.Tests\ControlFlowPractise.Data.Tests.csproj", "{27B3612B-C067-4FDC-9ECF-DEAB955A5A6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,12 +55,17 @@ Global
 		{5F2B5839-DC39-4E06-B50B-011F9356482F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F2B5839-DC39-4E06-B50B-011F9356482F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F2B5839-DC39-4E06-B50B-011F9356482F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27B3612B-C067-4FDC-9ECF-DEAB955A5A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27B3612B-C067-4FDC-9ECF-DEAB955A5A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27B3612B-C067-4FDC-9ECF-DEAB955A5A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27B3612B-C067-4FDC-9ECF-DEAB955A5A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D4F55783-977E-4C25-8D79-B82E5A00C593} = {95BDD896-2500-4206-B4C9-E497754D1BAC}
+		{27B3612B-C067-4FDC-9ECF-DEAB955A5A6B} = {95BDD896-2500-4206-B4C9-E497754D1BAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {338009EA-ED75-4EFF-9ED9-4C415FD64762}

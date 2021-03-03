@@ -19,11 +19,6 @@ namespace ControlFlowPractise.ComprehensiveData
 
             modelBuilder
                 .Entity<WarrantyCaseVerification>()
-                .Property(req => req.RequestId)
-                .HasConversion<string>();
-
-            modelBuilder
-                .Entity<WarrantyCaseVerification>()
                 .Property(req => req.FailureType)
                 .HasConversion<string>();
         }

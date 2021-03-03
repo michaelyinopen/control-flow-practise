@@ -153,7 +153,15 @@ namespace ControlFlowPractise.Core
 
         public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> GetVerificationResult(string orderId)
         {
-            throw new NotImplementedException();
+            var currentWarrantyCaseVerification = await ComprehensiveDataWrapper.GetCurrentWarrantyCaseVerification(orderId);
+            if (!currentWarrantyCaseVerification.IsSuccess)
+                return new Result<VerifyWarrantyCaseResponse, IFailure>(currentWarrantyCaseVerification.Failure!);
+
+            return new Result<VerifyWarrantyCaseResponse, IFailure>(
+                new VerifyWarrantyCaseResponse
+                {
+                    // todo convert currentWarrantyCaseVerification to VerifyWarrantyCaseResponse
+                });
         }
 
         public async Task<Result<WarrantyProof, IFailure>> GetWarrantyProof(string orderId)
