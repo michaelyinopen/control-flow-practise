@@ -150,7 +150,7 @@ namespace ControlFlowPractise.Core
             if (!validateResponse.IsSuccess)
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(validateResponse.Failure!);
 
-            var convertResponse = ResponseConverter.Convert(rawResponse);
+            var convertResponse = ResponseConverter.Convert(request, requestId, rawResponse);
             if (!convertResponse.IsSuccess)
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(convertResponse.Failure!);
             var convertedResponse = convertResponse.Success!;

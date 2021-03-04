@@ -4,6 +4,7 @@ using Xunit;
 
 namespace ControlFlowPractise.Core.Tests
 {
+    [Trait("accessibility", "internal")]
     public class RequestBuilderTests
     {
         public static IEnumerable<object[]> ConvertTransactionDateTestData()
@@ -13,7 +14,6 @@ namespace ControlFlowPractise.Core.Tests
             yield return new object[] { new DateTime(2021, 9, 4, 0, 52, 0), "2021-09-04T10:52:00+10:00" };
         }
 
-        [Trait("assessability", "internal")]
         [Theory]
         [MemberData(nameof(ConvertTransactionDateTestData))]
         public void ConvertTransactionDate(DateTime source, string expected)

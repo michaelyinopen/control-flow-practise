@@ -8,6 +8,7 @@ namespace ControlFlowPractise.Core
 {
     // Builds WarrantyRequest (that gets sent to External Party)
     // from VerifyWarrantyCaseRequest (from http request)
+    // and requestId (generated in WarrantyService)
     // this is a builder that has no internal state
     internal class RequestBuilder
     {
