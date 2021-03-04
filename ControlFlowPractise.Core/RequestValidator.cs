@@ -1,11 +1,8 @@
 ﻿using ControlFlowPractise.Common;
 using ControlFlowPractise.Common.ControlFlow;
-using ControlFlowPractise.ExternalParty;
 using FluentValidation;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ControlFlowPractise.Core
 {
@@ -21,11 +18,11 @@ namespace ControlFlowPractise.Core
             VerifyWarrantyCaseRequest verifyWarrantyCaseRequest,
             Guid requestId)
         {
-            var results = Validator.Validate(verifyWarrantyCaseRequest);
-            if (results.IsValid)
+            var validationResult = Validator.Validate(verifyWarrantyCaseRequest);
+            if (validationResult.IsValid)
                 return new Result<Unit, RequestValidationFailure>(Unit.Value);
 
-            var errorMessages = string.Join(Environment.NewLine, results.Errors.Select(x => x.ErrorMessage));
+            var errorMessages = string.Join(Environment.NewLine, validationResult.Errors.Select(x => x.ErrorMessage));
             return new Result<Unit, RequestValidationFailure>(
                 new RequestValidationFailure(
                     $"Request of RequestId: `{requestId}` failed validation:" + Environment.NewLine + errorMessages));

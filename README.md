@@ -38,9 +38,9 @@ Each action will have its expected response, if unsatisfied, means the http requ
 Success Condition
 | Operation  | Expected Indicator | Expected CaseStatus | Expected |
 |------------|--------------------|---------------------|----------|
-| Create | No | WaitingForClaim | WarrantyCaseId generated |
+| Create | No | WaitingForClaim | WarrantyCaseId generated (Validation) |
 | Verify | - | - | -
-| Verify before Commit | Yes | Certified |
+| Verify before Commit | Yes | Certified | WarrantyAmount not null, have WarrantyProof (Validation)
 |    | Yes | Committed (or Completed) | 
 | Cancel | No | Cancelled
 

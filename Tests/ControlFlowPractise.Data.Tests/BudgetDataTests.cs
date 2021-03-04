@@ -9,6 +9,7 @@ using Xunit;
 
 namespace ControlFlowPractise.Data.Tests
 {
+    [Trait("database", "BudgetData")]
     public class BudgetDataTests : IClassFixture<BudgetDatabaseFixture>
     {
         public DbContextOptions<BudgetDataDbContext> DbContextOptions { get; }

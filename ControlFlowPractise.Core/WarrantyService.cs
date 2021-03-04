@@ -146,7 +146,7 @@ namespace ControlFlowPractise.Core
             if (!saveWarrantyResponse.IsSuccess)
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
 
-            var validateResponse = ResponseValidator.Validate(rawResponse);
+            var validateResponse = ResponseValidator.Validate(request, requestId, rawResponse);
             if (!validateResponse.IsSuccess)
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(validateResponse.Failure!);
 

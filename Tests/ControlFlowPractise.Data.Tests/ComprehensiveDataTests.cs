@@ -8,6 +8,7 @@ using Xunit;
 
 namespace ControlFlowPractise.Data.Tests
 {
+    [Trait("database", "ComprehensiveData")]
     public class ComprehensiveDataTests : IClassFixture<ComprehensiveDatabaseFixture>
     {
         public DbContextOptions<ComprehensiveDataDbContext> DbContextOptions { get; }
