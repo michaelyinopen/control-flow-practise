@@ -38,7 +38,7 @@ namespace ControlFlowPractise.Core
         }
 
         // current means the state other parts of application should use
-        // current != latest iff there are failed calls
+        // current != latest iff there are unsuccessful calls
         public async Task<Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>> GetCurrentWarrantyCaseVerification(
             string orderId)
         {

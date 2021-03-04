@@ -59,14 +59,14 @@ Endpoints to read data
 
 ## Special Scenarios
 1. Use old response if failed
-2. Call twice, validate before submit
+2. Call twice, verify before commit
 3. Different request types
 4. Compliance/Case Status
-5. Original Request Type
-6. commit sends more infor and saves additional info separately
+5. Operation
+6. commit sends more info and saves additional info separately
 
 ## Story
-Buing a machine, ask for the price of the warranty\
+Buying a machine, ask for the price of the warranty\
 Warranty service of the manufacturer needs a record of some details
 
 - Order

@@ -104,11 +104,13 @@ namespace ControlFlowPractise.Core
             }
         }
 
+        // success means called Thrid Party, saved raw request and raw response, and returns a converted response
+        // anything after SaveExternalPartyResponse in BudgetDatabase should be pure (non-deterministic and no side-effect)
         internal async Task<Result<VerifyWarrantyCaseResponse, IFailure>> PerformVerifyAction(
             VerifyWarrantyCaseRequest request,
             Guid requestId)
         {
-            var validateRequest = RequestValidator.Validate(request);
+            var validateRequest = RequestValidator.Validate(request, requestId);
             if (!validateRequest.IsSuccess)
                 return new Result<VerifyWarrantyCaseResponse, IFailure>(validateRequest.Failure!);
 

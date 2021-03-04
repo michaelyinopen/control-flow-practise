@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ControlFlowPractise.ExternalParty
 {
@@ -83,16 +82,11 @@ namespace ControlFlowPractise.ExternalParty
 
     public class WarrantyRequest
     {
-        public WarrantyRequest(string transactionDate)
-        {
-            TransactionDate = transactionDate;
-        }
         public Guid RequestId { get; set; }
         public WarrantyRequestType RequestType { get; set; }
         public WarrantyRequestAction? Action { get; set; }
         public string? WarrantyCaseId { get; set; }
-        public string TransactionDate { get; set; } // convert to AEST
-        public List<OrderDetail> OrderDetails { get; set; } =
-            new List<OrderDetail>();
+        public string? TransactionDate { get; set; } // convert to AEDT
+        public List<OrderDetail>? OrderDetails { get; set; }
     }
 }
