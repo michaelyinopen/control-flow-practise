@@ -1,8 +1,6 @@
 ﻿using ControlFlowPractise.Common;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace ControlFlowPractise.ComprehensiveData.Models
 {
@@ -17,7 +15,7 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public string? WarrantyCaseId { get; set; }
 
-        public WarrantyCaseOperation Operation { get; set; } // make it save as string
+        public WarrantyCaseOperation Operation { get; set; }
 
         public Guid RequestId { get; set; }
 
@@ -27,7 +25,7 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public bool? ResponseHasNoError { get; set; } // can still be not conformant and have ConformanceMessageError
 
-        public FailureType? FailureType { get; set; } // make it save as string
+        public FailureType? FailureType { get; set; }
 
         public string? FailureMessage { get; set; }
 

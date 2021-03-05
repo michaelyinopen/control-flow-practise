@@ -125,7 +125,9 @@ Models converted to Data Model inside Data project
 use nullable reference type and have constructors to initialize non-nullable properties, because cannot use C# 9 features like record type
 
 ## Functional Programming
-Just use `Result` and `Unit`. Yes, the maps, binds are missing, and code is imperitive. But it has not become a second nature for me to write those, so i go with the easy way, while leveraging the clarity that `Result` provides.
+Just use `Result` and `Unit`. Yes, the maps, binds are missing, and code is imperative. But it has not become a second nature for me to write those, so i go with the easy way, while leveraging the clarity that `Result` provides.
+
+Violating some core principles of Functional Programming, because this way is easy(familiar).
 
 There could be cases where successful response, but expected `Indicator` and `CaseStatus` does not meet the condition for success, therefore overall is a failure. Need a way to represent this. (Failure with VerifyWarrantyCaseResponse as a property?)
 

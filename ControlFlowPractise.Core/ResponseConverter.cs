@@ -9,20 +9,20 @@ using System.Text;
 
 namespace ControlFlowPractise.Core
 {
-    // Builds VerifyWarrantyCaseResponse (as part of http response)
+    // Builds WarrantyCaseResponse (as part of http response)
     // from VerifyWarrantyCaseRequest (from http request)
     // and requestId (generated in WarrantyService)
     // and WarrantyResponse (response from External Party)
     internal class ResponseConverter
     {
-        public Result<VerifyWarrantyCaseResponse, IFailure> Convert(
+        public Result<WarrantyCaseResponse, IFailure> Convert(
             VerifyWarrantyCaseRequest request,
             Guid requestId,
             WarrantyResponse warrantyResponse)
         {
             try
             {
-                var verifyWarrantyCaseResponse = new VerifyWarrantyCaseResponse(
+                var warrantyCaseResponse = new WarrantyCaseResponse(
                     orderId: request.OrderId,
                     warrantyCaseId: warrantyResponse.Header.WarrantyCaseId!)
                 {
@@ -31,20 +31,20 @@ namespace ControlFlowPractise.Core
                     Conformance = ConformanceIndicatorMap[warrantyResponse.Body!.ConformanceIndicator],
                 };
                 var orderReport = warrantyResponse.Body?.OrderReports.Single();
-                verifyWarrantyCaseResponse.WarrantyEstimatedAmount = orderReport?.WarrantyEstimatedAmount;
-                verifyWarrantyCaseResponse.WarrantyAmount = orderReport?.WarrantyAmount;
-                verifyWarrantyCaseResponse.ConformanceMessages = orderReport?.ConformanceMessages
+                warrantyCaseResponse.WarrantyEstimatedAmount = orderReport?.WarrantyEstimatedAmount;
+                warrantyCaseResponse.WarrantyAmount = orderReport?.WarrantyAmount;
+                warrantyCaseResponse.ConformanceMessages = orderReport?.ConformanceMessages
                     .Select(m => new WarrantyConformanceMessage(m.Message)
                     {
                         Level = WarrantyConformanceLevelMap[m.Level]
                     })
                     .ToList()
                     ?? new List<WarrantyConformanceMessage>();
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(verifyWarrantyCaseResponse);
+                return new Result<WarrantyCaseResponse, IFailure>(warrantyCaseResponse);
             }
             catch (Exception e)
             {
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(
+                return new Result<WarrantyCaseResponse, IFailure>(
                     new ResponseConversionFailure($"Cannot convert response of RequestId: `{requestId}` because:" + Environment.NewLine + e.Message));
             }
         }

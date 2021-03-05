@@ -41,82 +41,42 @@ namespace ControlFlowPractise.Core
         private ResponseConverter ResponseConverter { get; }
 
         // generates requestId
-        // Calls PerformVerifyAction
-        // Saves warrantyCaseVerification in ComprehensiveData, regardless of PerformVerifyAction is success or failure
         //
         // todo handle cases where PerformVerifyAction is successful, but ConformanceIndicator/CaseStatus doe not meet requirement for success
         // e.g. Commit but CaseStatus remains at Certified
         // e.g. Cancel but CaseStatus remains at Claimed
-        public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> Verify(
+        public async Task<VerifyWarrantyCaseResponse> Verify(
             VerifyWarrantyCaseRequest request)
         {
             var requestId = Guid.NewGuid();
+            var validateRequestResult = RequestValidator.Validate(request, requestId);
+            if (!validateRequestResult.IsSuccess)
+            {
+                var validationFailure = validateRequestResult.Failure!;
+                return new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = false,
+                    FailureType = validationFailure.FailureType,
+                    FailureMessage = validationFailure.Message
+                };
+            }
             var performVerifyActionResult = await PerformVerifyAction(request, requestId);
-            if (performVerifyActionResult.IsSuccess)
-            {
-                var verifyWarrantyCaseResponse = performVerifyActionResult.Success!;
-                var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
-                {
-                    Operation = request.Operation,
-                    RequestId = requestId,
-                    CalledExternalParty = true,
-                    CalledWithResponse = true,
-                    ResponseHasNoError = true,
-                    ConvertedResponse = JsonConvert.SerializeObject(verifyWarrantyCaseResponse)
-                };
-                var saveWarrantyCaseVerification =
-                    await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
-                if (!saveWarrantyCaseVerification.IsSuccess)
-                {
-                    return new Result<VerifyWarrantyCaseResponse, IFailure>(
-                        new SaveWarrantyCaseVerificationFailure(
-                            saveWarrantyCaseVerification.Failure!.Message,
-                            calledExternalParty: true));
-                }
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(verifyWarrantyCaseResponse);
-            }
-            else
-            {
-                var performVerifyActionFailure = performVerifyActionResult.Failure!;
-                bool calledExternalParty = FailureClassification.CalledExternalParty(performVerifyActionFailure);
-                bool calledWithResponse = FailureClassification.CalledWithResponse(performVerifyActionFailure);
-                bool responseHasNoError = FailureClassification.ResponseHasNoError(performVerifyActionFailure);
-                var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
-                {
-                    Operation = request.Operation,
-                    RequestId = requestId,
-                    CalledExternalParty = calledExternalParty,
-                    CalledWithResponse = calledWithResponse,
-                    ResponseHasNoError = responseHasNoError,
-                    // FailureType
-                    // FailureMessage
-                };
-                var saveWarrantyCaseVerification =
-                    await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
-                if (!saveWarrantyCaseVerification.IsSuccess)
-                {
-                    return new Result<VerifyWarrantyCaseResponse, IFailure>(
-                        new SaveWarrantyCaseVerificationFailure(
-                            saveWarrantyCaseVerification.Failure!.Message,
-                            calledExternalParty: calledExternalParty));
-                }
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(performVerifyActionFailure);
-            }
+            var saveResult = await SaveWarrantyCaseResponse(request, requestId, performVerifyActionResult);
+            var verifyWarrantyCaseResponse = BuidVerifyWarrantyCaseResponse(request, saveResult);
+            return verifyWarrantyCaseResponse;
         }
 
         // success means called Thrid Party, saved raw request and raw response, and returns a converted response
-        // anything after SaveExternalPartyResponse in BudgetDatabase should be pure (non-deterministic and no side-effect)
-        internal async Task<Result<VerifyWarrantyCaseResponse, IFailure>> PerformVerifyAction(
+        // ---
+        // anything here after SaveExternalPartyResponse in BudgetDatabase should be pure (non-deterministic and no side-effect)
+        // so that the saved ExternalPartyResponse can be a source of truth
+        internal async Task<Result<WarrantyCaseResponse, IFailure>> PerformVerifyAction(
             VerifyWarrantyCaseRequest request,
             Guid requestId)
         {
-            var validateRequest = RequestValidator.Validate(request, requestId);
-            if (!validateRequest.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(validateRequest.Failure!);
-
             var build = RequestBuilder.Build(request, requestId);
             if (!build.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(build.Failure!);
+                return new Result<WarrantyCaseResponse, IFailure>(build.Failure!);
             var warrantyRequest = build.Success!;
 
             var saveWarrantyRequest = await BudgetDataWrapper.SaveExternalPartyRequest(
@@ -128,11 +88,11 @@ namespace ControlFlowPractise.Core
                     RequestId = requestId,
                 });
             if (!saveWarrantyRequest.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
+                return new Result<WarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
 
             var call = await ExternalPartyWrapper.Call(warrantyRequest);
             if (!call.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(call.Failure!);
+                return new Result<WarrantyCaseResponse, IFailure>(call.Failure!);
             var rawResponse = call.Success!;
 
             var saveWarrantyResponse = await BudgetDataWrapper.SaveExternalPartyResponse(
@@ -144,38 +104,179 @@ namespace ControlFlowPractise.Core
                     RequestId = requestId,
                 });
             if (!saveWarrantyResponse.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
+                return new Result<WarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
 
             var validateResponse = ResponseValidator.Validate(request, requestId, rawResponse);
             if (!validateResponse.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(validateResponse.Failure!);
+                return new Result<WarrantyCaseResponse, IFailure>(validateResponse.Failure!);
 
             var convertResponse = ResponseConverter.Convert(request, requestId, rawResponse);
             if (!convertResponse.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(convertResponse.Failure!);
+                return new Result<WarrantyCaseResponse, IFailure>(convertResponse.Failure!);
             var convertedResponse = convertResponse.Success!;
 
             // save warranty proof
 
-            return new Result<VerifyWarrantyCaseResponse, IFailure>(convertedResponse);
+            return new Result<WarrantyCaseResponse, IFailure>(convertedResponse);
         }
 
-        public async Task<Result<VerifyWarrantyCaseResponse, IFailure>> GetVerificationResult(string orderId)
+        // Saves warrantyCaseVerification in ComprehensiveData, regardless of PerformVerifyAction is success or failure
+        internal async Task<Result<WarrantyCaseResponse, IFailure>> SaveWarrantyCaseResponse(
+            VerifyWarrantyCaseRequest request,
+            Guid requestId,
+            Result<WarrantyCaseResponse, IFailure> sourceResult)
+        {
+            if (sourceResult.IsSuccess)
+            {
+                var warrantyCaseResponse = sourceResult.Success!;
+                var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
+                {
+                    Operation = request.Operation,
+                    RequestId = requestId,
+                    CalledExternalParty = true,
+                    CalledWithResponse = true,
+                    ResponseHasNoError = true,
+                    ConvertedResponse = JsonConvert.SerializeObject(warrantyCaseResponse)
+                };
+                var saveWarrantyCaseVerification =
+                    await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
+                if (!saveWarrantyCaseVerification.IsSuccess)
+                {
+                    return new Result<WarrantyCaseResponse, IFailure>(
+                        new SaveWarrantyCaseVerificationFailure(
+                            saveWarrantyCaseVerification.Failure!.Message,
+                            calledExternalParty: true));
+                }
+                return new Result<WarrantyCaseResponse, IFailure>(warrantyCaseResponse);
+            }
+            else
+            {
+                var performVerifyActionFailure = sourceResult.Failure!;
+                bool calledExternalParty = FailureClassification.CalledExternalParty(performVerifyActionFailure);
+                bool calledWithResponse = FailureClassification.CalledWithResponse(performVerifyActionFailure);
+                bool responseHasNoError = FailureClassification.ResponseHasNoError(performVerifyActionFailure);
+                var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
+                {
+                    Operation = request.Operation,
+                    RequestId = requestId,
+                    CalledExternalParty = calledExternalParty,
+                    CalledWithResponse = calledWithResponse,
+                    ResponseHasNoError = responseHasNoError,
+                    FailureType = performVerifyActionFailure.FailureType,
+                    FailureMessage = performVerifyActionFailure.Message
+                };
+                var saveWarrantyCaseVerification =
+                    await ComprehensiveDataWrapper.SaveWarrantyCaseVerification(warrantyCaseVerification);
+                if (!saveWarrantyCaseVerification.IsSuccess)
+                {
+                    return new Result<WarrantyCaseResponse, IFailure>(
+                        new SaveWarrantyCaseVerificationFailure(
+                            saveWarrantyCaseVerification.Failure!.Message,
+                            calledExternalParty: calledExternalParty));
+                }
+                return new Result<WarrantyCaseResponse, IFailure>(performVerifyActionFailure);
+            }
+        }
+
+        internal VerifyWarrantyCaseResponse BuidVerifyWarrantyCaseResponse(
+            VerifyWarrantyCaseRequest request,
+            Result<WarrantyCaseResponse, IFailure> sourceResult)
+        {
+            if (sourceResult.IsSuccess)
+            {
+                var warrantyCaseResponse = sourceResult.Success!;
+
+                bool isSuccess;
+                FailureType? failureType;
+                string? failureMessage;
+
+                var successfulConditionResult = SatisfySuccessfulCondition(request, warrantyCaseResponse);
+                if (successfulConditionResult.IsSuccess)
+                {
+                    isSuccess = true;
+                    failureType = null;
+                    failureMessage = null;
+                }
+                else
+                {
+                    var successfulConditionFailure = successfulConditionResult.Failure!;
+                    isSuccess = false;
+                    failureType = FailureType.SuccessfulConditionFailure;
+                    failureMessage = successfulConditionFailure.Message;
+                }
+
+                return new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = isSuccess,
+                    WarrantyCaseResponse = warrantyCaseResponse,
+                    FailureType = failureType,
+                    FailureMessage = failureMessage
+                };
+            }
+            else
+            {
+                var failure = sourceResult.Failure!;
+                return new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = false,
+                    FailureType = failure.FailureType,
+                    FailureMessage = failure.Message
+                };
+            }
+        }
+
+        internal Result<Unit, SuccessfulConditionFailure> SatisfySuccessfulCondition(
+            VerifyWarrantyCaseRequest request,
+            WarrantyCaseResponse response)
+        {
+            switch (request.Operation)
+            {
+                case WarrantyCaseOperation.Create:
+                case WarrantyCaseOperation.Verify:
+                    return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
+                case WarrantyCaseOperation.Commit:
+                    if (response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed)
+                    {
+                        return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
+                    }
+                    else
+                    {
+                        return new Result<Unit, SuccessfulConditionFailure>(
+                            new SuccessfulConditionFailure("Cancel operation did not have resposne of WarrantyCaseStatus Committed or Completed"));
+                    }
+                case WarrantyCaseOperation.Cancel:
+                    if (response.WarrantyCaseStatus == WarrantyCaseStatus.Cancelled)
+                    {
+                        return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
+                    }
+                    else
+                    {
+                        return new Result<Unit, SuccessfulConditionFailure>(
+                            new SuccessfulConditionFailure("Cancel operation did not have resposne of WarrantyCaseStatus Cancelled"));
+                    }
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        // todo add type for GetCurrentWarrantyCaseVerificationResponse
+        public async Task<Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>> GetCurrentWarrantyCaseVerification(string orderId)
         {
             var warrantyCaseVerificationResult = await ComprehensiveDataWrapper.GetCurrentWarrantyCaseVerification(orderId);
             if (!warrantyCaseVerificationResult.IsSuccess)
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(warrantyCaseVerificationResult.Failure!);
+                return new Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>(warrantyCaseVerificationResult.Failure!);
             var warrantyCaseVerification = warrantyCaseVerificationResult.Success!;
 
             try
             {
-                var verifyWarrantyCaseResponse = JsonConvert.DeserializeObject<VerifyWarrantyCaseResponse>(
+                var warrantyCaseResponse = JsonConvert.DeserializeObject<WarrantyCaseResponse>(
                     warrantyCaseVerification.ConvertedResponse!);
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(verifyWarrantyCaseResponse);
+                return new Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>(warrantyCaseResponse);
             }
             catch (JsonException)
             {
-                return new Result<VerifyWarrantyCaseResponse, IFailure>(
+                return new Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>(
                     new GetWarrantyCaseVerificationFailure(
                         $"VerificationResult of OrderId: `{orderId}` has cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`.",
                         isNotFound: false));

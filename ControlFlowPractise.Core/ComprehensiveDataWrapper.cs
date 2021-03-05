@@ -49,7 +49,7 @@ namespace ControlFlowPractise.Core
                     .Where(v => v.ResponseHasNoError == true)
                     .Where(v => v.FailureType == null)
                     .OrderByDescending(v => v.DateTime)
-                    .FirstOrDefaultAsync(); // todo more logic
+                    .FirstOrDefaultAsync(); // todo check logic
                 if (warrantyCaseVerification is null)
                 {
                     return new Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>(

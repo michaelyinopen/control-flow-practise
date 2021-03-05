@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace ControlFlowPractise.Common
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum FailureType
     {
         RequestValidationFailure,
@@ -16,10 +16,12 @@ namespace ControlFlowPractise.Common
         ResponseValidationFailure,
         ResponseConversionFailure,
         SaveWarrantyCaseVerificationFailure,
+        SuccessfulConditionFailure,
         NetworkFailure,
         ServiceNotAvailableFailure,
         InvalidRequestFailure,
         WarrantyServiceInternalErrorFailure,
+        // VerifyBeforeCommitFailure
     }
 
     public interface IFailure
@@ -136,6 +138,16 @@ namespace ControlFlowPractise.Common
         {
             Message = message;
             CalledExternalParty = calledExternalParty;
+        }
+    }
+
+    public class SuccessfulConditionFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.SuccessfulConditionFailure;
+        public string Message { get; }
+        public SuccessfulConditionFailure(string message)
+        {
+            Message = message;
         }
     }
     #endregion internal failures

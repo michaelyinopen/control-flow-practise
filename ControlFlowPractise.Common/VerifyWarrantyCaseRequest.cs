@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ControlFlowPractise.Common
 {
-    public enum WarrantyCaseOperation
-    {
-        Create,
-        Verify,
-        Commit,
-        Cancel
-    }
-
     public class VerifyWarrantyCaseRequest
     {
         public VerifyWarrantyCaseRequest(string orderId)
