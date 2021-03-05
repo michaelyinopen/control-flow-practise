@@ -8,14 +8,16 @@ namespace ControlFlowPractise.ComprehensiveData.Models
     {
         public int Id { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime DateTime { get; set; } // add index? // follow budgetdata
+        public DateTime DateTime { get; set; } // add index?
 
         public string OrderId { get; set; } // add index? and combined index?
 
-        public string? WarrantyCaseId { get; set; }
+        public string? WarrantyCaseId { get; set; } // add index?
 
-        public WarrantyCaseOperation Operation { get; set; }
+        public WarrantyCaseOperation Operation { get; set; } // add index?
+
+        //check ef core exclude null, in multiple column unique index
+        public WarrantyCaseStatus? WarrantyCaseStatus { get; set; } // add index?
 
         public Guid RequestId { get; set; }
 
@@ -23,13 +25,13 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public bool? CalledWithResponse { get; set; }
 
+        // add index? and combined index?
         public bool? ResponseHasNoError { get; set; } // can still be not conformant and have ConformanceMessageError
 
-        public FailureType? FailureType { get; set; }
+        public FailureType? FailureType { get; set; } // add index? and combined index?
 
         public string? FailureMessage { get; set; }
 
-        // serialized object, any useful fields can be extracted and have their own column
         public string? ConvertedResponse { get; set; }
 
         public WarrantyCaseVerification(

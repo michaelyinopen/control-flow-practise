@@ -24,7 +24,7 @@ namespace ControlFlowPractise.Core
         {
             try
             {
-                BudgetDataDbContext.Add(externalPartyRequest);
+                BudgetDataDbContext.ExternalPartyRequest.Add(externalPartyRequest);
                 await BudgetDataDbContext.SaveChangesAsync();
                 return new Result<Unit, SaveExternalPartyRequestFailure>(Unit.Value);
             }
@@ -40,7 +40,7 @@ namespace ControlFlowPractise.Core
         {
             try
             {
-                BudgetDataDbContext.Add(externalPartyResponse);
+                BudgetDataDbContext.ExternalPartyResponse.Add(externalPartyResponse);
                 await BudgetDataDbContext.SaveChangesAsync();
                 return new Result<Unit, SaveExternalPartyResponseFailure>(Unit.Value);
             }

@@ -24,7 +24,7 @@ namespace ControlFlowPractise.Core
         {
             try
             {
-                ComprehensiveDataDbContext.Add(warrantyCaseVerification);
+                ComprehensiveDataDbContext.WarrantyCaseVerification.Add(warrantyCaseVerification);
                 await ComprehensiveDataDbContext.SaveChangesAsync();
                 return new Result<Unit, SaveWarrantyCaseVerificationFailure>(Unit.Value);
             }
@@ -49,7 +49,7 @@ namespace ControlFlowPractise.Core
                     .Where(v => v.ResponseHasNoError == true)
                     .Where(v => v.FailureType == null)
                     .OrderByDescending(v => v.DateTime)
-                    .FirstOrDefaultAsync(); // todo check logic
+                    .FirstOrDefaultAsync();
                 if (warrantyCaseVerification is null)
                 {
                     return new Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>(
@@ -68,6 +68,110 @@ namespace ControlFlowPractise.Core
             }
         }
 
-        // todo add save and get warranty proof
+        // save warranty proof only when (Operation = commit and WarrantyCaseStatus = Committed)
+        public async Task<Result<Unit, SaveWarrantyProofFailure>> SaveWarrantyProof(
+            WarrantyProof warrantyProof)
+        {
+            try
+            {
+                ComprehensiveDataDbContext.WarrantyProof.Add(warrantyProof);
+                await ComprehensiveDataDbContext.SaveChangesAsync();
+                return new Result<Unit, SaveWarrantyProofFailure>(Unit.Value);
+            }
+            catch (Exception e)
+            {
+                return new Result<Unit, SaveWarrantyProofFailure>(
+                    new SaveWarrantyProofFailure(e.Message));
+            }
+        }
+
+        // get latest commit with successful response (Operation = commit and WarrantyCaseStatus = Committed)
+        public async Task<Result<WarrantyCaseVerification, IFailure>> GetLatestWarrantyCaseCommit(
+            string orderId)
+        {
+            try
+            {
+                var warrantyCaseVerification = await ComprehensiveDataDbContext.WarrantyCaseVerification
+                    .Where(v => v.OrderId == orderId)
+                    .Where(v => v.ResponseHasNoError == true)
+                    .Where(v => v.FailureType == null)
+                    .Where(v => v.Operation == WarrantyCaseOperation.Commit)
+                    .Where(v => v.WarrantyCaseStatus == WarrantyCaseStatus.Committed)
+                    .OrderByDescending(v => v.DateTime)
+                    .FirstOrDefaultAsync();
+                if (warrantyCaseVerification is null)
+                {
+                    return new Result<WarrantyCaseVerification, IFailure>(
+                        new GetWarrantyCaseVerificationFailure(
+                            $"There is no successful commit of OrderId: `{orderId}`.",
+                            isNotFound: true));
+                }
+                return new Result<WarrantyCaseVerification, IFailure>(warrantyCaseVerification);
+            }
+            catch (Exception e)
+            {
+                return new Result<WarrantyCaseVerification, IFailure>(
+                    new GetWarrantyCaseVerificationFailure(
+                        e.Message,
+                        isNotFound: false));
+            }
+        }
+
+        public async Task<Result<Unit, IFailure>> IsWarrantyCaseCancelled(
+            string orderId,
+            string warrantyCaseId)
+        {
+            try
+            {
+                var isCancelled = await ComprehensiveDataDbContext.WarrantyCaseVerification
+                    .Where(v => v.OrderId == orderId)
+                    .Where(v => v.WarrantyCaseId == warrantyCaseId)
+                    .Where(v => v.ResponseHasNoError == true)
+                    .Where(v => v.FailureType == null)
+                    .Where(v => v.Operation == WarrantyCaseOperation.Cancel)
+                    .Where(v => v.WarrantyCaseStatus == WarrantyCaseStatus.Cancelled)
+                    .AnyAsync();
+                if (isCancelled)
+                {
+                    return new Result<Unit, IFailure>(
+                        new WarrantyCaseCancelledFailure(
+                            $"WarrantyCase of OrderId: `{orderId}`, WarrantyCaseId: `{warrantyCaseId}` is cancelled."));
+                }
+                return new Result<Unit, IFailure>(Unit.Value);
+            }
+            catch (Exception e)
+            {
+                return new Result<Unit, IFailure>(
+                    new GetWarrantyCaseVerificationFailure(
+                        e.Message,
+                        isNotFound: false));
+            }
+        }
+
+        public async Task<Result<WarrantyProof, GetWarrantyProofFailure>> GetWarrantyProof(
+            Guid requestId)
+        {
+            try
+            {
+                var warrantyProof = await ComprehensiveDataDbContext.WarrantyProof
+                    .Where(p => p.RequestId == requestId)
+                    .SingleOrDefaultAsync();
+                if (warrantyProof is null)
+                {
+                    return new Result<WarrantyProof, GetWarrantyProofFailure>(
+                        new GetWarrantyProofFailure(
+                            $"There is no warrantyProof of RequestId: `{requestId}`.",
+                            isNotFound: true));
+                }
+                return new Result<WarrantyProof, GetWarrantyProofFailure>(warrantyProof);
+            }
+            catch (Exception e)
+            {
+                return new Result<WarrantyProof, GetWarrantyProofFailure>(
+                    new GetWarrantyProofFailure(
+                        e.Message,
+                        isNotFound: false));
+            }
+        }
     }
 }

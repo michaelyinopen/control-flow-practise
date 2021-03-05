@@ -13,6 +13,8 @@ namespace ControlFlowPractise.Common
         GetExternalPartyRequestFailure,
         SaveExternalPartyResponseFailure,
         GetExternalPartyResponseFailure,
+        SaveWarrantyProofFailure,
+        GetWarrantyProofFailure,
         ResponseValidationFailure,
         ResponseConversionFailure,
         SaveWarrantyCaseVerificationFailure,
@@ -21,6 +23,7 @@ namespace ControlFlowPractise.Common
         ServiceNotAvailableFailure,
         InvalidRequestFailure,
         WarrantyServiceInternalErrorFailure,
+        WarrantyCaseCancelledFailure,
         // VerifyBeforeCommitFailure
     }
 
@@ -101,6 +104,28 @@ namespace ControlFlowPractise.Common
         public string Message { get; }
         public bool IsNotFound { get; }
         public GetExternalPartyResponseFailure(string message, bool isNotFound)
+        {
+            Message = message;
+            IsNotFound = isNotFound;
+        }
+    }
+
+    public class SaveWarrantyProofFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.SaveWarrantyProofFailure;
+        public string Message { get; }
+        public SaveWarrantyProofFailure(string message)
+        {
+            Message = message;
+        }
+    }
+
+    public class GetWarrantyProofFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.GetWarrantyProofFailure;
+        public string Message { get; }
+        public bool IsNotFound { get; }
+        public GetWarrantyProofFailure(string message, bool isNotFound)
         {
             Message = message;
             IsNotFound = isNotFound;
@@ -193,4 +218,14 @@ namespace ControlFlowPractise.Common
         }
     }
     #endregion external party returned error
+
+    public class WarrantyCaseCancelledFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.WarrantyCaseCancelledFailure;
+        public string Message { get; }
+        public WarrantyCaseCancelledFailure(string message)
+        {
+            Message = message;
+        }
+    }
 }

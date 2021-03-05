@@ -11,7 +11,7 @@ namespace ControlFlowPractise.BudgetData
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ExternalPartyRequest
+            #region ExternalPartyRequest
             modelBuilder
                 .Entity<ExternalPartyRequest>()
                 .Property(req => req.DateTime)
@@ -30,8 +30,9 @@ namespace ControlFlowPractise.BudgetData
                 .Entity<ExternalPartyRequest>()
                 .HasIndex(req => new { req.OrderId, req.RequestId })
                 .IsUnique();
+            #endregion ExternalPartyRequest
 
-            // ExternalPartyResponse
+            #region ExternalPartyResponse
             modelBuilder
                 .Entity<ExternalPartyResponse>()
                 .Property(req => req.DateTime)
@@ -48,8 +49,9 @@ namespace ControlFlowPractise.BudgetData
 
             modelBuilder
                 .Entity<ExternalPartyResponse>()
-                .HasIndex(req => new { req.OrderId, req.RequestId })
+                .HasIndex(res => new { res.OrderId, res.RequestId })
                 .IsUnique();
+            #endregion ExternalPartyResponse
         }
 
         public BudgetDataDbContext(DbContextOptions<BudgetDataDbContext> options)

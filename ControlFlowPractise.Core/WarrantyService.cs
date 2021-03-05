@@ -4,6 +4,7 @@ using ControlFlowPractise.Common.ControlFlow;
 using ControlFlowPractise.ComprehensiveData.Models;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core
@@ -40,6 +41,7 @@ namespace ControlFlowPractise.Core
         private ResponseValidator ResponseValidator { get; }
         private ResponseConverter ResponseConverter { get; }
 
+        #region Verify
         // generates requestId
         //
         // todo handle cases where PerformVerifyAction is successful, but ConformanceIndicator/CaseStatus doe not meet requirement for success
@@ -66,7 +68,7 @@ namespace ControlFlowPractise.Core
             return verifyWarrantyCaseResponse;
         }
 
-        // success means called Thrid Party, saved raw request and raw response, and returns a converted response
+        // success means called Thrid Party, saved raw request and raw response, (and saved warrantyProof), and returns a converted response
         // ---
         // anything here after SaveExternalPartyResponse in BudgetDatabase should be pure (non-deterministic and no side-effect)
         // so that the saved ExternalPartyResponse can be a source of truth
@@ -115,7 +117,20 @@ namespace ControlFlowPractise.Core
                 return new Result<WarrantyCaseResponse, IFailure>(convertResponse.Failure!);
             var convertedResponse = convertResponse.Success!;
 
-            // save warranty proof
+            if (convertedResponse.Operation == WarrantyCaseOperation.Commit
+                && convertedResponse.WarrantyCaseStatus == WarrantyCaseStatus.Committed)
+            {
+                var saveWarrantyProof = await ComprehensiveDataWrapper.SaveWarrantyProof(
+                    new WarrantyProof(
+                        orderId: request.OrderId,
+                        warrantyCaseId: convertedResponse.WarrantyCaseId,
+                        proof: rawResponse.Body!.OrderReports.Single().WarrantyProof!)
+                    {
+                        RequestId = requestId,
+                    });
+                if (!saveWarrantyProof.IsSuccess)
+                    return new Result<WarrantyCaseResponse, IFailure>(saveWarrantyProof.Failure!);
+            }
 
             return new Result<WarrantyCaseResponse, IFailure>(convertedResponse);
         }
@@ -132,7 +147,9 @@ namespace ControlFlowPractise.Core
                 var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
                 {
                     Operation = request.Operation,
+                    WarrantyCaseStatus = warrantyCaseResponse.WarrantyCaseStatus,
                     RequestId = requestId,
+                    WarrantyCaseId = warrantyCaseResponse.WarrantyCaseId,
                     CalledExternalParty = true,
                     CalledWithResponse = true,
                     ResponseHasNoError = true,
@@ -159,6 +176,7 @@ namespace ControlFlowPractise.Core
                 {
                     Operation = request.Operation,
                     RequestId = requestId,
+                    WarrantyCaseId = request.WarrantyCaseId,
                     CalledExternalParty = calledExternalParty,
                     CalledWithResponse = calledWithResponse,
                     ResponseHasNoError = responseHasNoError,
@@ -235,8 +253,9 @@ namespace ControlFlowPractise.Core
                 case WarrantyCaseOperation.Verify:
                     return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
                 case WarrantyCaseOperation.Commit:
-                    if (response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
-                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed)
+                    if (response.Conformance
+                        && (response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+                            || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed))
                     {
                         return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
                     }
@@ -259,33 +278,88 @@ namespace ControlFlowPractise.Core
                     throw new InvalidOperationException();
             }
         }
+        #endregion Verify
 
-        // todo add type for GetCurrentWarrantyCaseVerificationResponse
-        public async Task<Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>> GetCurrentWarrantyCaseVerification(string orderId)
+        public async Task<GetCurrentWarrantyCaseVerificationResponse> GetCurrentWarrantyCaseVerification(string orderId)
         {
             var warrantyCaseVerificationResult = await ComprehensiveDataWrapper.GetCurrentWarrantyCaseVerification(orderId);
             if (!warrantyCaseVerificationResult.IsSuccess)
-                return new Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>(warrantyCaseVerificationResult.Failure!);
+            {
+                var failure = warrantyCaseVerificationResult.Failure!;
+                return new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsFound = !failure.IsNotFound,
+                    FailureType = failure.FailureType,
+                    FailureMessage = failure.Message
+                };
+            }
             var warrantyCaseVerification = warrantyCaseVerificationResult.Success!;
 
             try
             {
                 var warrantyCaseResponse = JsonConvert.DeserializeObject<WarrantyCaseResponse>(
                     warrantyCaseVerification.ConvertedResponse!);
-                return new Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>(warrantyCaseResponse);
+                return new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsFound = true,
+                    WarrantyCaseResponse = warrantyCaseResponse
+                };
             }
             catch (JsonException)
             {
-                return new Result<WarrantyCaseResponse, GetWarrantyCaseVerificationFailure>(
-                    new GetWarrantyCaseVerificationFailure(
-                        $"VerificationResult of OrderId: `{orderId}` has cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`.",
-                        isNotFound: false));
+                return new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsFound = false,
+                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
+                    FailureMessage =
+                        $"VerificationResult of OrderId: `{orderId}` has cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`."
+                };
             }
         }
 
-        public async Task<Result<WarrantyProof, IFailure>> GetWarrantyProof(string orderId)
+        public async Task<GetWarrantyProofResponse> GetWarrantyProof(string orderId)
         {
-            throw new NotImplementedException();
+            var getWarrantyProofResult = await GetWarrantyProofResult(orderId);
+            if (!getWarrantyProofResult.IsSuccess)
+            {
+                var failure = getWarrantyProofResult.Failure!;
+                return new GetWarrantyProofResponse(orderId)
+                {
+                    IsSuccess = false,
+                    FailureType = failure.FailureType,
+                    FailureMessage = failure.Message,
+                };
+            }
+            var warrantyProofResponse = getWarrantyProofResult.Success!;
+            return warrantyProofResponse;
+        }
+
+        internal async Task<Result<GetWarrantyProofResponse, IFailure>> GetWarrantyProofResult(string orderId)
+        {
+            var latestWarrantyCaseCommitResult = await ComprehensiveDataWrapper.GetLatestWarrantyCaseCommit(orderId);
+            if (!latestWarrantyCaseCommitResult.IsSuccess)
+                return new Result<GetWarrantyProofResponse, IFailure>(latestWarrantyCaseCommitResult.Failure!);
+            var latestWarrantyCaseCommit = latestWarrantyCaseCommitResult.Success!;
+
+            var isWarrantyCaseCancelledResult = await ComprehensiveDataWrapper.IsWarrantyCaseCancelled(
+                orderId: orderId,
+                warrantyCaseId: latestWarrantyCaseCommit.WarrantyCaseId!);
+            if (!isWarrantyCaseCancelledResult.IsSuccess)
+                return new Result<GetWarrantyProofResponse, IFailure>(isWarrantyCaseCancelledResult.Failure!);
+
+            var getWarrantyProofResult = await ComprehensiveDataWrapper.GetWarrantyProof(latestWarrantyCaseCommit.RequestId);
+            if (!getWarrantyProofResult.IsSuccess)
+                return new Result<GetWarrantyProofResponse, IFailure>(getWarrantyProofResult.Failure!);
+            var warrantyProof = getWarrantyProofResult.Success!;
+
+            return new Result<GetWarrantyProofResponse, IFailure>(
+                new GetWarrantyProofResponse(orderId)
+                {
+                    IsSuccess = true,
+                    WarrantyCaseId = latestWarrantyCaseCommit.WarrantyCaseId,
+                    RequestId = latestWarrantyCaseCommit.RequestId,
+                    WarrantyProof = warrantyProof.Proof
+                });
         }
     }
 }

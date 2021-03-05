@@ -97,6 +97,8 @@ conformance indicator = conformance messages, level error warning information
 
 Warranties the entire order, not individual products
 
+WarrantyProof returned in response of commit
+
 # Design
 
 ## Project structure
@@ -158,6 +160,13 @@ Saving raw request and raw response are write only operations, and will not be c
 Raw request and raw resposne can be correlated by requestId.\
 Concurrency will be last write wins.
 
+WarrantyProof also log style.\
+Steps to get warranty proof
+
+1. Get WarrantyCaseVerification of last commit
+2. Verify that there are no cancels after that last commit
+3. Get wararanty proof from RequestId
+
 ### Test uses localDb
 need to be able to create localDb for the tests
 
@@ -169,6 +178,9 @@ need to be able to create localDb for the tests
 
 # todo
 
-add index to databases
-naming warranty request/ external party request
+- add index to databases\
+https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter
+- naming warranty request/ external party request
+- failure messages
+- check GetCurrentWarrantyCaseVerification filters logic
 
