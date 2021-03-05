@@ -1,6 +1,5 @@
 ﻿using ControlFlowPractise.Common;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ControlFlowPractise.ComprehensiveData.Models
 {
@@ -16,7 +15,6 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public WarrantyCaseOperation Operation { get; set; } // add index?
 
-        //check ef core exclude null, in multiple column unique index
         public WarrantyCaseStatus? WarrantyCaseStatus { get; set; } // add index?
 
         public Guid RequestId { get; set; }

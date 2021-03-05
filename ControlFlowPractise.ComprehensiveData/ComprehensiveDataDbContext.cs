@@ -35,6 +35,40 @@ namespace ControlFlowPractise.ComprehensiveData
                 .HasConversion(
                     v => v,
                     v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+            modelBuilder
+                .Entity<WarrantyCaseVerification>()
+                .HasIndex(w => new
+                {
+                    w.OrderId,
+                    w.ResponseHasNoError,
+                    w.FailureType,
+                    w.DateTime
+                });
+
+            modelBuilder
+                .Entity<WarrantyCaseVerification>()
+                .HasIndex(w => new
+                {
+                    w.OrderId,
+                    w.ResponseHasNoError,
+                    w.FailureType,
+                    w.Operation,
+                    w.WarrantyCaseStatus,
+                    w.DateTime
+                });
+
+            modelBuilder
+                .Entity<WarrantyCaseVerification>()
+                .HasIndex(w => new
+                {
+                    w.OrderId,
+                    w.WarrantyCaseStatus,
+                    w.ResponseHasNoError,
+                    w.FailureType,
+                    w.WarrantyCaseId,
+                    w.Operation,
+                });
             #endregion WarrantyCaseVerification
 
             #region WarrantyProof

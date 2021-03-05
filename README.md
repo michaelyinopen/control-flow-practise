@@ -13,8 +13,7 @@
     2. Convert response
 8. Save converted response
 9. Return http response
-10. (Reconcille service)
-11. daily report?
+10. daily error report?
 
 ## Error handling
 How to handle error at each step
@@ -180,7 +179,10 @@ need to be able to create localDb for the tests
 
 - add index to databases\
 https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter
+https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#included-columns
 - naming warranty request/ external party request
 - failure messages
 - check GetCurrentWarrantyCaseVerification filters logic
 
+# Useful
+https://www.brentozar.com/archive/2018/04/index-key-column-order-and-supporting-sorts/
