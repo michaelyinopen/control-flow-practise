@@ -11,7 +11,7 @@ namespace ControlFlowPractise.ExternalParty
         public Task<WarrantyResponse> Call(WarrantyRequest request);
     }
 
-    public class ExternalPartyProxy
+    public class ExternalPartyProxy : IExternalPartyProxy
     {
         public async Task<WarrantyResponse> Call(WarrantyRequest request)
         {

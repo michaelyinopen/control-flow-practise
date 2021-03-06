@@ -9,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core
 {
-    // add extension method for DI registration of this service
-    public class WarrantyService
+    public interface IWarrantyService
+    {
+        Task<GetCurrentWarrantyCaseVerificationResponse> GetCurrentWarrantyCaseVerification(string orderId);
+        Task<GetWarrantyProofResponse> GetWarrantyProof(string orderId);
+        Task<VerifyWarrantyCaseResponse> Verify(VerifyWarrantyCaseRequest request);
+    }
+
+    public class WarrantyService : IWarrantyService
     {
         internal WarrantyService(
             FailureClassification failureClassification,

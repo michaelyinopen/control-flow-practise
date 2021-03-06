@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -19,6 +19,7 @@
     <ProjectReference Include="..\ControlFlowPractise.BudgetData\ControlFlowPractise.BudgetData.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.ComprehensiveData\ControlFlowPractise.ComprehensiveData.csproj" />
     <ProjectReference Include="..\ControlFlowPractise.Core\ControlFlowPractise.Core.csproj" />
+    <ProjectReference Include="..\ControlFlowPractise.ExternalParty\ControlFlowPractise.ExternalParty.csproj" />
   </ItemGroup>
 
 </Project>

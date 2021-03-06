@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ControlFlowPractise.BudgetData;
 using ControlFlowPractise.ComprehensiveData;
+using ControlFlowPractise.ExternalParty;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using static ControlFlowPractise.Core.ServiceCollectionExtensions;
 
 namespace ControlFlowPractise.Api
 {
@@ -28,10 +30,15 @@ namespace ControlFlowPractise.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BudgetDataDbContext>(options =>
+            services.AddDbContextPool<BudgetDataDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("BudgetDataDb")));
-            services.AddDbContext<ComprehensiveDataDbContext>(options =>
+            services.AddDbContextPool<ComprehensiveDataDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ComprehensiveDataDb")));
+
+            services.AddScoped<IExternalPartyProxy, ExternalPartyProxy>();
+
+            services.AddWarrantyService();
+
             services.AddControllers();
         }
 
