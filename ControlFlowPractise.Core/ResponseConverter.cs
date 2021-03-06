@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace ControlFlowPractise.Core
 {
@@ -30,16 +29,18 @@ namespace ControlFlowPractise.Core
                     WarrantyCaseStatus = WarrantyCaseStatusMap[warrantyResponse.Body!.CaseStatus],
                     Conformance = ConformanceIndicatorMap[warrantyResponse.Body!.ConformanceIndicator],
                 };
-                var orderReport = warrantyResponse.Body?.OrderReports.Single();
-                warrantyCaseResponse.WarrantyEstimatedAmount = orderReport?.WarrantyEstimatedAmount;
-                warrantyCaseResponse.WarrantyAmount = orderReport?.WarrantyAmount;
-                warrantyCaseResponse.ConformanceMessages = orderReport?.ConformanceMessages
-                    .Select(m => new WarrantyConformanceMessage(m.Message)
-                    {
-                        Level = WarrantyConformanceLevelMap[m.Level]
-                    })
-                    .ToList()
-                    ?? new List<WarrantyConformanceMessage>();
+                if (warrantyResponse.Body!.CaseStatus != CaseStatus.Cancelled)
+                {
+                    var orderReport = warrantyResponse.Body!.OrderReports.Single();
+                    warrantyCaseResponse.WarrantyEstimatedAmount = orderReport.WarrantyEstimatedAmount;
+                    warrantyCaseResponse.WarrantyAmount = orderReport.WarrantyAmount;
+                    warrantyCaseResponse.ConformanceMessages = orderReport.ConformanceMessages
+                        .Select(m => new WarrantyConformanceMessage(m.Message)
+                        {
+                            Level = WarrantyConformanceLevelMap[m.Level]
+                        })
+                        .ToList();
+                }
                 return new Result<WarrantyCaseResponse, IFailure>(warrantyCaseResponse);
             }
             catch (Exception e)
