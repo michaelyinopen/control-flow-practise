@@ -13,7 +13,6 @@
     2. Convert response
 8. Save converted response
 9. Return http response
-10. daily error report?
 
 ## Error handling
 How to handle error at each step
@@ -63,6 +62,7 @@ Endpoints to read data
 4. Compliance/Case Status
 5. Operation
 6. commit sends more info and saves additional info separately
+7. Daily error report
 
 ## Story
 Buying a machine, ask for the price of the warranty\
