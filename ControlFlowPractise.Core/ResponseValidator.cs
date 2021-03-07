@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace ControlFlowPractise.Core
 {
@@ -16,7 +15,7 @@ namespace ControlFlowPractise.Core
     // conformanceIndicator NO or
     // ConformanceIndicator/CaseStatus doe not meet requirement for success
     // could still be valid responses
-    internal class ResponseValidator
+    public class ResponseValidator
     {
         public ResponseValidator(IValidator<ValidatableResponse> validator)
         {
@@ -67,7 +66,7 @@ namespace ControlFlowPractise.Core
                     $"Response of RequestId: `{requestId}` failed validation:" + Environment.NewLine + errorMessages));
         }
 
-        internal class ValidatableResponse
+        public class ValidatableResponse
         {
             public ValidatableResponse(
                 VerifyWarrantyCaseRequest request,
@@ -83,7 +82,7 @@ namespace ControlFlowPractise.Core
             public WarrantyResponse WarrantyResponse { get; set; }
         }
 
-        internal class ValidatableResponseValidator : AbstractValidator<ValidatableResponse>
+        public class ValidatableResponseValidator : AbstractValidator<ValidatableResponse>
         {
             public ValidatableResponseValidator()
             {

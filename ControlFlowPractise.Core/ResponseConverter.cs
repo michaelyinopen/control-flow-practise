@@ -12,7 +12,7 @@ namespace ControlFlowPractise.Core
     // from VerifyWarrantyCaseRequest (from http request)
     // and requestId (generated in WarrantyService)
     // and WarrantyResponse (response from External Party)
-    internal class ResponseConverter
+    public class ResponseConverter
     {
         public Result<WarrantyCaseResponse, IFailure> Convert(
             VerifyWarrantyCaseRequest request,

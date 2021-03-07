@@ -9,8 +9,8 @@ namespace ControlFlowPractise.Data.Tests
         public BudgetDatabaseFixture()
         {
             DbContextOptions = new DbContextOptionsBuilder<BudgetDataDbContext>()
-                  .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestBudgetDataDb")
-                  .Options;
+                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestBudgetDataDb")
+                .Options;
 
             using var context = new BudgetDataDbContext(DbContextOptions);
             context.Database.Migrate();

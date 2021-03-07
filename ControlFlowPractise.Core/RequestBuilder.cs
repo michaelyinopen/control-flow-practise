@@ -10,7 +10,7 @@ namespace ControlFlowPractise.Core
     // from VerifyWarrantyCaseRequest (from http request)
     // and requestId (generated in WarrantyService)
     // this is a builder that has no internal state
-    internal class RequestBuilder
+    public class RequestBuilder
     {
         public Result<WarrantyRequest, RequestConversionFailure> Build(
             VerifyWarrantyCaseRequest verifyWarrantyCaseRequest,

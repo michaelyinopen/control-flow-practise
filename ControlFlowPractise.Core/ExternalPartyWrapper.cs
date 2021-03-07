@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core
 {
-    internal class ExternalPartyWrapper
+    public class ExternalPartyWrapper
     {
         public ExternalPartyWrapper(IExternalPartyProxy externalPartyProxy)
         {

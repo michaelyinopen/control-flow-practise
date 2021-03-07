@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core
 {
-    internal class BudgetDataWrapper
+    public class BudgetDataWrapper
     {
-        internal BudgetDataWrapper(
+        public BudgetDataWrapper(
             BudgetDataDbContext budgetDataDbContext)
         {
             BudgetDataDbContext = budgetDataDbContext;

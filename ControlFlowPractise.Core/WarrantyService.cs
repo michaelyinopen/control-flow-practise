@@ -18,7 +18,7 @@ namespace ControlFlowPractise.Core
 
     public class WarrantyService : IWarrantyService
     {
-        internal WarrantyService(
+        public WarrantyService(
             FailureClassification failureClassification,
             ComprehensiveDataWrapper comprehensiveDataWrapper,
             BudgetDataWrapper budgetDataWrapper,

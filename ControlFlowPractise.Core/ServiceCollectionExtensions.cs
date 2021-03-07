@@ -5,7 +5,6 @@ namespace ControlFlowPractise.Core
 {
     public static class ServiceCollectionExtensions
     {
-
         /// <summary>
         /// Consumer has to register BudgetDataDbContext, ComprehensiveDataDbContext and IExternalPartyProxy
         /// </summary>
@@ -15,8 +14,8 @@ namespace ControlFlowPractise.Core
             services.AddValidatorsFromAssemblyContaining<VerifyWarrantyCaseRequestValidator>(ServiceLifetime.Singleton);
 
             services.AddSingleton<FailureClassification>();
-            services.AddScoped<ComprehensiveDataWrapper>();
             services.AddScoped<BudgetDataWrapper>();
+            services.AddScoped<ComprehensiveDataWrapper>();
             services.AddSingleton<RequestValidator>();
             services.AddSingleton<RequestBuilder>();
             services.AddScoped<ExternalPartyWrapper>();

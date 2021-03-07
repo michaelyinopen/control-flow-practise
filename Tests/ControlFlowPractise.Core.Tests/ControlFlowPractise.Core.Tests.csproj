@@ -24,7 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ControlFlowPractise.Common\ControlFlowPractise.Common.csproj" />
     <ProjectReference Include="..\..\ControlFlowPractise.Core\ControlFlowPractise.Core.csproj" />
+    <ProjectReference Include="..\..\ControlFlowPractise.ExternalParty\ControlFlowPractise.ExternalParty.csproj" />
   </ItemGroup>
 
   <ItemGroup>

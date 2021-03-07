@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core
 {
-    internal class ComprehensiveDataWrapper
+    public class ComprehensiveDataWrapper
     {
-        internal ComprehensiveDataWrapper(
+        public ComprehensiveDataWrapper(
             ComprehensiveDataDbContext comprehensiveDataDbContext)
         {
             ComprehensiveDataDbContext = comprehensiveDataDbContext;

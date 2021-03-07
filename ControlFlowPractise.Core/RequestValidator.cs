@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ControlFlowPractise.Core
 {
-    internal class RequestValidator
+    public class RequestValidator
     {
         public RequestValidator(IValidator<VerifyWarrantyCaseRequest> validator)
         {
@@ -29,7 +29,7 @@ namespace ControlFlowPractise.Core
         }
     }
 
-    internal class VerifyWarrantyCaseRequestValidator : AbstractValidator<VerifyWarrantyCaseRequest>
+    public class VerifyWarrantyCaseRequestValidator : AbstractValidator<VerifyWarrantyCaseRequest>
     {
         public VerifyWarrantyCaseRequestValidator()
         {

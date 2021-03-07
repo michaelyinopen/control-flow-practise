@@ -9,8 +9,8 @@ namespace ControlFlowPractise.Data.Tests
         public ComprehensiveDatabaseFixture()
         {
             DbContextOptions = new DbContextOptionsBuilder<ComprehensiveDataDbContext>()
-                  .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb")
-                  .Options;
+                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb")
+                .Options;
 
             using var context = new ComprehensiveDataDbContext(DbContextOptions);
             context.Database.Migrate();

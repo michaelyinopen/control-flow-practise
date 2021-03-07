@@ -3,9 +3,9 @@ using System;
 
 namespace ControlFlowPractise.Core
 {
-    internal class FailureClassification
+    public class FailureClassification
     {
-        internal bool CalledExternalParty(IFailure failure)
+        public bool CalledExternalParty(IFailure failure)
         {
             return failure switch
             {
@@ -22,7 +22,7 @@ namespace ControlFlowPractise.Core
             };
         }
 
-        internal bool CalledWithResponse(IFailure failure)
+        public bool CalledWithResponse(IFailure failure)
         {
             return failure switch
             {
@@ -38,7 +38,7 @@ namespace ControlFlowPractise.Core
             };
         }
 
-        internal bool ResponseHasNoError(IFailure failure)
+        public bool ResponseHasNoError(IFailure failure)
         {
             return failure switch
             {
