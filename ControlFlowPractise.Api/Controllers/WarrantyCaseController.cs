@@ -22,19 +22,19 @@ namespace ControlFlowPractise.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<GetCurrentWarrantyCaseVerificationResponse> Get(string orderId)
+        public async Task<GetCurrentWarrantyCaseVerificationResponse> GetCurrentWarrantyCaseVerification([FromQuery] string orderId)
         {
             return await _warrantyService.GetCurrentWarrantyCaseVerification(orderId);
         }
 
-        //[HttpPost]
-        //public async Task<VerifyWarrantyCaseResponse> Get(string orderId)
-        //{
-        //    return await _warrantyService.GetCurrentWarrantyCaseVerification(orderId);
-        //}
+        [HttpPost]
+        public async Task<VerifyWarrantyCaseResponse> Verify([FromBody] VerifyWarrantyCaseRequest request)
+        {
+            return await _warrantyService.Verify(request);
+        }
 
         [HttpGet("warranty-proof")]
-        public async Task<GetWarrantyProofResponse> GetWarrantyProof(string orderId)
+        public async Task<GetWarrantyProofResponse> GetWarrantyProof([FromQuery] string orderId)
         {
             return await _warrantyService.GetWarrantyProof(orderId);
         }

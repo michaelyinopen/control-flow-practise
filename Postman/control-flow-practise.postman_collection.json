@@ -55,6 +55,34 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Verify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": \"1\",\r\n    \"operation\": \"Create\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:54208/warranty-case",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54208",
+					"path": [
+						"warranty-case"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
