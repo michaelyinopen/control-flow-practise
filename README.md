@@ -27,9 +27,9 @@ Failure after called external party will have requestId
 
 Whether of not a request is successful, depends on the updated CaseStatus of response.
 
-E.g. 1 updating order to some wrong information, will change complianceIndicator to `No`, CaseStatus will revert to `Claimed`
+E.g. 1 updating order to some wrong information, will change complianceIndicator to `NO`, CaseStatus will revert to `Claimed`
 
-E.g. 2 attempt to Commit with wrong date, will respond with complianceIndicator `Yes` and CaseStatus remains at `Certified`. However, CaseStatus does not progress to Committed.
+E.g. 2 attempt to Commit with wrong date, will respond with complianceIndicator `YES` and CaseStatus remains at `Certified`. However, CaseStatus does not progress to Committed.
 
 Each action will have its expected response, if unsatisfied, means the http request overall is a failure.
 
@@ -92,7 +92,7 @@ and each order only has one product
 - Cancel
 
 Header, body
-conformance indicator = conformance messages, level error warning information
+conformance indicator = conformance messages, level: error, warning, information
 
 Warranties the entire order, not individual products
 
@@ -130,6 +130,7 @@ Just use `Result` and `Unit`. Yes, the maps, binds are missing, and code is impe
 
 Violating some core principles of Functional Programming, because this way is easy(familiar).
 
+## Success Condition
 There could be cases where successful response, but expected `Indicator` and `CaseStatus` does not meet the condition for success, therefore overall is a failure. Need a way to represent this. (Failure with VerifyWarrantyCaseResponse as a property?)
 
 Http response structure
@@ -175,11 +176,11 @@ need to be able to create localDb for the tests
 3. `Add-Migration <name> -Context ComprehensiveDataDbContext`
 4. how to apply migration??
 
+## Test with Postman
+Import `control-flow-practise\Postman\control-flow-practise.postman_collection.json` to postman, launch Api and make requests.
+
 # todo
 
-- add index to databases\
-https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter
-https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#included-columns
 - naming warranty request/ external party request
 - failure messages
 - check GetCurrentWarrantyCaseVerification filters logic

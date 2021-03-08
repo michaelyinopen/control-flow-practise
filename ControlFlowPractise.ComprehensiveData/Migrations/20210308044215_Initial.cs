@@ -59,11 +59,6 @@ namespace ControlFlowPractise.ComprehensiveData.Migrations
                 columns: new[] { "OrderId", "ResponseHasNoError", "FailureType", "Operation", "WarrantyCaseStatus", "DateTime" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_WarrantyCaseVerification_OrderId_WarrantyCaseStatus_ResponseHasNoError_FailureType_WarrantyCaseId_Operation",
-                table: "WarrantyCaseVerification",
-                columns: new[] { "OrderId", "WarrantyCaseStatus", "ResponseHasNoError", "FailureType", "WarrantyCaseId", "Operation" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WarrantyProof_RequestId",
                 table: "WarrantyProof",
                 column: "RequestId",

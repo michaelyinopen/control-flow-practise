@@ -57,18 +57,6 @@ namespace ControlFlowPractise.ComprehensiveData
                     w.WarrantyCaseStatus,
                     w.DateTime
                 });
-
-            modelBuilder
-                .Entity<WarrantyCaseVerification>()
-                .HasIndex(w => new
-                {
-                    w.OrderId,
-                    w.WarrantyCaseStatus,
-                    w.ResponseHasNoError,
-                    w.FailureType,
-                    w.WarrantyCaseId,
-                    w.Operation,
-                });
             #endregion WarrantyCaseVerification
 
             #region WarrantyProof

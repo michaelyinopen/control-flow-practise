@@ -11,9 +11,9 @@ namespace ControlFlowPractise.Core
 {
     public interface IWarrantyService
     {
+        Task<VerifyWarrantyCaseResponse> Verify(VerifyWarrantyCaseRequest request);
         Task<GetCurrentWarrantyCaseVerificationResponse> GetCurrentWarrantyCaseVerification(string orderId);
         Task<GetWarrantyProofResponse> GetWarrantyProof(string orderId);
-        Task<VerifyWarrantyCaseResponse> Verify(VerifyWarrantyCaseRequest request);
     }
 
     public class WarrantyService : IWarrantyService
@@ -352,12 +352,6 @@ namespace ControlFlowPractise.Core
             if (!latestWarrantyCaseCommitResult.IsSuccess)
                 return new Result<GetWarrantyProofResponse, IFailure>(latestWarrantyCaseCommitResult.Failure!);
             var latestWarrantyCaseCommit = latestWarrantyCaseCommitResult.Success!;
-
-            var isWarrantyCaseCancelledResult = await ComprehensiveDataWrapper.IsWarrantyCaseCancelled(
-                orderId: orderId,
-                warrantyCaseId: latestWarrantyCaseCommit.WarrantyCaseId!);
-            if (!isWarrantyCaseCancelledResult.IsSuccess)
-                return new Result<GetWarrantyProofResponse, IFailure>(isWarrantyCaseCancelledResult.Failure!);
 
             var getWarrantyProofResult = await ComprehensiveDataWrapper.GetWarrantyProof(latestWarrantyCaseCommit.RequestId);
             if (!getWarrantyProofResult.IsSuccess)

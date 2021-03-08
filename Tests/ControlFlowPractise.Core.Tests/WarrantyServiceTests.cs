@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ControlFlowPractise.Core.Tests
@@ -31,6 +32,67 @@ namespace ControlFlowPractise.Core.Tests
         public void CanCreateWarrantyService()
         {
             var warrantyService = GetWarrantyService();
+        }
+
+        [Trait("accessibility", "public")]
+        [Fact]
+        public async Task Verify()
+        {
+            var warrantyService = GetWarrantyService();
+            // request validation error, immidiately returns, assert response
+            // saves built request in budget database
+            // calls external party
+            // returns networkfailure
+            // saves raw response in budget database
+
+            // validate response
+            // fail because WarrantyResponseErrors
+            // fail because other validation error
+            // success
+            // Operation: Create, Verify, Commit, Cancel
+            // Commit sends OrderTrackingNumber
+
+            // saves warrantyProof if successful commit
+
+            // saves VerifyWarrantyCaseResponse in comprehensive database
+            // success
+            // failure
+
+            // saves VerifyWarrantyCaseResponse failure
+
+            // check SatisfySuccessfulCondition
+            // isSuccess
+            // isSuccess = false but has WarrantyCaseResponse
+            // isSuccess = false and no WarrantyCaseResponse
+        }
+
+        [Trait("accessibility", "public")]
+        [Fact]
+        public async Task GetCurrentWarrantyCaseVerification()
+        {
+            var warrantyService = GetWarrantyService();
+            // not found (failure type + IsNotFound)
+            // found: not choose other orders (orderId)
+            // found: last dateTime
+            // found: ResponseHasNoError
+            // found: no failure
+            // Operation: Create, Verify, Commit, Cancel
+            // deserializeResponse: success
+            // deserializeResponse: fail
+        }
+
+        [Trait("accessibility", "public")]
+        [Fact]
+        public async Task GetWarrantyProof()
+        {
+            var warrantyService = GetWarrantyService();
+            // WarrantyCaseVerification no Commit found (failure type + IsNotFound)
+            // ignore failure commits
+            // ignore commits that are not successful (caseStatus did not update to committed)
+            // WarrantyCaseVerification not found (failure type + IsNotFound)
+
+            // Warranty Proof found
+            // Warranty Proof not found
         }
 
         public void Dispose()

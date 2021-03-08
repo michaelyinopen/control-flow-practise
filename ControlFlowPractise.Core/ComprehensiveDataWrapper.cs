@@ -117,37 +117,6 @@ namespace ControlFlowPractise.Core
             }
         }
 
-        public async Task<Result<Unit, IFailure>> IsWarrantyCaseCancelled(
-            string orderId,
-            string warrantyCaseId)
-        {
-            try
-            {
-                var isCancelled = await ComprehensiveDataDbContext.WarrantyCaseVerification
-                    .Where(v => v.OrderId == orderId)
-                    .Where(v => v.WarrantyCaseId == warrantyCaseId)
-                    .Where(v => v.ResponseHasNoError == true)
-                    .Where(v => v.FailureType == null)
-                    .Where(v => v.Operation == WarrantyCaseOperation.Cancel)
-                    .Where(v => v.WarrantyCaseStatus == WarrantyCaseStatus.Cancelled)
-                    .AnyAsync();
-                if (isCancelled)
-                {
-                    return new Result<Unit, IFailure>(
-                        new WarrantyCaseCancelledFailure(
-                            $"WarrantyCase of OrderId: `{orderId}`, WarrantyCaseId: `{warrantyCaseId}` is cancelled."));
-                }
-                return new Result<Unit, IFailure>(Unit.Value);
-            }
-            catch (Exception e)
-            {
-                return new Result<Unit, IFailure>(
-                    new GetWarrantyCaseVerificationFailure(
-                        e.Message,
-                        isNotFound: null));
-            }
-        }
-
         public async Task<Result<WarrantyProof, GetWarrantyProofFailure>> GetWarrantyProof(
             Guid requestId)
         {

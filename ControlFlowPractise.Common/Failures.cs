@@ -23,7 +23,6 @@ namespace ControlFlowPractise.Common
         ServiceNotAvailableFailure,
         InvalidRequestFailure,
         WarrantyServiceInternalErrorFailure,
-        WarrantyCaseCancelledFailure,
         // VerifyBeforeCommitFailure
     }
 
@@ -222,14 +221,4 @@ namespace ControlFlowPractise.Common
         }
     }
     #endregion external party returned error
-
-    public class WarrantyCaseCancelledFailure : IFailure
-    {
-        public FailureType FailureType { get; } = FailureType.WarrantyCaseCancelledFailure;
-        public string Message { get; }
-        public WarrantyCaseCancelledFailure(string message)
-        {
-            Message = message;
-        }
-    }
 }

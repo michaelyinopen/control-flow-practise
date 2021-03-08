@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControlFlowPractise.ComprehensiveData.Migrations
 {
     [DbContext(typeof(ComprehensiveDataDbContext))]
-    [Migration("20210306223911_Initial")]
+    [Migration("20210308044215_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,7 +63,7 @@ namespace ControlFlowPractise.ComprehensiveData.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("WarrantyCaseId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WarrantyCaseStatus")
                         .HasColumnType("nvarchar(450)");
@@ -73,8 +73,6 @@ namespace ControlFlowPractise.ComprehensiveData.Migrations
                     b.HasIndex("OrderId", "ResponseHasNoError", "FailureType", "DateTime");
 
                     b.HasIndex("OrderId", "ResponseHasNoError", "FailureType", "Operation", "WarrantyCaseStatus", "DateTime");
-
-                    b.HasIndex("OrderId", "WarrantyCaseStatus", "ResponseHasNoError", "FailureType", "WarrantyCaseId", "Operation");
 
                     b.ToTable("WarrantyCaseVerification");
                 });
