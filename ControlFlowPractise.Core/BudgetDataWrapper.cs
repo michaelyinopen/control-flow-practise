@@ -75,7 +75,7 @@ namespace ControlFlowPractise.Core
                 return new Result<ExternalPartyRequest, GetExternalPartyRequestFailure>(
                     new GetExternalPartyRequestFailure(
                         e.Message,
-                        isNotFound: false));
+                        isNotFound: null));
             }
         }
 
@@ -103,7 +103,7 @@ namespace ControlFlowPractise.Core
                 return new Result<ExternalPartyResponse, GetExternalPartyResponseFailure>(
                     new GetExternalPartyResponseFailure(
                         e.Message,
-                        isNotFound: false));
+                        isNotFound: null));
             }
         }
     }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,15 +32,24 @@ namespace ControlFlowPractise.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<BudgetDataDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("BudgetDataDb")));
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("BudgetDataDb"),
+                    providerOptions => providerOptions.EnableRetryOnFailure()));
             services.AddDbContextPool<ComprehensiveDataDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ComprehensiveDataDb")));
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("ComprehensiveDataDb"),
+                    providerOptions => providerOptions.EnableRetryOnFailure()));
 
             services.AddScoped<IExternalPartyProxy, ExternalPartyProxy>();
 
             services.AddWarrantyService();
 
-            services.AddControllers();
+            services
+                .AddControllers(options =>
+                {
+                    options.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+                })
+                .AddNewtonsoftJson(); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -244,6 +244,9 @@ namespace ControlFlowPractise.Core
                 {
                     IsSuccess = false,
                     FailureType = failure.FailureType,
+                    IsNotFound = failure is IIsNotFound isNotFoundFailure
+                        ? isNotFoundFailure.IsNotFound
+                        : null,
                     FailureMessage = failure.Message
                 };
             }
@@ -294,8 +297,10 @@ namespace ControlFlowPractise.Core
                 var failure = warrantyCaseVerificationResult.Failure!;
                 return new GetCurrentWarrantyCaseVerificationResponse
                 {
-                    IsFound = !failure.IsNotFound,
                     FailureType = failure.FailureType,
+                    IsNotFound = failure is IIsNotFound isNotFoundFailure
+                        ? isNotFoundFailure.IsNotFound
+                        : null,
                     FailureMessage = failure.Message
                 };
             }
@@ -307,7 +312,6 @@ namespace ControlFlowPractise.Core
                     warrantyCaseVerification.ConvertedResponse!);
                 return new GetCurrentWarrantyCaseVerificationResponse
                 {
-                    IsFound = true,
                     WarrantyCaseResponse = warrantyCaseResponse
                 };
             }
@@ -315,7 +319,6 @@ namespace ControlFlowPractise.Core
             {
                 return new GetCurrentWarrantyCaseVerificationResponse
                 {
-                    IsFound = false,
                     FailureType = FailureType.GetWarrantyCaseVerificationFailure,
                     FailureMessage =
                         $"VerificationResult of OrderId: `{orderId}` has cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`."
@@ -333,6 +336,9 @@ namespace ControlFlowPractise.Core
                 {
                     IsSuccess = false,
                     FailureType = failure.FailureType,
+                    IsNotFound = failure is IIsNotFound isNotFoundFailure
+                        ? isNotFoundFailure.IsNotFound
+                        : null,
                     FailureMessage = failure.Message,
                 };
             }

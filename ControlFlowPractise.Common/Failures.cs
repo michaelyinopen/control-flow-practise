@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json.Converters;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace ControlFlowPractise.Common
 {
@@ -32,6 +32,10 @@ namespace ControlFlowPractise.Common
         public FailureType FailureType { get; }
         public string Message { get; }
     }
+    public interface IIsNotFound : IFailure
+    {
+        public bool? IsNotFound { get; }
+    }
 
     #region internal failures
     public class RequestValidationFailure : IFailure
@@ -54,12 +58,12 @@ namespace ControlFlowPractise.Common
         }
     }
 
-    public class GetWarrantyCaseVerificationFailure : IFailure
+    public class GetWarrantyCaseVerificationFailure : IFailure, IIsNotFound
     {
         public FailureType FailureType { get; } = FailureType.GetWarrantyCaseVerificationFailure;
         public string Message { get; }
-        public bool IsNotFound { get; }
-        public GetWarrantyCaseVerificationFailure(string message, bool isNotFound)
+        public bool? IsNotFound { get; }
+        public GetWarrantyCaseVerificationFailure(string message, bool? isNotFound)
         {
             Message = message;
             IsNotFound = isNotFound;
@@ -76,12 +80,12 @@ namespace ControlFlowPractise.Common
         }
     }
 
-    public class GetExternalPartyRequestFailure : IFailure
+    public class GetExternalPartyRequestFailure : IFailure, IIsNotFound
     {
         public FailureType FailureType { get; } = FailureType.GetExternalPartyRequestFailure;
         public string Message { get; }
-        public bool IsNotFound { get; }
-        public GetExternalPartyRequestFailure(string message, bool isNotFound)
+        public bool? IsNotFound { get; }
+        public GetExternalPartyRequestFailure(string message, bool? isNotFound)
         {
             Message = message;
             IsNotFound = isNotFound;
@@ -98,12 +102,12 @@ namespace ControlFlowPractise.Common
         }
     }
 
-    public class GetExternalPartyResponseFailure : IFailure
+    public class GetExternalPartyResponseFailure : IFailure, IIsNotFound
     {
         public FailureType FailureType { get; } = FailureType.GetExternalPartyResponseFailure;
         public string Message { get; }
-        public bool IsNotFound { get; }
-        public GetExternalPartyResponseFailure(string message, bool isNotFound)
+        public bool? IsNotFound { get; }
+        public GetExternalPartyResponseFailure(string message, bool? isNotFound)
         {
             Message = message;
             IsNotFound = isNotFound;
@@ -120,12 +124,12 @@ namespace ControlFlowPractise.Common
         }
     }
 
-    public class GetWarrantyProofFailure : IFailure
+    public class GetWarrantyProofFailure : IFailure, IIsNotFound
     {
         public FailureType FailureType { get; } = FailureType.GetWarrantyProofFailure;
         public string Message { get; }
-        public bool IsNotFound { get; }
-        public GetWarrantyProofFailure(string message, bool isNotFound)
+        public bool? IsNotFound { get; }
+        public GetWarrantyProofFailure(string message, bool? isNotFound)
         {
             Message = message;
             IsNotFound = isNotFound;

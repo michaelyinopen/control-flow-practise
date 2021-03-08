@@ -64,7 +64,7 @@ namespace ControlFlowPractise.Core
                 return new Result<WarrantyCaseVerification, GetWarrantyCaseVerificationFailure>(
                     new GetWarrantyCaseVerificationFailure(
                         e.Message,
-                        isNotFound: false));
+                        isNotFound: null));
             }
         }
 
@@ -113,7 +113,7 @@ namespace ControlFlowPractise.Core
                 return new Result<WarrantyCaseVerification, IFailure>(
                     new GetWarrantyCaseVerificationFailure(
                         e.Message,
-                        isNotFound: false));
+                        isNotFound: null));
             }
         }
 
@@ -144,7 +144,7 @@ namespace ControlFlowPractise.Core
                 return new Result<Unit, IFailure>(
                     new GetWarrantyCaseVerificationFailure(
                         e.Message,
-                        isNotFound: false));
+                        isNotFound: null));
             }
         }
 
@@ -170,7 +170,7 @@ namespace ControlFlowPractise.Core
                 return new Result<WarrantyProof, GetWarrantyProofFailure>(
                     new GetWarrantyProofFailure(
                         e.Message,
-                        isNotFound: false));
+                        isNotFound: null));
             }
         }
     }

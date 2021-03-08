@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace ControlFlowPractise.Common
 {
@@ -15,6 +16,9 @@ namespace ControlFlowPractise.Common
         public string? WarrantyProof { get; set; }
 
         public FailureType? FailureType { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public bool? IsNotFound { get; set; }
 
         public string? FailureMessage { get; set; }
 

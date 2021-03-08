@@ -1,0 +1,60 @@
+{
+	"info": {
+		"_postman_id": "58fec6b5-9de8-4f05-972d-ce195ac54629",
+		"name": "control-flow-practise",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetCurrentWarrantyCaseVerification",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54208/warranty-case/warranty-proof?orderId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54208",
+					"path": [
+						"warranty-case",
+						"warranty-proof"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetWarrantyProof",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54208/warranty-case?orderId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54208",
+					"path": [
+						"warranty-case"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
