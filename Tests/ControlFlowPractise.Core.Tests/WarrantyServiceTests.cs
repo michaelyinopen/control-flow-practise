@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ControlFlowPractise.Common;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,9 +9,6 @@ using Xunit;
 
 namespace ControlFlowPractise.Core.Tests
 {
-    [Trait("database", "BudgetData")]
-    [Trait("database", "ComprehensiveData")]
-    [Trait("external-service", "actual")]
     public class WarrantyServiceTests : IClassFixture<WarrantyServiceTestFixture>, IDisposable
     {
         private IServiceScope ServiceScope { get; }
@@ -35,6 +34,9 @@ namespace ControlFlowPractise.Core.Tests
         }
 
         [Trait("accessibility", "public")]
+        [Trait("database", "BudgetData")]
+        [Trait("database", "ComprehensiveData")]
+        [Trait("external-service", "actual")]
         [Fact]
         public async Task Verify()
         {
@@ -66,22 +68,68 @@ namespace ControlFlowPractise.Core.Tests
             // isSuccess = false and no WarrantyCaseResponse
         }
 
+        // not found (failure type + IsNotFound)
+        // found: not choose other orders (orderId)
+        // found: last dateTime
+        // found: ResponseHasNoError
+        // found: no failure
+        // Operation: Create, Verify, Commit, Cancel
+        // deserializeResponse: success
+        // deserializeResponse: fail
         [Trait("accessibility", "public")]
-        [Fact]
-        public async Task GetCurrentWarrantyCaseVerification()
+        [Trait("database", "ComprehensiveData")]
+        [Theory]
+        [MemberData(nameof(GetCurrentWarrantyCaseVerificationTestData))]
+        public async Task GetCurrentWarrantyCaseVerification(string orderId, GetCurrentWarrantyCaseVerificationResponse expected)
         {
             var warrantyService = GetWarrantyService();
-            // not found (failure type + IsNotFound)
-            // found: not choose other orders (orderId)
-            // found: last dateTime
-            // found: ResponseHasNoError
-            // found: no failure
-            // Operation: Create, Verify, Commit, Cancel
-            // deserializeResponse: success
-            // deserializeResponse: fail
+            var actual = await warrantyService.GetCurrentWarrantyCaseVerification(orderId);
+
+            Assert.Equal(expected.FailureType, actual.FailureType);
+            Assert.Equal(expected.IsNotFound, actual.IsNotFound);
+            Assert.Equal(expected.FailureMessage is null, actual.FailureMessage is null);
+            actual.WarrantyCaseResponse.Should().BeEquivalentTo(expected.WarrantyCaseResponse);
+        }
+
+        public static IEnumerable<object[]> GetCurrentWarrantyCaseVerificationTestData()
+        {
+            yield return new object[] {
+                "get-x",
+                new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
+                    IsNotFound = true,
+                    FailureMessage = "Some failure message"
+                }
+            };
+            yield return new object[] {
+                "get-1",
+                new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    WarrantyCaseResponse = new WarrantyCaseResponse("get-1", "896")
+                    {
+                        Operation = WarrantyCaseOperation.Verify,
+                        WarrantyCaseStatus = WarrantyCaseStatus.Claimed,
+                        Conformance = false,
+                        WarrantyEstimatedAmount = 50,
+                        WarrantyAmount = null,
+                        ConformanceMessages = new List<WarrantyConformanceMessage>
+                        {
+                            new WarrantyConformanceMessage("Please wait until certified.")
+                            {
+                                Level = WarrantyConformanceLevel.Information
+                            }
+                        }
+                    },
+                    FailureType = null,
+                    IsNotFound = null,
+                    FailureMessage = null
+                }
+            };
         }
 
         [Trait("accessibility", "public")]
+        [Trait("database", "ComprehensiveData")]
         [Fact]
         public async Task GetWarrantyProof()
         {

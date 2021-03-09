@@ -321,7 +321,7 @@ namespace ControlFlowPractise.Core
                 {
                     FailureType = FailureType.GetWarrantyCaseVerificationFailure,
                     FailureMessage =
-                        $"VerificationResult of OrderId: `{orderId}` has cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`."
+                        $"VerificationResult of OrderId: `{orderId}` cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`."
                 };
             }
         }

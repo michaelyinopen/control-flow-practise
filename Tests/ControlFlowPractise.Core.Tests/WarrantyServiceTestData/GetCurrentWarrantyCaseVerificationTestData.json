@@ -1,0 +1,55 @@
+[
+  {
+    "targetTest": "GetCurrentWarrantyCaseVerification",
+    "WarrantyCaseVerificationTestDatas": [
+      {
+        "insertOrder": 1,
+        "warrantyCaseVerification": {
+          "orderId": "get-1",
+          "warrantyCaseId": "896",
+          "operation": "Create",
+          "warrantyCaseStatus": "WaitingForClaim",
+          "requestId": "6e9bf72a-8093-11eb-9439-0242ac130002",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"get-1\",\"warrantyCaseId\":\"896\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":false,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+        }
+      },
+      {
+        "insertOrder": 2,
+        "warrantyCaseVerification": {
+          "orderId": "get-1",
+          "warrantyCaseId": "896",
+          "operation": "Verify",
+          "warrantyCaseStatus": "Claimed",
+          "requestId": "19feec66-be95-44a6-aee6-4b43bb4a64b6",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"get-1\",\"warrantyCaseId\":\"896\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":false,\"warrantyEstimatedAmount\":50,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please wait until certified.\"}]}"
+        }
+      },
+      {
+        "insertOrder": 3,
+        "warrantyCaseVerification": {
+          "orderId": "get-1",
+          "warrantyCaseId": "896",
+          "operation": "Verify",
+          "warrantyCaseStatus": "Claimed",
+          "requestId": "9a464f35-9407-4564-a194-188d08034d3e",
+          "calledExternalParty": true,
+          "calledWithResponse": false,
+          "responseHasNoError": false,
+          "failureType": "NetworkFailure",
+          "failureMessage": "Failed to connect.",
+          "convertedResponse": null
+        }
+      }
+    ]
+  }
+]
