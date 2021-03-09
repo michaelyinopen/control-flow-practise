@@ -4,6 +4,8 @@ namespace ControlFlowPractise.Common
 {
     public class GetCurrentWarrantyCaseVerificationResponse
     {
+        public bool IsSuccess { get; set; }
+
         public WarrantyCaseResponse? WarrantyCaseResponse { get; set; }
 
         public FailureType? FailureType { get; set; }

@@ -11,11 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="WarrantyServiceTestData\GetCurrentWarrantyCaseVerificationTestData.json" />
+    <None Remove="WarrantyServiceTestSetups\GetCurrentWarrantyCaseVerificationSetups.json" />
+    <None Remove="WarrantyServiceTestSetups\GetWarrantyProofSetups.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="WarrantyServiceTestData\GetCurrentWarrantyCaseVerificationTestData.json" />
+    <EmbeddedResource Include="WarrantyServiceTestSetups\GetWarrantyProofSetups.json" />
+    <EmbeddedResource Include="WarrantyServiceTestSetups\GetCurrentWarrantyCaseVerificationSetups.json" />
   </ItemGroup>
 
   <ItemGroup>

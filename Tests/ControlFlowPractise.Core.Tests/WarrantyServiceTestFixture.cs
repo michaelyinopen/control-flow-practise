@@ -46,20 +46,30 @@ namespace ControlFlowPractise.Core.Tests
 
         public void InitializeDatabaseWithTestData()
         {
-            List<TestData> testData;
+            List<TestSetup> testData = new List<TestSetup>();
             var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestData.GetCurrentWarrantyCaseVerificationTestData.json")!)
+            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.GetCurrentWarrantyCaseVerificationSetups.json")!)
             using (var reader = new StreamReader(stream))
             {
                 JsonSerializer serializer = new JsonSerializer();
-                testData = (List<TestData>)serializer.Deserialize(reader, typeof(List<TestData>))!;
+                testData.AddRange(
+                    (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+            }
+            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.GetWarrantyProofSetups.json")!)
+            using (var reader = new StreamReader(stream))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                testData.AddRange(
+                    (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
             }
 
             var warrantyCaseVerificationGroups = testData
-                .SelectMany(d => d.WarrantyCaseVerificationTestDatas)
+                .SelectMany(d => d.WarrantyCaseVerificationTestSetups)
                 .GroupBy(vd => vd.InsertOrder)
                 .OrderBy(g => g.Key)
                 .ToList();
+            var warrantyProofs = testData.SelectMany(d => d.WarrantyProofs).ToList();
+
             using (var comprehensiveDbContext = ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>())
             {
                 foreach (var group in warrantyCaseVerificationGroups)
@@ -68,6 +78,8 @@ namespace ControlFlowPractise.Core.Tests
                     comprehensiveDbContext.WarrantyCaseVerification.AddRange(warrantyCaseVerifications);
                     comprehensiveDbContext.SaveChanges();
                 }
+                comprehensiveDbContext.AddRange(warrantyProofs);
+                comprehensiveDbContext.SaveChanges();
             }
         }
 

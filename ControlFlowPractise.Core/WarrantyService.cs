@@ -297,6 +297,7 @@ namespace ControlFlowPractise.Core
                 var failure = warrantyCaseVerificationResult.Failure!;
                 return new GetCurrentWarrantyCaseVerificationResponse
                 {
+                    IsSuccess = false,
                     FailureType = failure.FailureType,
                     IsNotFound = failure is IIsNotFound isNotFoundFailure
                         ? isNotFoundFailure.IsNotFound
@@ -312,6 +313,7 @@ namespace ControlFlowPractise.Core
                     warrantyCaseVerification.ConvertedResponse!);
                 return new GetCurrentWarrantyCaseVerificationResponse
                 {
+                    IsSuccess = true,
                     WarrantyCaseResponse = warrantyCaseResponse
                 };
             }
@@ -319,6 +321,7 @@ namespace ControlFlowPractise.Core
             {
                 return new GetCurrentWarrantyCaseVerificationResponse
                 {
+                    IsSuccess = false,
                     FailureType = FailureType.GetWarrantyCaseVerificationFailure,
                     FailureMessage =
                         $"VerificationResult of OrderId: `{orderId}` cannot be deserialized from response of WarrantyCaseVerification of RequestId: `{warrantyCaseVerification.RequestId}`."
@@ -339,6 +342,7 @@ namespace ControlFlowPractise.Core
                     IsNotFound = failure is IIsNotFound isNotFoundFailure
                         ? isNotFoundFailure.IsNotFound
                         : null,
+                    RequestId = (failure as GetWarrantyProofFailure)?.RequestId,
                     FailureMessage = failure.Message,
                 };
             }

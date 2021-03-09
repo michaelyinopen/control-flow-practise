@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
 
 namespace ControlFlowPractise.Common
 {
@@ -128,10 +129,15 @@ namespace ControlFlowPractise.Common
         public FailureType FailureType { get; } = FailureType.GetWarrantyProofFailure;
         public string Message { get; }
         public bool? IsNotFound { get; }
-        public GetWarrantyProofFailure(string message, bool? isNotFound)
+        public Guid RequestId { get; }
+        public GetWarrantyProofFailure(
+            string message,
+            bool? isNotFound,
+            Guid requestId)
         {
             Message = message;
             IsNotFound = isNotFound;
+            RequestId = requestId;
         }
     }
 

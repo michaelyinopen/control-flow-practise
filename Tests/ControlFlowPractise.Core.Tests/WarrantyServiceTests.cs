@@ -85,6 +85,7 @@ namespace ControlFlowPractise.Core.Tests
             var warrantyService = GetWarrantyService();
             var actual = await warrantyService.GetCurrentWarrantyCaseVerification(orderId);
 
+            Assert.Equal(expected.IsSuccess, actual.IsSuccess);
             Assert.Equal(expected.FailureType, actual.FailureType);
             Assert.Equal(expected.IsNotFound, actual.IsNotFound);
             Assert.Equal(expected.FailureMessage is null, actual.FailureMessage is null);
@@ -93,19 +94,23 @@ namespace ControlFlowPractise.Core.Tests
 
         public static IEnumerable<object[]> GetCurrentWarrantyCaseVerificationTestData()
         {
-            yield return new object[] {
+            yield return new object[]
+            {
                 "get-x",
                 new GetCurrentWarrantyCaseVerificationResponse
                 {
+                    IsSuccess = false,
                     FailureType = FailureType.GetWarrantyCaseVerificationFailure,
                     IsNotFound = true,
                     FailureMessage = "Some failure message"
                 }
             };
-            yield return new object[] {
+            yield return new object[]
+            {
                 "get-1",
                 new GetCurrentWarrantyCaseVerificationResponse
                 {
+                    IsSuccess = true,
                     WarrantyCaseResponse = new WarrantyCaseResponse("get-1", "896")
                     {
                         Operation = WarrantyCaseOperation.Verify,
@@ -128,19 +133,56 @@ namespace ControlFlowPractise.Core.Tests
             };
         }
 
+        // WarrantyCaseVerification no Commit found (failure type + IsNotFound)
+        // ignore failure commits
+        // ignore commits that are not successful (caseStatus did not update to committed)
+        // WarrantyCaseVerification not found (failure type + IsNotFound)
+        // Warranty Proof found
+        // Warranty Proof not found
         [Trait("accessibility", "public")]
         [Trait("database", "ComprehensiveData")]
-        [Fact]
-        public async Task GetWarrantyProof()
+        [Theory]
+        [MemberData(nameof(GetWarrantyProofTestData))]
+        public async Task GetWarrantyProof(string orderId, GetWarrantyProofResponse expected)
         {
             var warrantyService = GetWarrantyService();
-            // WarrantyCaseVerification no Commit found (failure type + IsNotFound)
-            // ignore failure commits
-            // ignore commits that are not successful (caseStatus did not update to committed)
-            // WarrantyCaseVerification not found (failure type + IsNotFound)
+            var actual = await warrantyService.GetWarrantyProof(orderId);
 
-            // Warranty Proof found
-            // Warranty Proof not found
+            Assert.Equal(expected.IsSuccess, actual.IsSuccess);
+            Assert.Equal(expected.OrderId, actual.OrderId);
+            Assert.Equal(expected.WarrantyCaseId, actual.WarrantyCaseId);
+            Assert.Equal(expected.RequestId, actual.RequestId);
+            Assert.Equal(expected.WarrantyProof, actual.WarrantyProof);
+            Assert.Equal(expected.FailureType, actual.FailureType);
+            Assert.Equal(expected.IsNotFound, actual.IsNotFound);
+            Assert.Equal(expected.FailureMessage is null, actual.FailureMessage is null);
+        }
+
+        public static IEnumerable<object[]> GetWarrantyProofTestData()
+        {
+            yield return new object[]
+            {
+                "get-proof-x",
+                new GetWarrantyProofResponse("get-proof-x")
+                {
+                    IsSuccess = false,
+                    RequestId = Guid.Parse("7412419a-159e-46f6-8e2f-e124297e20c0"),
+                    FailureType = FailureType.GetWarrantyProofFailure,
+                    IsNotFound = true,
+                    FailureMessage = "Some failure message"
+                }
+            };
+            yield return new object[]
+            {
+                "get-proof-1",
+                new GetWarrantyProofResponse("get-proof-1")
+                {
+                    IsSuccess = true,
+                    WarrantyCaseId = "675",
+                    RequestId = Guid.Parse("f377da09-b602-4367-93b4-78e50c712097"),
+                    WarrantyProof = "get-proof-1:311720(545)"
+                }
+            };
         }
 
         public void Dispose()

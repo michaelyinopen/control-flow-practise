@@ -1,7 +1,7 @@
 [
   {
-    "targetTest": "GetCurrentWarrantyCaseVerification",
-    "WarrantyCaseVerificationTestDatas": [
+    "targetTest": "GetCurrentWarrantyCaseVerification(get-1)",
+    "warrantyCaseVerificationTestSetups": [
       {
         "insertOrder": 1,
         "warrantyCaseVerification": {
@@ -50,6 +50,7 @@
           "convertedResponse": null
         }
       }
-    ]
+    ],
+    "warrantyProofs": []
   }
 ]

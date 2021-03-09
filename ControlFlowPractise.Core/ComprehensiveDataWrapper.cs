@@ -130,7 +130,8 @@ namespace ControlFlowPractise.Core
                     return new Result<WarrantyProof, GetWarrantyProofFailure>(
                         new GetWarrantyProofFailure(
                             $"There is no warrantyProof of RequestId: `{requestId}`.",
-                            isNotFound: true));
+                            isNotFound: true,
+                            requestId: requestId));
                 }
                 return new Result<WarrantyProof, GetWarrantyProofFailure>(warrantyProof);
             }
@@ -139,7 +140,8 @@ namespace ControlFlowPractise.Core
                 return new Result<WarrantyProof, GetWarrantyProofFailure>(
                     new GetWarrantyProofFailure(
                         e.Message,
-                        isNotFound: null));
+                        isNotFound: null,
+                        requestId: requestId));
             }
         }
     }

@@ -1,22 +1,21 @@
 ﻿using ControlFlowPractise.ComprehensiveData.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ControlFlowPractise.Core.Tests.WarrantyServiceTestData
 {
-    public class TestData
+    public class TestSetup
     {
         public string? TargetTest { get; set; }
-        public List<WarrantyCaseVerificationTestData> WarrantyCaseVerificationTestDatas { get; set; } =
-            new List<WarrantyCaseVerificationTestData>();
+        public List<WarrantyCaseVerificationTestSetup> WarrantyCaseVerificationTestSetups { get; set; } =
+            new List<WarrantyCaseVerificationTestSetup>();
+        public List<WarrantyProof> WarrantyProofs { get; set; } = new List<WarrantyProof>();
     }
 
-    public class WarrantyCaseVerificationTestData
+    public class WarrantyCaseVerificationTestSetup
     {
         public int InsertOrder { get; set; }
         public WarrantyCaseVerification WarrantyCaseVerification { get; set; }
-        public WarrantyCaseVerificationTestData(WarrantyCaseVerification warrantyCaseVerification)
+        public WarrantyCaseVerificationTestSetup(WarrantyCaseVerification warrantyCaseVerification)
         {
             WarrantyCaseVerification = warrantyCaseVerification;
         }
