@@ -32,8 +32,7 @@ namespace ControlFlowPractise.Core
             {
                 return new Result<Unit, SaveWarrantyCaseVerificationFailure>(
                     new SaveWarrantyCaseVerificationFailure(
-                        e.Message,
-                        calledExternalParty: null));
+                        e.Message));
             }
         }
 

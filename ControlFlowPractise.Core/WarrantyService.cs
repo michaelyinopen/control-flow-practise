@@ -48,20 +48,55 @@ namespace ControlFlowPractise.Core
         private ResponseConverter ResponseConverter { get; }
 
         #region Verify
-        // generates requestId
-        //
-        // todo handle cases where PerformVerifyAction is successful, but ConformanceIndicator/CaseStatus doe not meet requirement for success
-        // e.g. Commit but CaseStatus remains at Certified
-        // e.g. Cancel but CaseStatus remains at Claimed
         public async Task<VerifyWarrantyCaseResponse> Verify(
             VerifyWarrantyCaseRequest request)
         {
             var requestId = Guid.NewGuid();
             var operation = request.Operation;
+
+            var preCommitVerify = await PreCommitVerify(request);
+            if (!preCommitVerify.IsSuccess)
+            {
+                var failure = preCommitVerify.Failure!;
+                var failureResponse = BuidVerifyWarrantyCaseResponse(
+                    request,
+                    new Result<WarrantyCaseResponse, IFailure>(failure));
+                return failureResponse;
+            }
+
             var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
             var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
             var verifyWarrantyCaseResponse = BuidVerifyWarrantyCaseResponse(request, saveResult);
             return verifyWarrantyCaseResponse;
+        }
+
+        internal async Task<Result<Unit, VerifyBeforeCommitFailure>> PreCommitVerify(
+            VerifyWarrantyCaseRequest request)
+        {
+            if (request.Operation != WarrantyCaseOperation.Commit)
+                return new Result<Unit, VerifyBeforeCommitFailure>(Unit.Value);
+
+            var requestId = Guid.NewGuid();
+            var operation = WarrantyCaseOperation.Verify;
+
+            var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
+
+            var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
+            if (!saveResult.IsSuccess)
+            {
+                var failure = saveResult.Failure!;
+                return new Result<Unit, VerifyBeforeCommitFailure>(
+                    new VerifyBeforeCommitFailure($"Pre-commit verification failed RequestId: `{requestId}`, FailureType: `{failure.FailureType}`, FailureMessage: `{failure.Message}`."));
+            }
+            var warrantyCaseResponse = saveResult.Success!;
+
+            var isSuccess = warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Certified
+                || warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+                || warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Completed;
+            return isSuccess
+                ? new Result<Unit, VerifyBeforeCommitFailure>(Unit.Value)
+                : new Result<Unit, VerifyBeforeCommitFailure>(
+                    new VerifyBeforeCommitFailure("Pre-commit verification response does not have Case Status Certified or above."));
         }
 
         // success means called Thrid Party, saved raw request and raw response, (and saved warrantyProof), and returns a converted response
@@ -165,8 +200,7 @@ namespace ControlFlowPractise.Core
                 {
                     return new Result<WarrantyCaseResponse, IFailure>(
                         new SaveWarrantyCaseVerificationFailure(
-                            saveWarrantyCaseVerification.Failure!.Message,
-                            calledExternalParty: true));
+                            saveWarrantyCaseVerification.Failure!.Message));
                 }
                 return new Result<WarrantyCaseResponse, IFailure>(warrantyCaseResponse);
             }
@@ -193,8 +227,7 @@ namespace ControlFlowPractise.Core
                 {
                     return new Result<WarrantyCaseResponse, IFailure>(
                         new SaveWarrantyCaseVerificationFailure(
-                            saveWarrantyCaseVerification.Failure!.Message,
-                            calledExternalParty: calledExternalParty));
+                            saveWarrantyCaseVerification.Failure!.Message));
                 }
                 return new Result<WarrantyCaseResponse, IFailure>(performVerifyActionFailure);
             }
@@ -260,9 +293,8 @@ namespace ControlFlowPractise.Core
                 case WarrantyCaseOperation.Verify:
                     return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
                 case WarrantyCaseOperation.Commit:
-                    if (response.Conformance
-                        && (response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
-                            || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed))
+                    if (response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed)
                     {
                         return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
                     }

@@ -38,8 +38,8 @@ Success Condition
 |------------|--------------------|---------------------|----------|
 | Create | No | WaitingForClaim | WarrantyCaseId generated (Validation) |
 | Verify | - | - | -
-| Verify before Commit | Yes | Certified | WarrantyAmount not null, have WarrantyProof (Validation)
-|    | Yes | Committed (or Completed) | 
+| Verify before Commit | Yes (Validation) | Certified | WarrantyAmount not null (Validation)
+| Commit | Yes (Validation) | Committed (or Completed) | WarrantyAmount not null, have WarrantyProof (Validation)
 | Cancel | No | Cancelled
 
 Conformance messages can have either meanings

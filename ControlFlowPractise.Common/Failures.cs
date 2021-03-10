@@ -165,13 +165,10 @@ namespace ControlFlowPractise.Common
     {
         public FailureType FailureType { get; } = FailureType.SaveWarrantyCaseVerificationFailure;
         public string Message { get; }
-        public bool? CalledExternalParty { get; } // ture, false or unknown
         public SaveWarrantyCaseVerificationFailure(
-            string message,
-            bool? calledExternalParty)
+            string message)
         {
             Message = message;
-            CalledExternalParty = calledExternalParty;
         }
     }
 
@@ -227,4 +224,14 @@ namespace ControlFlowPractise.Common
         }
     }
     #endregion external party returned error
+
+    public class VerifyBeforeCommitFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.VerifyBeforeCommitFailure;
+        public string Message { get; }
+        public VerifyBeforeCommitFailure(string message)
+        {
+            Message = message;
+        }
+    }
 }

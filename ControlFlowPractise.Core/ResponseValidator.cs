@@ -133,10 +133,22 @@ namespace ControlFlowPractise.Core
                                 });
                             });
                         });
-                        When(y => y.WarrantyResponse.Body!.CaseStatus == CaseStatus.Committed, () =>
+                        When(y => y.WarrantyResponse.Body!.CaseStatus == CaseStatus.Certified, () =>
                         {
                             RuleForEach(y => y.WarrantyResponse.Body!.OrderReports).ChildRules(orderReportRule =>
                             {
+                                orderReportRule.RuleFor(r => r.ConformanceIndicator).Equal("YES");
+                                orderReportRule.RuleFor(r => r.WarrantyAmount).Must(a => a.HasValue);
+                            });
+                        });
+                        When(y =>
+                            y.WarrantyResponse.Body!.CaseStatus == CaseStatus.Committed
+                                || y.WarrantyResponse.Body!.CaseStatus == CaseStatus.Completed,
+                            () =>
+                        {
+                            RuleForEach(y => y.WarrantyResponse.Body!.OrderReports).ChildRules(orderReportRule =>
+                            {
+                                orderReportRule.RuleFor(r => r.ConformanceIndicator).Equal("YES");
                                 orderReportRule.RuleFor(r => r.WarrantyAmount).Must(a => a.HasValue);
                                 orderReportRule.RuleFor(r => r.WarrantyProof).NotEmpty();
                             });
