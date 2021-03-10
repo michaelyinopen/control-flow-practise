@@ -25,6 +25,7 @@ namespace ControlFlowPractise.Core
 
         public Result<Unit, IFailure> Validate(
             VerifyWarrantyCaseRequest request,
+            WarrantyCaseOperation operation,
             Guid requestId,
             WarrantyResponse warrantyResponse)
         {
@@ -54,6 +55,7 @@ namespace ControlFlowPractise.Core
 
             var validatableResponse = new ValidatableResponse(
                 request,
+                operation,
                 requestId,
                 warrantyResponse);
             var validationResult = Validator.Validate(validatableResponse);
@@ -70,16 +72,19 @@ namespace ControlFlowPractise.Core
         {
             public ValidatableResponse(
                 VerifyWarrantyCaseRequest request,
+                WarrantyCaseOperation operation,
                 Guid requestId,
                 WarrantyResponse warrantyResponse)
             {
                 Request = request;
+                Operation = operation;
                 RequestId = requestId;
                 WarrantyResponse = warrantyResponse;
             }
-            public VerifyWarrantyCaseRequest Request { get; set; }
-            public Guid RequestId { get; set; }
-            public WarrantyResponse WarrantyResponse { get; set; }
+            public VerifyWarrantyCaseRequest Request { get; }
+            public WarrantyCaseOperation Operation { get; }
+            public Guid RequestId { get; }
+            public WarrantyResponse WarrantyResponse { get; }
         }
 
         public class ValidatableResponseValidator : AbstractValidator<ValidatableResponse>
@@ -90,10 +95,10 @@ namespace ControlFlowPractise.Core
                 When(y => y.WarrantyResponse.Header != null, () =>
                 {
                     RuleFor(y => y.WarrantyResponse.Header.RequestId).Equal(y => y.RequestId);
-                    RuleFor(y => y.WarrantyResponse.Header.RequestType).Equal(y => OperationRequestTypeMap[y.Request.Operation]);
-                    RuleFor(y => y.WarrantyResponse.Header.Action).Equal(y => OperationActionMap[y.Request.Operation]);
+                    RuleFor(y => y.WarrantyResponse.Header.RequestType).Equal(y => OperationRequestTypeMap[y.Operation]);
+                    RuleFor(y => y.WarrantyResponse.Header.Action).Equal(y => OperationActionMap[y.Operation]);
                     RuleFor(y => y.WarrantyResponse.Header.WarrantyCaseId).NotEmpty();
-                    When(y => y.Request.Operation != WarrantyCaseOperation.Create, () =>
+                    When(y => y.Operation != WarrantyCaseOperation.Create, () =>
                     {
                         RuleFor(y => y.WarrantyResponse.Header.WarrantyCaseId).Equal(y => y.Request.WarrantyCaseId);
                     });

@@ -14,11 +14,12 @@ namespace ControlFlowPractise.Core
     {
         public Result<WarrantyRequest, RequestConversionFailure> Build(
             VerifyWarrantyCaseRequest verifyWarrantyCaseRequest,
+            WarrantyCaseOperation operation,
             Guid requestId)
         {
             try
             {
-                var (requestType, actionType) = GetRequestTypeActionType(verifyWarrantyCaseRequest.Operation);
+                var (requestType, actionType) = GetRequestTypeActionType(operation);
 
                 var warrantyRequest = new WarrantyRequest
                 {
@@ -26,10 +27,10 @@ namespace ControlFlowPractise.Core
                     RequestType = requestType,
                     Action = actionType,
                     WarrantyCaseId = verifyWarrantyCaseRequest.WarrantyCaseId,
-                    TransactionDate = verifyWarrantyCaseRequest.Operation != WarrantyCaseOperation.Cancel
+                    TransactionDate = operation != WarrantyCaseOperation.Cancel
                         ? GetTransactionDateString(verifyWarrantyCaseRequest.TransactionDateTime)
                         : null,
-                    OrderDetails = GetOrderDetails(verifyWarrantyCaseRequest),
+                    OrderDetails = GetOrderDetails(verifyWarrantyCaseRequest, operation),
                 };
 
                 return new Result<WarrantyRequest, RequestConversionFailure>(warrantyRequest);
@@ -63,9 +64,10 @@ namespace ControlFlowPractise.Core
             };
 
         internal List<OrderDetail>? GetOrderDetails(
-            VerifyWarrantyCaseRequest verifyWarrantyCaseRequest)
+            VerifyWarrantyCaseRequest verifyWarrantyCaseRequest,
+            WarrantyCaseOperation operation)
         {
-            if (verifyWarrantyCaseRequest.Operation == WarrantyCaseOperation.Cancel)
+            if (operation == WarrantyCaseOperation.Cancel)
                 return null;
 
             return new List<OrderDetail>
@@ -89,7 +91,7 @@ namespace ControlFlowPractise.Core
                             Specification =  verifyWarrantyCaseRequest.Specification
                         }
                     },
-                    OrderTrackingNumber = verifyWarrantyCaseRequest.Operation == WarrantyCaseOperation.Commit
+                    OrderTrackingNumber = operation == WarrantyCaseOperation.Commit
                         ? verifyWarrantyCaseRequest.OrderTrackingNumber
                         : null
                 }

@@ -33,6 +33,31 @@ namespace ControlFlowPractise.Core.Tests
             var warrantyService = GetWarrantyService();
         }
 
+        // request validation error, immidiately returns, assert response
+        // saves built request in budget database
+        // calls external party
+        // returns networkfailure
+        // saves raw response in budget database
+
+        // validate response
+        // fail because WarrantyResponseErrors
+        // fail because other validation error
+        // success
+        // Operation: Create, Verify, Commit, Cancel
+        // Commit sends OrderTrackingNumber
+
+        // saves warrantyProof if successful commit
+
+        // saves VerifyWarrantyCaseResponse in comprehensive database
+        // success
+        // failure
+
+        // saves VerifyWarrantyCaseResponse failure
+
+        // check SatisfySuccessfulCondition
+        // isSuccess
+        // isSuccess = false but has WarrantyCaseResponse
+        // isSuccess = false and no WarrantyCaseResponse
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
@@ -41,31 +66,7 @@ namespace ControlFlowPractise.Core.Tests
         public async Task Verify()
         {
             var warrantyService = GetWarrantyService();
-            // request validation error, immidiately returns, assert response
-            // saves built request in budget database
-            // calls external party
-            // returns networkfailure
-            // saves raw response in budget database
-
-            // validate response
-            // fail because WarrantyResponseErrors
-            // fail because other validation error
-            // success
-            // Operation: Create, Verify, Commit, Cancel
-            // Commit sends OrderTrackingNumber
-
-            // saves warrantyProof if successful commit
-
-            // saves VerifyWarrantyCaseResponse in comprehensive database
-            // success
-            // failure
-
-            // saves VerifyWarrantyCaseResponse failure
-
-            // check SatisfySuccessfulCondition
-            // isSuccess
-            // isSuccess = false but has WarrantyCaseResponse
-            // isSuccess = false and no WarrantyCaseResponse
+            //var actual = await warrantyService.Verify();
         }
 
         // not found (failure type + IsNotFound)

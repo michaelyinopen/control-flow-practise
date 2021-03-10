@@ -11,7 +11,7 @@ namespace ControlFlowPractise.Core
         /// <param name="services"></param>
         public static IServiceCollection AddWarrantyService(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<VerifyWarrantyCaseRequestValidator>(ServiceLifetime.Singleton);
+            services.AddValidatorsFromAssemblyContaining<ValidatableRequestValidator>(ServiceLifetime.Singleton);
 
             services.AddSingleton<FailureClassification>();
             services.AddScoped<BudgetDataWrapper>();

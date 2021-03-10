@@ -8,17 +8,22 @@ namespace ControlFlowPractise.Core
 {
     public class RequestValidator
     {
-        public RequestValidator(IValidator<VerifyWarrantyCaseRequest> validator)
+        public RequestValidator(IValidator<ValidatableRequest> validator)
         {
             Validator = validator;
         }
-        private IValidator<VerifyWarrantyCaseRequest> Validator { get; }
+        private IValidator<ValidatableRequest> Validator { get; }
 
         public Result<Unit, RequestValidationFailure> Validate(
-            VerifyWarrantyCaseRequest verifyWarrantyCaseRequest,
+            VerifyWarrantyCaseRequest request,
+            WarrantyCaseOperation operation,
             Guid requestId)
         {
-            var validationResult = Validator.Validate(verifyWarrantyCaseRequest);
+            var validatableRequest = new ValidatableRequest(
+                request,
+                operation);
+
+            var validationResult = Validator.Validate(validatableRequest);
             if (validationResult.IsValid)
                 return new Result<Unit, RequestValidationFailure>(Unit.Value);
 
@@ -29,54 +34,71 @@ namespace ControlFlowPractise.Core
         }
     }
 
-    public class VerifyWarrantyCaseRequestValidator : AbstractValidator<VerifyWarrantyCaseRequest>
+    public class ValidatableRequest
     {
-        public VerifyWarrantyCaseRequestValidator()
+        public ValidatableRequest(
+            VerifyWarrantyCaseRequest request,
+            WarrantyCaseOperation operation)
         {
-            RuleFor(req => req.Operation).IsInEnum();
-            When(req => req.Operation == WarrantyCaseOperation.Create, () => {
-                RuleFor(req => req.WarrantyCaseId).Empty();
-                RuleFor(req => req.TransactionDateTime).NotNull();
-                RuleFor(req => req.OrderId).NotEmpty();
-                RuleFor(req => req.ProductId).NotEmpty();
+            Request = request;
+            Operation = operation;
+        }
+        public VerifyWarrantyCaseRequest Request { get; }
+        public WarrantyCaseOperation Operation { get; }
+    }
+
+    public class ValidatableRequestValidator : AbstractValidator<ValidatableRequest>
+    {
+        public ValidatableRequestValidator()
+        {
+            RuleFor(v => v.Operation).IsInEnum();
+            When(v => v.Operation == WarrantyCaseOperation.Create, () =>
+            {
+                RuleFor(v => v.Request.WarrantyCaseId).Empty();
+                RuleFor(v => v.Request.TransactionDateTime).NotNull();
+                RuleFor(v => v.Request.OrderId).NotEmpty();
+                RuleFor(v => v.Request.ProductId).NotEmpty();
                 HasPurchaser();
                 HasVendor();
             });
-            When(req => req.Operation == WarrantyCaseOperation.Verify, () => {
-                RuleFor(req => req.WarrantyCaseId).NotEmpty();
-                RuleFor(req => req.TransactionDateTime).NotNull();
-                RuleFor(req => req.OrderId).NotEmpty();
-                RuleFor(req => req.ProductId).NotEmpty();
+            When(v => v.Operation == WarrantyCaseOperation.Verify, () =>
+            {
+                RuleFor(v => v.Request.WarrantyCaseId).NotEmpty();
+                RuleFor(v => v.Request.TransactionDateTime).NotNull();
+                RuleFor(v => v.Request.OrderId).NotEmpty();
+                RuleFor(v => v.Request.ProductId).NotEmpty();
                 HasPurchaser();
                 HasVendor();
             });
-            When(req => req.Operation == WarrantyCaseOperation.Commit, () => {
-                RuleFor(req => req.WarrantyCaseId).NotEmpty();
-                RuleFor(req => req.TransactionDateTime).NotNull();
-                RuleFor(req => req.OrderId).NotEmpty();
-                RuleFor(req => req.ProductId).NotEmpty();
+            When(v => v.Operation == WarrantyCaseOperation.Commit, () =>
+            {
+                RuleFor(v => v.Request.WarrantyCaseId).NotEmpty();
+                RuleFor(v => v.Request.TransactionDateTime).NotNull();
+                RuleFor(v => v.Request.OrderId).NotEmpty();
+                RuleFor(v => v.Request.ProductId).NotEmpty();
                 HasPurchaser();
                 HasVendor();
-                RuleFor(req => req.OrderTrackingNumber).NotEmpty();
+                RuleFor(v => v.Request.OrderTrackingNumber).NotEmpty();
             });
-            When(req => req.Operation == WarrantyCaseOperation.Cancel, () => {
-                RuleFor(req => req.WarrantyCaseId).NotEmpty();
+            When(v => v.Operation == WarrantyCaseOperation.Cancel, () =>
+            {
+                RuleFor(v => v.Request.WarrantyCaseId).NotEmpty();
             });
         }
 
         private void HasPurchaser()
         {
-            RuleFor(req => req.PurchaserFirstName).NotEmpty();
-            RuleFor(req => req.PurchaserLastName).NotEmpty();
-            RuleFor(req => req.PurchaserEmail).NotEmpty();
+            RuleFor(v => v.Request.PurchaserFirstName).NotEmpty();
+            RuleFor(v => v.Request.PurchaserLastName).NotEmpty();
+            RuleFor(v => v.Request.PurchaserEmail).NotEmpty();
         }
 
         private void HasVendor()
         {
-            RuleFor(req => req.VendorFirstName).NotEmpty();
-            RuleFor(req => req.VendorLastName).NotEmpty();
-            RuleFor(req => req.VendorEmail).NotEmpty();
-            RuleFor(req => req.VendorPhoneNumber).NotEmpty();
+            RuleFor(v => v.Request.VendorFirstName).NotEmpty();
+            RuleFor(v => v.Request.VendorLastName).NotEmpty();
+            RuleFor(v => v.Request.VendorEmail).NotEmpty();
+            RuleFor(v => v.Request.VendorPhoneNumber).NotEmpty();
         }
     }
 }

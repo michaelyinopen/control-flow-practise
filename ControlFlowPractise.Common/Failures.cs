@@ -24,7 +24,7 @@ namespace ControlFlowPractise.Common
         ServiceNotAvailableFailure,
         InvalidRequestFailure,
         WarrantyServiceInternalErrorFailure,
-        // VerifyBeforeCommitFailure
+        VerifyBeforeCommitFailure
     }
 
     public interface IFailure

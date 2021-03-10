@@ -179,11 +179,29 @@ need to be able to create localDb for the tests
 ## Test with Postman
 Import `control-flow-practise\Postman\control-flow-practise.postman_collection.json` to postman, launch Api and make requests.
 
+## Pre-commit validation
+For one VerifyWarrantyCaseRequest request with operation commit, this service will make a verify call to external party first, to ensure the response case status is Certified.
+
+This pre-commit validation and commit will have the same content (except requestType).
+
+If the pre-commit validation has failure, or the response case status is not Certified, this service will not make the commit call, save WarrantyCaseVerification with VerifyBeforeCommitFailure and return isSuccess:false.
+
+The pre-commit validation is saved as WarrantyCaseVerification in Comprehensive database, and has request and response saved in Budget database.
+
 # todo
 
 - naming warranty request/ external party request
 - failure messages
 - check GetCurrentWarrantyCaseVerification filters logic
+- check FailureClassification
 
 # Useful
+> With direct equalities on each of the columns in the key of the index, we can sort by the last column in the index.
+>
+> Unfortunately, this doesn’t work if we…
+>
+> Have an incomplete WHERE clause
+> Our WHERE clause has inequalities (ranges) in it
+> By incomplete WHERE clause, I mean one that doesn’t utilize all of our index key columns, and by inequalities I mean >, >=, <, <=, and <>.
+
 https://www.brentozar.com/archive/2018/04/index-key-column-order-and-supporting-sorts/

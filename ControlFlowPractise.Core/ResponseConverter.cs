@@ -16,6 +16,7 @@ namespace ControlFlowPractise.Core
     {
         public Result<WarrantyCaseResponse, IFailure> Convert(
             VerifyWarrantyCaseRequest request,
+            WarrantyCaseOperation operation,
             Guid requestId,
             WarrantyResponse warrantyResponse)
         {
@@ -25,7 +26,7 @@ namespace ControlFlowPractise.Core
                     orderId: request.OrderId,
                     warrantyCaseId: warrantyResponse.Header.WarrantyCaseId!)
                 {
-                    Operation = request.Operation,
+                    Operation = operation,
                     WarrantyCaseStatus = WarrantyCaseStatusMap[warrantyResponse.Body!.CaseStatus],
                     Conformance = ConformanceIndicatorMap[warrantyResponse.Body!.ConformanceIndicator],
                 };

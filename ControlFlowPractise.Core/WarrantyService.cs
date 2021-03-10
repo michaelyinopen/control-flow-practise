@@ -57,19 +57,9 @@ namespace ControlFlowPractise.Core
             VerifyWarrantyCaseRequest request)
         {
             var requestId = Guid.NewGuid();
-            var validateRequestResult = RequestValidator.Validate(request, requestId);
-            if (!validateRequestResult.IsSuccess)
-            {
-                var validationFailure = validateRequestResult.Failure!;
-                return new VerifyWarrantyCaseResponse
-                {
-                    IsSuccess = false,
-                    FailureType = validationFailure.FailureType,
-                    FailureMessage = validationFailure.Message
-                };
-            }
-            var performVerifyActionResult = await PerformVerifyAction(request, requestId);
-            var saveResult = await SaveWarrantyCaseResponse(request, requestId, performVerifyActionResult);
+            var operation = request.Operation;
+            var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
+            var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
             var verifyWarrantyCaseResponse = BuidVerifyWarrantyCaseResponse(request, saveResult);
             return verifyWarrantyCaseResponse;
         }
@@ -80,9 +70,16 @@ namespace ControlFlowPractise.Core
         // so that the saved ExternalPartyResponse can be a source of truth
         internal async Task<Result<WarrantyCaseResponse, IFailure>> PerformVerifyAction(
             VerifyWarrantyCaseRequest request,
+            WarrantyCaseOperation operation,
             Guid requestId)
         {
-            var build = RequestBuilder.Build(request, requestId);
+            var validateRequestResult = RequestValidator.Validate(request, operation, requestId);
+            if (!validateRequestResult.IsSuccess)
+            {
+                return new Result<WarrantyCaseResponse, IFailure>(validateRequestResult.Failure!);
+            }
+
+            var build = RequestBuilder.Build(request, operation, requestId);
             if (!build.IsSuccess)
                 return new Result<WarrantyCaseResponse, IFailure>(build.Failure!);
             var warrantyRequest = build.Success!;
@@ -92,7 +89,7 @@ namespace ControlFlowPractise.Core
                     orderId: request.OrderId,
                     request: JsonConvert.SerializeObject(warrantyRequest))
                 {
-                    Operation = request.Operation,
+                    Operation = operation,
                     RequestId = requestId,
                 });
             if (!saveWarrantyRequest.IsSuccess)
@@ -108,22 +105,22 @@ namespace ControlFlowPractise.Core
                     orderId: request.OrderId,
                     response: JsonConvert.SerializeObject(rawResponse))
                 {
-                    Operation = request.Operation,
+                    Operation = operation,
                     RequestId = requestId,
                 });
             if (!saveWarrantyResponse.IsSuccess)
                 return new Result<WarrantyCaseResponse, IFailure>(saveWarrantyRequest.Failure!);
 
-            var validateResponse = ResponseValidator.Validate(request, requestId, rawResponse);
+            var validateResponse = ResponseValidator.Validate(request, operation, requestId, rawResponse);
             if (!validateResponse.IsSuccess)
                 return new Result<WarrantyCaseResponse, IFailure>(validateResponse.Failure!);
 
-            var convertResponse = ResponseConverter.Convert(request, requestId, rawResponse);
+            var convertResponse = ResponseConverter.Convert(request, operation, requestId, rawResponse);
             if (!convertResponse.IsSuccess)
                 return new Result<WarrantyCaseResponse, IFailure>(convertResponse.Failure!);
             var convertedResponse = convertResponse.Success!;
 
-            if (convertedResponse.Operation == WarrantyCaseOperation.Commit
+            if (operation == WarrantyCaseOperation.Commit
                 && convertedResponse.WarrantyCaseStatus == WarrantyCaseStatus.Committed)
             {
                 var saveWarrantyProof = await ComprehensiveDataWrapper.SaveWarrantyProof(
@@ -144,6 +141,7 @@ namespace ControlFlowPractise.Core
         // Saves warrantyCaseVerification in ComprehensiveData, regardless of PerformVerifyAction is success or failure
         internal async Task<Result<WarrantyCaseResponse, IFailure>> SaveWarrantyCaseResponse(
             VerifyWarrantyCaseRequest request,
+            WarrantyCaseOperation operation,
             Guid requestId,
             Result<WarrantyCaseResponse, IFailure> sourceResult)
         {
@@ -152,7 +150,7 @@ namespace ControlFlowPractise.Core
                 var warrantyCaseResponse = sourceResult.Success!;
                 var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
                 {
-                    Operation = request.Operation,
+                    Operation = operation,
                     WarrantyCaseStatus = warrantyCaseResponse.WarrantyCaseStatus,
                     RequestId = requestId,
                     WarrantyCaseId = warrantyCaseResponse.WarrantyCaseId,
@@ -180,7 +178,7 @@ namespace ControlFlowPractise.Core
                 bool responseHasNoError = FailureClassification.ResponseHasNoError(performVerifyActionFailure);
                 var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
                 {
-                    Operation = request.Operation,
+                    Operation = operation,
                     RequestId = requestId,
                     WarrantyCaseId = request.WarrantyCaseId,
                     CalledExternalParty = calledExternalParty,
