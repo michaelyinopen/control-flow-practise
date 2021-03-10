@@ -33,41 +33,199 @@ namespace ControlFlowPractise.Core.Tests
             var warrantyService = GetWarrantyService();
         }
 
-        // request validation error, immidiately returns, assert response
+        // pre-commit verify
+        //
+        // request validation error
         // saves built request in budget database
         // calls external party
         // returns networkfailure
         // saves raw response in budget database
-
+        //
         // validate response
         // fail because WarrantyResponseErrors
         // fail because other validation error
         // success
         // Operation: Create, Verify, Commit, Cancel
         // Commit sends OrderTrackingNumber
-
+        //
         // saves warrantyProof if successful commit
-
+        //
         // saves VerifyWarrantyCaseResponse in comprehensive database
         // success
         // failure
-
+        //
         // saves VerifyWarrantyCaseResponse failure
-
+        //
         // check SatisfySuccessfulCondition
         // isSuccess
         // isSuccess = false but has WarrantyCaseResponse
         // isSuccess = false and no WarrantyCaseResponse
+        #region Verify
+
+        // If success
+        // BudgetDatabase ExternalPartyRequest
+        // External Party Called
+        // BudgetDatabase ExternalPartyResponse
+        // ComprehensiveDatabase WarrantyCaseVerification
+        // response
+        //
+        // If failure (e.g. validation of request error)
+        // ComprehensiveDatabase WarrantyCaseVerification
+        // response
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
         [Trait("external-service", "actual")]
-        [Fact]
-        public async Task Verify()
+        [Theory]
+        [MemberData(nameof(VerifyCreateTestData))]
+        public async Task VerifyCreate(
+            VerifyWarrantyCaseRequest request)
+        {
+            var warrantyService = GetWarrantyService();
+            var actual = await warrantyService.Verify(request);
+
+        }
+
+        public static IEnumerable<object[]> VerifyCreateTestData()
+        {
+            yield return new object[]
+            {
+                "get-x",
+                new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsSuccess = false,
+                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
+                    IsNotFound = true,
+                    FailureMessage = "Some failure message"
+                }
+            };
+        }
+
+        // If success
+        //
+        // If failure (e.g. external party response has error)
+        // BudgetDatabase ExternalPartyRequest
+        // External Party Called
+        // BudgetDatabase ExternalPartyResponse
+        // ComprehensiveDatabase WarrantyCaseVerification
+        // response
+        [Trait("accessibility", "public")]
+        [Trait("database", "BudgetData")]
+        [Trait("database", "ComprehensiveData")]
+        [Trait("external-service", "actual")]
+        [Theory]
+        [MemberData(nameof(VerifyVerifyTestData))]
+        public async Task VerifyVerify(
+            VerifyWarrantyCaseRequest request)
         {
             var warrantyService = GetWarrantyService();
             //var actual = await warrantyService.Verify();
+
+            // 
         }
+
+        public static IEnumerable<object[]> VerifyVerifyTestData()
+        {
+            yield return new object[]
+            {
+                "get-x",
+                new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsSuccess = false,
+                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
+                    IsNotFound = true,
+                    FailureMessage = "Some failure message"
+                }
+            };
+        }
+
+        // If success
+        // BudgetDatabase ExternalPartyRequest x2
+        // External Party Called x2
+        // BudgetDatabase ExternalPartyResponse x2
+        // ComprehensiveDatabase WarrantyCaseVerification x2
+        // response
+        //
+        // If failure (e.g. pre-commit validation did not meet successful condition)
+        // BudgetDatabase ExternalPartyRequest
+        // External Party Called
+        // BudgetDatabase ExternalPartyResponse
+        // ComprehensiveDatabase WarrantyCaseVerification
+        // response
+        //
+        // If failure (e.g. Commit did not meet successful condition)
+        // BudgetDatabase ExternalPartyRequest x2
+        // External Party Called x2
+        // BudgetDatabase ExternalPartyResponse x2
+        // ComprehensiveDatabase WarrantyCaseVerification x2
+        // response
+        [Trait("accessibility", "public")]
+        [Trait("database", "BudgetData")]
+        [Trait("database", "ComprehensiveData")]
+        [Trait("external-service", "actual")]
+        [Theory]
+        [MemberData(nameof(VerifyCommitTestData))]
+        public async Task VerifyCommit(
+            VerifyWarrantyCaseRequest request)
+        {
+            var warrantyService = GetWarrantyService();
+            //var actual = await warrantyService.Verify();
+
+            // 
+        }
+
+        public static IEnumerable<object[]> VerifyCommitTestData()
+        {
+            yield return new object[]
+            {
+                "get-x",
+                new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsSuccess = false,
+                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
+                    IsNotFound = true,
+                    FailureMessage = "Some failure message"
+                }
+            };
+        }
+
+        // If success
+        //
+        // If failure (e.g. external party network error)
+        // BudgetDatabase ExternalPartyRequest
+        // External Party Called
+        // ComprehensiveDatabase WarrantyCaseVerification
+        // response
+        [Trait("accessibility", "public")]
+        [Trait("database", "BudgetData")]
+        [Trait("database", "ComprehensiveData")]
+        [Trait("external-service", "actual")]
+        [Theory]
+        [MemberData(nameof(VerifyCancelTestData))]
+        public async Task VerifyCancel(
+            VerifyWarrantyCaseRequest request)
+        {
+            var warrantyService = GetWarrantyService();
+            //var actual = await warrantyService.Verify();
+
+            // 
+        }
+
+        public static IEnumerable<object[]> VerifyCancelTestData()
+        {
+            yield return new object[]
+            {
+                "get-x",
+                new GetCurrentWarrantyCaseVerificationResponse
+                {
+                    IsSuccess = false,
+                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
+                    IsNotFound = true,
+                    FailureMessage = "Some failure message"
+                }
+            };
+        }
+        #endregion Verify
 
         // not found (failure type + IsNotFound)
         // found: not choose other orders (orderId)

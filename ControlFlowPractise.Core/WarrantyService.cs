@@ -54,10 +54,10 @@ namespace ControlFlowPractise.Core
             var requestId = Guid.NewGuid();
             var operation = request.Operation;
 
-            var preCommitVerify = await PreCommitVerify(request);
-            if (!preCommitVerify.IsSuccess)
+            var preCommitVerifyResult = await PreCommitVerify(request);
+            if (!preCommitVerifyResult.IsSuccess)
             {
-                var failure = preCommitVerify.Failure!;
+                var failure = preCommitVerifyResult.Failure!;
                 var failureResponse = BuidVerifyWarrantyCaseResponse(
                     request,
                     new Result<WarrantyCaseResponse, IFailure>(failure));
