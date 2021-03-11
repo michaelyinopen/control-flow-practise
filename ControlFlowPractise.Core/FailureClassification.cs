@@ -14,6 +14,7 @@ namespace ControlFlowPractise.Core
                 InvalidRequestFailure _ => true,
                 WarrantyServiceInternalErrorFailure _ => true,
                 SaveExternalPartyResponseFailure _ => true,
+                SaveWarrantyProofFailure _ => true,
                 ResponseValidationFailure _ => true,
                 ResponseConversionFailure _ => true,
                 // save warranty proof
@@ -22,32 +23,38 @@ namespace ControlFlowPractise.Core
             };
         }
 
-        public bool CalledWithResponse(IFailure failure)
+        public bool? CalledWithResponse(IFailure failure)
         {
             return failure switch
             {
+                NetworkFailure _ => false,
                 ServiceNotAvailableFailure _ => true,
                 InvalidRequestFailure _ => true,
                 WarrantyServiceInternalErrorFailure _ => true,
                 SaveExternalPartyResponseFailure _ => true,
+                SaveWarrantyProofFailure _ => true,
                 ResponseValidationFailure _ => true,
                 ResponseConversionFailure _ => true,
                 // save warranty proof
                 SaveWarrantyCaseVerificationFailure _ => throw new InvalidOperationException(),
-                _ => false
+                _ => null
             };
         }
 
-        public bool ResponseHasNoError(IFailure failure)
+        public bool? ResponseHasNoError(IFailure failure)
         {
             return failure switch
             {
+                ServiceNotAvailableFailure _ => false,
+                InvalidRequestFailure _ => false,
+                WarrantyServiceInternalErrorFailure _ => false,
                 SaveExternalPartyResponseFailure _ => true,
+                SaveWarrantyProofFailure _ => true,
                 ResponseValidationFailure _ => true,
                 ResponseConversionFailure _ => true,
                 // save warranty proof
                 SaveWarrantyCaseVerificationFailure _ => throw new InvalidOperationException(),
-                _ => false
+                _ => null
             };
         }
     }

@@ -124,7 +124,7 @@ namespace ControlFlowPractise.Core.Tests
 
             WarrantyRequest? actualExternalPartyCallRequest = null;
 
-            var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>();
+            var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>(MockBehavior.Strict);
             if (!(expectedExternalPartyCallRequest is null))
             {
                 mockedExternalPartyProxy
@@ -150,7 +150,6 @@ namespace ControlFlowPractise.Core.Tests
             Assert.Equal(expectedResponse.IsSuccess, actual.IsSuccess);
             actual.WarrantyCaseResponse.Should().BeEquivalentTo(expectedResponse.WarrantyCaseResponse);
             Assert.Equal(expectedResponse.FailureType, actual.FailureType);
-            Assert.Equal(expectedResponse.IsNotFound, actual.IsNotFound);
             Assert.Equal(expectedResponse.FailureMessage is null, actual.FailureMessage is null);
 
             if (!(expectedExternalPartyCallRequest is null))
@@ -228,8 +227,9 @@ namespace ControlFlowPractise.Core.Tests
             }
         }
 
-        public static IEnumerable<object[]> VerifyCreateTestData()
+        public static IEnumerable<object?[]> VerifyCreateTestData()
         {
+            // verify-create-success
             {
                 var request = new VerifyWarrantyCaseRequest(orderId: "verify-create-success")
                 {
@@ -300,7 +300,7 @@ namespace ControlFlowPractise.Core.Tests
                         }
                     }
                 };
-                var warrantyCaseResponse = new WarrantyCaseResponse                (
+                var warrantyCaseResponse = new WarrantyCaseResponse(
                     orderId: "verify-create-success",
                     warrantyCaseId: "757")
                 {
@@ -350,6 +350,65 @@ namespace ControlFlowPractise.Core.Tests
                     RequestId = requestId,
                 };
                 yield return new object[]
+                {
+                    request,
+                    requestId,
+                    expectedExternalPartyCallRequest,
+                    externalPartyCallResponse,
+                    expectedResponse,
+                    expectedWarrantyCaseVerificationCount,
+                    expectedWarrantyCaseVerification,
+                    expectedExternalPartyRequestCount,
+                    expectedExternalPartyRequest,
+                    expectedExternalPartyResponseCount,
+                    expectedExternalPartyResponse
+                };
+            }
+            // verify-create-validation-failure
+            {
+                var request = new VerifyWarrantyCaseRequest(orderId: "verify-create-validation-failure")
+                {
+                    Operation = WarrantyCaseOperation.Create,
+                    TransactionDateTime = new DateTime(2021, 3, 4, 0, 52, 0, DateTimeKind.Utc),
+                    ProductId = "527",
+                    PurchaserFirstName = null, // missing PurchaserFirstName
+                    PurchaserLastName = "Cortes",
+                    PurchaserEmail = "katrina.cortes@email.com",
+                    VendorFirstName = "Tasneem",
+                    VendorLastName = "Frame",
+                    VendorEmail = "tasneem.frame@email.com",
+                    VendorPhoneNumber = "0688 527 07 91 "
+                };
+                var requestId = Guid.Parse("d52902b8-f0e5-467c-8adc-fe30e20a51e7");
+                WarrantyRequest? expectedExternalPartyCallRequest = null;
+                WarrantyResponse? externalPartyCallResponse = null;
+                var expectedResponse = new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = false,
+                    FailureType = FailureType.RequestValidationFailure,
+                    FailureMessage = "Some validation error."
+                };
+                var expectedWarrantyCaseVerificationCount = 1;
+                var expectedWarrantyCaseVerification = new WarrantyCaseVerification(
+                    orderId: "verify-create-validation-failure")
+                {
+                    WarrantyCaseId = null,
+                    Operation = WarrantyCaseOperation.Create,
+                    WarrantyCaseStatus = null,
+                    RequestId = requestId,
+                    CalledExternalParty = false,
+                    CalledWithResponse = null,
+                    ResponseHasNoError = null,
+                    FailureType = FailureType.RequestValidationFailure,
+                    FailureMessage = "Some validation error.",
+                    ConvertedResponse = null,
+
+                };
+                var expectedExternalPartyRequestCount = 0;
+                ExternalPartyRequest? expectedExternalPartyRequest = null;
+                var expectedExternalPartyResponseCount = 0;
+                ExternalPartyResponse? expectedExternalPartyResponse = null;
+                yield return new object?[]
                 {
                     request,
                     requestId,

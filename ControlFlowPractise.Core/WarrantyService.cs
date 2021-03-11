@@ -211,8 +211,8 @@ namespace ControlFlowPractise.Core
             {
                 var performVerifyActionFailure = sourceResult.Failure!;
                 bool calledExternalParty = FailureClassification.CalledExternalParty(performVerifyActionFailure);
-                bool calledWithResponse = FailureClassification.CalledWithResponse(performVerifyActionFailure);
-                bool responseHasNoError = FailureClassification.ResponseHasNoError(performVerifyActionFailure);
+                bool? calledWithResponse = FailureClassification.CalledWithResponse(performVerifyActionFailure);
+                bool? responseHasNoError = FailureClassification.ResponseHasNoError(performVerifyActionFailure);
                 var warrantyCaseVerification = new WarrantyCaseVerification(request.OrderId)
                 {
                     Operation = operation,
@@ -278,9 +278,6 @@ namespace ControlFlowPractise.Core
                 {
                     IsSuccess = false,
                     FailureType = failure.FailureType,
-                    IsNotFound = failure is IIsNotFound isNotFoundFailure
-                        ? isNotFoundFailure.IsNotFound
-                        : null,
                     FailureMessage = failure.Message
                 };
             }

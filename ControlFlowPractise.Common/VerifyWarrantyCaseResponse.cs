@@ -10,9 +10,6 @@ namespace ControlFlowPractise.Common
 
         public FailureType? FailureType { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public bool? IsNotFound { get; set; }
-
         public string? FailureMessage { get; set; }
     }
 }
