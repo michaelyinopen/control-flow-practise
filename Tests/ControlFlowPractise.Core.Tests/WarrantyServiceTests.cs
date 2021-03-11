@@ -1,6 +1,8 @@
 ﻿using ControlFlowPractise.Common;
+using ControlFlowPractise.ExternalParty;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,12 +15,15 @@ namespace ControlFlowPractise.Core.Tests
     {
         private IServiceScope ServiceScope { get; }
         private IServiceProvider ScopedServiceProvider { get; }
+        public Func<IServiceCollection> GetServices { get; }
 
         public WarrantyServiceTests(WarrantyServiceTestFixture fixture)
         {
             var serviceProvider = fixture.ServiceProvider;
             ServiceScope = serviceProvider.CreateScope();
             ScopedServiceProvider = ServiceScope.ServiceProvider;
+
+            GetServices = fixture.GetServices;
         }
 
         private IWarrantyService GetWarrantyService()
@@ -31,6 +36,26 @@ namespace ControlFlowPractise.Core.Tests
         public void CanCreateWarrantyService()
         {
             var warrantyService = GetWarrantyService();
+        }
+
+        [Trait("accessibility", "internal")]
+        [Fact]
+        public void CanCreateWarrantyService_WithInjectedMock()
+        {
+            var services = GetServices();
+
+            var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>();
+            mockedExternalPartyProxy
+                .Setup(m => m.Call(It.IsAny<WarrantyRequest>()))
+                .ReturnsAsync(new WarrantyResponse(new WarrantyResponseHeader()));
+
+            services.AddScoped(_ => mockedExternalPartyProxy.Object);
+
+            var serviceProvider = services.BuildServiceProvider();
+            using (var serviceScope = serviceProvider.CreateScope())
+            {
+                var warrantyService = serviceScope.ServiceProvider.GetRequiredService<IWarrantyService>();
+            }
         }
 
         // pre-commit verify
@@ -75,7 +100,7 @@ namespace ControlFlowPractise.Core.Tests
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "actual")]
+        [Trait("external-service", "mocked")]
         [Theory]
         [MemberData(nameof(VerifyCreateTestData))]
         public async Task VerifyCreate(
@@ -112,7 +137,7 @@ namespace ControlFlowPractise.Core.Tests
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "actual")]
+        [Trait("external-service", "mocked")]
         [Theory]
         [MemberData(nameof(VerifyVerifyTestData))]
         public async Task VerifyVerify(
@@ -162,7 +187,7 @@ namespace ControlFlowPractise.Core.Tests
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "actual")]
+        [Trait("external-service", "mocked")]
         [Theory]
         [MemberData(nameof(VerifyCommitTestData))]
         public async Task VerifyCommit(
@@ -199,13 +224,21 @@ namespace ControlFlowPractise.Core.Tests
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "actual")]
+        [Trait("external-service", "mocked")]
         [Theory]
         [MemberData(nameof(VerifyCancelTestData))]
         public async Task VerifyCancel(
             VerifyWarrantyCaseRequest request)
         {
-            var warrantyService = GetWarrantyService();
+            var services = GetServices();
+
+            // injecy mocked external party too services
+
+            var serviceProvider = services.BuildServiceProvider();
+            using (var serviceScope = serviceProvider.CreateScope())
+            {
+                var warrantyService = serviceScope.ServiceProvider.GetRequiredService<IWarrantyService>();
+            }
             //var actual = await warrantyService.Verify();
 
             // 

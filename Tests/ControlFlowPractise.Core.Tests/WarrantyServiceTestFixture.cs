@@ -5,13 +5,11 @@ using ControlFlowPractise.ExternalParty;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ControlFlowPractise.Core.Tests
 {
@@ -21,15 +19,7 @@ namespace ControlFlowPractise.Core.Tests
 
         public WarrantyServiceTestFixture()
         {
-            IServiceCollection services = new ServiceCollection();
-            services.AddDbContextPool<BudgetDataDbContext>(options =>
-                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestBudgetDataDb"));
-            services.AddDbContextPool<ComprehensiveDataDbContext>(options =>
-                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb"));
-
-            services.AddScoped<IExternalPartyProxy, ExternalPartyProxy>();
-
-            services.AddWarrantyService();
+            var services = GetServices();
 
             ServiceProvider = services.BuildServiceProvider();
 
@@ -42,6 +32,21 @@ namespace ControlFlowPractise.Core.Tests
                 comprehensiveDbContext.Database.Migrate();
             }
             InitializeDatabaseWithTestData();
+        }
+
+        public IServiceCollection GetServices()
+        {
+            var services = new ServiceCollection();
+            services.AddDbContextPool<BudgetDataDbContext>(options =>
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestBudgetDataDb"));
+            services.AddDbContextPool<ComprehensiveDataDbContext>(options =>
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb"));
+
+            services.AddScoped<IExternalPartyProxy, ExternalPartyProxy>();
+
+            services.AddWarrantyService();
+
+            return services;
         }
 
         public void InitializeDatabaseWithTestData()
