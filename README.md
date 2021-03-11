@@ -170,6 +170,18 @@ Steps to get warranty proof
 ### Test uses localDb
 need to be able to create localDb for the tests
 
+### Tests in xunit projects
+The most important is to test external effects: response and External Party.
+
+Test with localDb. Pre-fill database with test case data. Then assert the state of database after the test action completed.
+<details>
+  <summary>Why not test with only external effects</summary>
+
+It is difficult to test each function in isolation, only by inspecting external effects.
+- e.g. to test Verify only, need to make subsequent Gets, to make assertions.
+- e.g. need to make several Verify calls to setup the condition, before the actual test action.
+</details>
+
 ### How to Add Database Migrate
 1. In Visual Studio PAckage MAnager Console, set Api as startup project
 2. Set the Data project as Default project

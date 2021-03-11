@@ -20,6 +20,7 @@ namespace ControlFlowPractise.Core
     {
         public WarrantyService(
             FailureClassification failureClassification,
+            IRequestIdGenerator requestIdGenerator,
             ComprehensiveDataWrapper comprehensiveDataWrapper,
             BudgetDataWrapper budgetDataWrapper,
             RequestValidator requestValidator,
@@ -29,6 +30,7 @@ namespace ControlFlowPractise.Core
             ResponseConverter responseConverter)
         {
             FailureClassification = failureClassification;
+            RequestIdGenerator = requestIdGenerator;
             ComprehensiveDataWrapper = comprehensiveDataWrapper;
             BudgetDataWrapper = budgetDataWrapper;
             RequestValidator = requestValidator;
@@ -39,6 +41,7 @@ namespace ControlFlowPractise.Core
         }
 
         private FailureClassification FailureClassification { get; }
+        private IRequestIdGenerator RequestIdGenerator { get; }
         private ComprehensiveDataWrapper ComprehensiveDataWrapper { get; }
         private BudgetDataWrapper BudgetDataWrapper { get; }
         private RequestValidator RequestValidator { get; }
@@ -51,7 +54,7 @@ namespace ControlFlowPractise.Core
         public async Task<VerifyWarrantyCaseResponse> Verify(
             VerifyWarrantyCaseRequest request)
         {
-            var requestId = Guid.NewGuid();
+            var requestId = RequestIdGenerator.GenerateRequestId();
             var operation = request.Operation;
 
             var preCommitVerifyResult = await PreCommitVerify(request);
@@ -76,7 +79,7 @@ namespace ControlFlowPractise.Core
             if (request.Operation != WarrantyCaseOperation.Commit)
                 return new Result<Unit, VerifyBeforeCommitFailure>(Unit.Value);
 
-            var requestId = Guid.NewGuid();
+            var requestId = RequestIdGenerator.GenerateRequestId();
             var operation = WarrantyCaseOperation.Verify;
 
             var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);

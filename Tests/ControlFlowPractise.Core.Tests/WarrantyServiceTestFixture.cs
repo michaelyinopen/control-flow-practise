@@ -25,10 +25,12 @@ namespace ControlFlowPractise.Core.Tests
 
             using (var budgetDbContext = ServiceProvider.GetRequiredService<BudgetDataDbContext>())
             {
+                budgetDbContext.Database.EnsureDeleted();
                 budgetDbContext.Database.Migrate();
             }
             using (var comprehensiveDbContext = ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>())
             {
+                comprehensiveDbContext.Database.EnsureDeleted();
                 comprehensiveDbContext.Database.Migrate();
             }
             InitializeDatabaseWithTestData();

@@ -23,7 +23,6 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public bool? CalledWithResponse { get; set; }
 
-        // add index? and combined index?
         public bool? ResponseHasNoError { get; set; } // can still be not conformant and have ConformanceMessageError
 
         public FailureType? FailureType { get; set; }

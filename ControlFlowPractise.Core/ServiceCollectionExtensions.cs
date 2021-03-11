@@ -21,6 +21,7 @@ namespace ControlFlowPractise.Core
             services.AddScoped<ExternalPartyWrapper>();
             services.AddSingleton<ResponseValidator>();
             services.AddSingleton<ResponseConverter>();
+            services.AddSingleton<IRequestIdGenerator, RequestIdGenerator>();
 
             services.AddScoped<IWarrantyService, WarrantyService>();
 
