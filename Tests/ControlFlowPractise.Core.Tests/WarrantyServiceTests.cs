@@ -62,6 +62,7 @@ namespace ControlFlowPractise.Core.Tests
             var warrantyService = serviceScope.ServiceProvider.GetRequiredService<IWarrantyService>();
         }
 
+        #region Verify
         // pre-commit verify
         //
         // request validation error
@@ -89,56 +90,51 @@ namespace ControlFlowPractise.Core.Tests
         // isSuccess
         // isSuccess = false but has WarrantyCaseResponse
         // isSuccess = false and no WarrantyCaseResponse
-        #region Verify
-
-        // If success
-        // BudgetDatabase ExternalPartyRequest
-        // External Party Called
-        // BudgetDatabase ExternalPartyResponse
-        // ComprehensiveDatabase WarrantyCaseVerification
-        // response
-        //
-        // If failure (e.g. validation of request error)
-        // ComprehensiveDatabase WarrantyCaseVerification
-        // response
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
         [Trait("external-service", "mocked")]
         [Theory]
-        [MemberData(nameof(VerifyCreateTestData))]
-        public async Task VerifyCreate(
+        [MemberData(nameof(VerifyTestData))]
+        public async Task Verify(
             VerifyWarrantyCaseRequest request,
-            Guid requestId,
-            WarrantyRequest? expectedExternalPartyCallRequest,
-            WarrantyResponse? externalPartyCallResponse,
+            IList<Guid> requestIds,
+            IList<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)> externalPartyCalls,
             VerifyWarrantyCaseResponse expectedResponse,
             int expectedWarrantyCaseVerificationCount,
-            WarrantyCaseVerification? expectedWarrantyCaseVerification,
+            IList<WarrantyCaseVerification> expectedWarrantyCaseVerifications,
+            int expectedWarrantyProofCount,
+            IList<WarrantyProof?> expectedWarrantyProofs, // corresponds to requestIds
             int expectedExternalPartyRequestCount,
-            ExternalPartyRequest? expectedExternalPartyRequest,
+            IList<ExternalPartyRequest?> expectedExternalPartyRequests, // corresponds to requestIds
             int expectedExternalPartyResponseCount,
-            ExternalPartyResponse? expectedExternalPartyResponse)
+            IList<ExternalPartyResponse?> expectedExternalPartyResponses) // corresponds to requestIds
         {
             var services = GetServices();
 
-            WarrantyRequest? actualExternalPartyCallRequest = null;
+            var mockedRequestIdGenerator = new Mock<IRequestIdGenerator>(MockBehavior.Strict);
+            var mockedRequestIdGeneratorSetupSequence = mockedRequestIdGenerator
+                .SetupSequence(m => m.GenerateRequestId());
+            foreach (var requestId in requestIds)
+            {
+                mockedRequestIdGeneratorSetupSequence.Returns(requestId);
+            }
+            services.AddSingleton(_ => mockedRequestIdGenerator.Object);
+
+            List<WarrantyRequest> actualExternalPartyCallRequests = new List<WarrantyRequest>();
 
             var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>(MockBehavior.Strict);
-            if (!(expectedExternalPartyCallRequest is null))
+            foreach (var externalPartyCall in externalPartyCalls)
             {
-                mockedExternalPartyProxy
-                    .Setup(m => m.Call(It.IsAny<WarrantyRequest>()))
-                    .Callback<WarrantyRequest>(warrantyRequest => actualExternalPartyCallRequest = warrantyRequest)
-                    .ReturnsAsync(externalPartyCallResponse!);
+                var mockedExternalPartyProxySetup = mockedExternalPartyProxy
+                        .Setup(m => m.Call(It.IsAny<WarrantyRequest>()))
+                        .Callback<WarrantyRequest>(warrantyRequest => actualExternalPartyCallRequests.Add(warrantyRequest));
+                if (externalPartyCall.Throws)
+                    mockedExternalPartyProxySetup.Throws(new NetworkException());
+                else
+                    mockedExternalPartyProxySetup.ReturnsAsync(externalPartyCall.Response!);
             }
             services.AddScoped(_ => mockedExternalPartyProxy.Object);
-
-            var mockedRequestIdGenerator = new Mock<IRequestIdGenerator>();
-            mockedRequestIdGenerator
-                .Setup(m => m.GenerateRequestId())
-                .Returns(requestId);
-            services.AddSingleton(_ => mockedRequestIdGenerator.Object);
 
             var serviceProvider = services.BuildServiceProvider();
             using var serviceScope = serviceProvider.CreateScope();
@@ -152,13 +148,10 @@ namespace ControlFlowPractise.Core.Tests
             Assert.Equal(expectedResponse.FailureType, actual.FailureType);
             Assert.Equal(expectedResponse.FailureMessage is null, actual.FailureMessage is null);
 
-            if (!(expectedExternalPartyCallRequest is null))
-            {
-                mockedExternalPartyProxy.Verify(
-                    m => m.Call(It.IsAny<WarrantyRequest>()),
-                    Times.Once());
-                actualExternalPartyCallRequest.Should().BeEquivalentTo(expectedExternalPartyCallRequest);
-            }
+            mockedExternalPartyProxy.Verify(
+                m => m.Call(It.IsAny<WarrantyRequest>()),
+                Times.Exactly(externalPartyCalls.Count));
+            actualExternalPartyCallRequests.Should().BeEquivalentTo(externalPartyCalls.Select(c => c.ExpectedRequest).ToList());
 
             // assert saved data
             using (var comprehensiveDbContext = serviceScope.ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>())
@@ -168,19 +161,38 @@ namespace ControlFlowPractise.Core.Tests
                     .Count();
                 Assert.Equal(expectedWarrantyCaseVerificationCount, actualWarrantyCaseVerificationCount);
 
-                if (!(expectedWarrantyCaseVerification is null))
+                foreach ((WarrantyCaseVerification expectedWarrantyCaseVerification, int i) in
+                    expectedWarrantyCaseVerifications.Select((y, i) => (y, i)))
                 {
                     var actualWarrantyCaseVerification = comprehensiveDbContext.WarrantyCaseVerification
                         .Where(v => v.OrderId == request.OrderId)
                         .OrderByDescending(v => v.DateTime)
+                        .Skip(i)
                         .First();
-
                     actualWarrantyCaseVerification.Should().BeEquivalentTo(
                         expectedWarrantyCaseVerification,
                         opt => opt
                             .Excluding(v => v.Id)
                             .Excluding(v => v.DateTime)
                             .Excluding(v => v.FailureMessage));
+                }
+
+                var actualWarrantyProofCount = comprehensiveDbContext.WarrantyProof
+                    .Where(p => p.OrderId == request.OrderId)
+                    .Count();
+                Assert.Equal(actualWarrantyProofCount, expectedWarrantyProofCount);
+
+                foreach ((WarrantyProof? expectedWarrantyProof, int i) in
+                    expectedWarrantyProofs.Select((y, i) => (y, i)))
+                {
+                    var actualWarrantyProof = comprehensiveDbContext.WarrantyProof
+                        .Where(p => p.RequestId == requestIds.Last())
+                        .SingleOrDefault();
+                    actualWarrantyProof.Should().BeEquivalentTo(
+                        expectedWarrantyProof,
+                        opt => opt
+                            .Excluding(req => req.Id)
+                            .Excluding(req => req.DateTime));
                 }
             }
 
@@ -191,33 +203,30 @@ namespace ControlFlowPractise.Core.Tests
                     .Count();
                 Assert.Equal(expectedExternalPartyRequestCount, actualExternalPartyRequestCount);
 
-                if (!(expectedExternalPartyRequest is null))
+                foreach ((ExternalPartyRequest? expectedExternalPartyRequest, int i) in
+                    expectedExternalPartyRequests.Select((y, i) => (y, i)))
                 {
                     var actualExternalPartyRequest = budgetDbContext.ExternalPartyRequest
-                        .Where(req => req.OrderId == request.OrderId && req.RequestId == requestId)
-                        .Single();
-
+                        .Where(req => req.OrderId == request.OrderId && req.RequestId == requestIds[i])
+                        .SingleOrDefault();
                     actualExternalPartyRequest.Should().BeEquivalentTo(
                         expectedExternalPartyRequest,
                         opt => opt
                             .Excluding(req => req.Id)
                             .Excluding(req => req.DateTime));
                 }
-            }
 
-            using (var budgetDbContext = serviceScope.ServiceProvider.GetRequiredService<BudgetDataDbContext>())
-            {
                 var actualExternalPartyResponseCount = budgetDbContext.ExternalPartyResponse
                     .Where(res => res.OrderId == request.OrderId)
                     .Count();
                 Assert.Equal(expectedExternalPartyResponseCount, actualExternalPartyResponseCount);
 
-                if (!(expectedExternalPartyResponse is null))
+                foreach ((ExternalPartyResponse? expectedExternalPartyResponse, int i) in
+                    expectedExternalPartyResponses.Select((y, i) => (y, i)))
                 {
                     var actualExternalPartyResponse = budgetDbContext.ExternalPartyResponse
-                        .Where(res => res.OrderId == request.OrderId && res.RequestId == requestId)
-                        .Single();
-
+                        .Where(req => req.OrderId == request.OrderId && req.RequestId == requestIds[i])
+                        .SingleOrDefault();
                     actualExternalPartyResponse.Should().BeEquivalentTo(
                         expectedExternalPartyResponse,
                         opt => opt
@@ -227,9 +236,14 @@ namespace ControlFlowPractise.Core.Tests
             }
         }
 
-        public static IEnumerable<object?[]> VerifyCreateTestData()
+        public static IEnumerable<object?[]> VerifyTestData()
         {
             // verify-create-success
+            // - BudgetDatabase ExternalPartyRequest
+            // - External Party Called
+            // - BudgetDatabase ExternalPartyResponse
+            // - ComprehensiveDatabase WarrantyCaseVerification
+            // - response
             {
                 var request = new VerifyWarrantyCaseRequest(orderId: "verify-create-success")
                 {
@@ -333,6 +347,7 @@ namespace ControlFlowPractise.Core.Tests
                     ResponseHasNoError = true,
                     ConvertedResponse = JsonConvert.SerializeObject(warrantyCaseResponse)
                 };
+                var expectedWarrantyProofCount = 0;
                 var expectedExternalPartyRequestCount = 1;
                 var expectedExternalPartyRequest = new ExternalPartyRequest(
                     orderId: "verify-create-success",
@@ -349,22 +364,28 @@ namespace ControlFlowPractise.Core.Tests
                     Operation = WarrantyCaseOperation.Create,
                     RequestId = requestId,
                 };
-                yield return new object[]
+                yield return new object?[]
                 {
                     request,
-                    requestId,
-                    expectedExternalPartyCallRequest,
-                    externalPartyCallResponse,
+                    new List<Guid>{ requestId },
+                    new List<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)>
+                    {
+                        (expectedExternalPartyCallRequest, false, externalPartyCallResponse)
+                    },
                     expectedResponse,
                     expectedWarrantyCaseVerificationCount,
-                    expectedWarrantyCaseVerification,
+                    new List<WarrantyCaseVerification>{ expectedWarrantyCaseVerification },
+                    expectedWarrantyProofCount,
+                    new List<WarrantyProof?>{ null },
                     expectedExternalPartyRequestCount,
-                    expectedExternalPartyRequest,
+                    new List<ExternalPartyRequest?>{ expectedExternalPartyRequest },
                     expectedExternalPartyResponseCount,
-                    expectedExternalPartyResponse
+                    new List<ExternalPartyResponse?>{ expectedExternalPartyResponse }
                 };
             }
-            // verify-create-validation-failure
+            // verify-create-validation-failure (e.g. validation of request error)
+            // - ComprehensiveDatabase WarrantyCaseVerification
+            // - response
             {
                 var request = new VerifyWarrantyCaseRequest(orderId: "verify-create-validation-failure")
                 {
@@ -380,8 +401,6 @@ namespace ControlFlowPractise.Core.Tests
                     VendorPhoneNumber = "0688 527 07 91 "
                 };
                 var requestId = Guid.Parse("d52902b8-f0e5-467c-8adc-fe30e20a51e7");
-                WarrantyRequest? expectedExternalPartyCallRequest = null;
-                WarrantyResponse? externalPartyCallResponse = null;
                 var expectedResponse = new VerifyWarrantyCaseResponse
                 {
                     IsSuccess = false,
@@ -404,23 +423,170 @@ namespace ControlFlowPractise.Core.Tests
                     ConvertedResponse = null,
 
                 };
+                var expectedWarrantyProofCount = 0;
                 var expectedExternalPartyRequestCount = 0;
-                ExternalPartyRequest? expectedExternalPartyRequest = null;
                 var expectedExternalPartyResponseCount = 0;
-                ExternalPartyResponse? expectedExternalPartyResponse = null;
                 yield return new object?[]
                 {
                     request,
-                    requestId,
-                    expectedExternalPartyCallRequest,
-                    externalPartyCallResponse,
+                    new List<Guid>{ requestId },
+                    new List<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)>(),
                     expectedResponse,
                     expectedWarrantyCaseVerificationCount,
-                    expectedWarrantyCaseVerification,
+                    new List<WarrantyCaseVerification>{ expectedWarrantyCaseVerification },
+                    expectedWarrantyProofCount,
+                    new List<WarrantyProof?>{ null },
                     expectedExternalPartyRequestCount,
-                    expectedExternalPartyRequest,
+                    new List<ExternalPartyRequest?>(),
                     expectedExternalPartyResponseCount,
-                    expectedExternalPartyResponse
+                    new List<ExternalPartyResponse?>()
+                };
+            }
+            // verify-verify-success
+            // - BudgetDatabase ExternalPartyRequest
+            // - External Party Called
+            // - BudgetDatabase ExternalPartyResponse
+            // - ComprehensiveDatabase WarrantyCaseVerification
+            // - response
+            {
+                var request = new VerifyWarrantyCaseRequest(orderId: "verify-verify-success")
+                {
+                    Operation = WarrantyCaseOperation.Verify,
+                    TransactionDateTime = new DateTime(2021, 3, 4, 0, 52, 0, DateTimeKind.Utc),
+                    ProductId = "829",
+                    PurchaserFirstName = "Jasleen",
+                    PurchaserLastName = "Coates",
+                    PurchaserEmail = "jasleen.coates@email.com",
+                    VendorFirstName = "Izaac",
+                    VendorLastName = "Mullen",
+                    VendorEmail = "izaac.mullen@email.com",
+                    VendorPhoneNumber = "0660 120 68 85"
+                };
+                var requestId = Guid.Parse("d5e138dc-6703-4484-a588-351fc09a352e");
+                var expectedExternalPartyCallRequest = new WarrantyRequest
+                {
+                    RequestId = requestId,
+                    RequestType = WarrantyRequestType.Verify,
+                    TransactionDate = "2021-03-04T11:52:00+11:00",
+                    OrderDetails = new List<OrderDetail>
+                    {
+                        new OrderDetail(
+                            orderId: "verify-verify-success",
+                            purchaserDetail: new PurchaserDetail(
+                                firstName: "Jasleen",
+                                lastName: "Coates",
+                                email: "jasleen.coates@email.com"),
+                            vendorDetail: new VendorDetail(
+                                firstName: "Izaac",
+                                lastName: "Mullen",
+                                email: "izaac.mullen@email.com",
+                                phoneNumber: "0660 120 68 85"))
+                        {
+                            ProductDetails = new List<ProductDetail>
+                            {
+                                new ProductDetail("829")
+                            }
+                        }
+                    }
+                };
+                var externalPartyCallResponse = new WarrantyResponse(
+                    new WarrantyResponseHeader
+                    {
+                        RequestId = requestId,
+                        ResponseId = Guid.NewGuid(),
+                        RequestType = WarrantyRequestType.Verify,
+                        WarrantyCaseId = "406"
+                    })
+                {
+                    Body = new WarrantyResponseBody("YES")
+                    {
+                        CaseStatus = CaseStatus.Claimed,
+                        OrderReports = new List<OrderReport>
+                        {
+                            new OrderReport(
+                                orderId: "verify-verify-success",
+                                conformanceIndicator: "YES")
+                            {
+                                WarrantyEstimatedAmount = 89,
+                                ConformanceMessages = new List<ConformanceMessage>
+                                {
+                                    new ConformanceMessage("Please wait until certified.")
+                                    {
+                                        Level = ConformanceLevel.Information
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                var warrantyCaseResponse = new WarrantyCaseResponse(
+                    orderId: "verify-verify-success",
+                    warrantyCaseId: "406")
+                {
+                    Operation = WarrantyCaseOperation.Verify,
+                    WarrantyCaseStatus = WarrantyCaseStatus.Claimed,
+                    WarrantyEstimatedAmount = 89,
+                    Conformance = false,
+                    ConformanceMessages = new List<WarrantyConformanceMessage>
+                    {
+                        new WarrantyConformanceMessage("Please wait until certified.")
+                        {
+                            Level = WarrantyConformanceLevel.Information
+                        }
+                    }
+                };
+                var expectedResponse = new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = true,
+                    WarrantyCaseResponse = warrantyCaseResponse
+                };
+                var expectedWarrantyCaseVerificationCount = 2;
+                var expectedWarrantyCaseVerification = new WarrantyCaseVerification(
+                    orderId: "verify-verify-success")
+                {
+                    WarrantyCaseId = "406",
+                    Operation = WarrantyCaseOperation.Verify,
+                    WarrantyCaseStatus = WarrantyCaseStatus.Claimed,
+                    RequestId = requestId,
+                    CalledExternalParty = true,
+                    CalledWithResponse = true,
+                    ResponseHasNoError = true,
+                    ConvertedResponse = JsonConvert.SerializeObject(warrantyCaseResponse)
+                };
+                var expectedWarrantyProofCount = 0;
+                var expectedExternalPartyRequestCount = 2;
+                var expectedExternalPartyRequest = new ExternalPartyRequest(
+                    orderId: "verify-verify-success",
+                    request: JsonConvert.SerializeObject(expectedExternalPartyCallRequest))
+                {
+                    Operation = WarrantyCaseOperation.Verify,
+                    RequestId = requestId,
+                };
+                var expectedExternalPartyResponseCount = 2;
+                var expectedExternalPartyResponse = new ExternalPartyResponse(
+                    orderId: "verify-verify-success",
+                    response: JsonConvert.SerializeObject(externalPartyCallResponse))
+                {
+                    Operation = WarrantyCaseOperation.Verify,
+                    RequestId = requestId,
+                };
+                yield return new object?[]
+                {
+                    request,
+                    new List<Guid>{ requestId },
+                    new List<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)>
+                    {
+                        (expectedExternalPartyCallRequest, false, externalPartyCallResponse)
+                    },
+                    expectedResponse,
+                    expectedWarrantyCaseVerificationCount,
+                    new List<WarrantyCaseVerification>{ expectedWarrantyCaseVerification },
+                    expectedWarrantyProofCount,
+                    new List<WarrantyProof?>{ null },
+                    expectedExternalPartyRequestCount,
+                    new List<ExternalPartyRequest?>{ expectedExternalPartyRequest },
+                    expectedExternalPartyResponseCount,
+                    new List<ExternalPartyResponse?>{ expectedExternalPartyResponse }
                 };
             }
         }
@@ -448,9 +614,9 @@ namespace ControlFlowPractise.Core.Tests
             // 
         }
 
-        public static IEnumerable<object[]> VerifyVerifyTestData()
+        public static IEnumerable<object?[]> VerifyVerifyTestData()
         {
-            yield return new object[]
+            yield return new object?[]
             {
                 "get-x",
                 new GetCurrentWarrantyCaseVerificationResponse

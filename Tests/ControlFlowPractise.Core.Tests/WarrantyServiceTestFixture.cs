@@ -1,8 +1,10 @@
 ﻿using ControlFlowPractise.BudgetData;
 using ControlFlowPractise.ComprehensiveData;
 using ControlFlowPractise.Core.Tests.WarrantyServiceTestData;
+using ControlFlowPractise.ExternalParty;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,6 +44,9 @@ namespace ControlFlowPractise.Core.Tests
                 options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestBudgetDataDb"));
             services.AddDbContextPool<ComprehensiveDataDbContext>(options =>
                 options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb"));
+
+            var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>(MockBehavior.Strict);
+            services.AddScoped(_ => mockedExternalPartyProxy.Object);
 
             services.AddWarrantyService();
 
