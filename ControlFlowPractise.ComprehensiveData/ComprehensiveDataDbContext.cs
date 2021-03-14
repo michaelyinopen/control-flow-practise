@@ -71,7 +71,7 @@ namespace ControlFlowPractise.ComprehensiveData
 
             modelBuilder
                 .Entity<WarrantyProof>()
-                .HasIndex(p => p.RequestId)
+                .HasIndex(p => new { p.OrderId, p.RequestId })
                 .IsUnique();
             #endregion
         }

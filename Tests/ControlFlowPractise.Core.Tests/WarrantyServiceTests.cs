@@ -63,7 +63,6 @@ namespace ControlFlowPractise.Core.Tests
             var warrantyService = serviceScope.ServiceProvider.GetRequiredService<IWarrantyService>();
         }
 
-        #region Verify
         // pre-commit verify
         //
         // request validation error
@@ -94,7 +93,7 @@ namespace ControlFlowPractise.Core.Tests
         [Trait("accessibility", "public")]
         [Trait("database", "BudgetData")]
         [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "mocked")]
+        [Trait("external-service", "moq-mocked")]
         [Theory]
         [MemberData(nameof(VerifyTestData))]
         public async Task Verify(
@@ -592,143 +591,44 @@ namespace ControlFlowPractise.Core.Tests
                     new List<ExternalPartyResponse?>{ expectedExternalPartyResponse }
                 };
             }
+            // verify-verify-success-NonConformance (updated to wrong data)
+            //
+            // verify-verify-WarrantyServiceInternalError-failure
+            // BudgetDatabase ExternalPartyRequest
+            // External Party Called
+            // BudgetDatabase ExternalPartyResponse
+            // ComprehensiveDatabase WarrantyCaseVerification
+            // response
+            //
+            // verify-commit-success
+            // BudgetDatabase ExternalPartyRequest x2
+            // External Party Called x2
+            // BudgetDatabase ExternalPartyResponse x2
+            // ComprehensiveDatabase WarrantyCaseVerification x2
+            // response
+            //
+            // verify-commit-VerifyBeforeCommit-success-condition-failure
+            // BudgetDatabase ExternalPartyRequest
+            // External Party Called
+            // BudgetDatabase ExternalPartyResponse
+            // ComprehensiveDatabase WarrantyCaseVerification
+            // response
+            //
+            // verify-commit-success-condition-failure
+            // BudgetDatabase ExternalPartyRequest x2
+            // External Party Called x2
+            // BudgetDatabase ExternalPartyResponse x2
+            // ComprehensiveDatabase WarrantyCaseVerification x2
+            // response
+
+            // verify-cancel-success
+            //
+            // verify-cancel-network-failure
+            // BudgetDatabase ExternalPartyRequest
+            // External Party Called
+            // ComprehensiveDatabase WarrantyCaseVerification
+            // response
         }
-
-        // If success
-        //
-        // verify-verify-success-NonConformance (updated to wrong data)
-        //
-        // If failure (e.g. external party response has error)
-        // BudgetDatabase ExternalPartyRequest
-        // External Party Called
-        // BudgetDatabase ExternalPartyResponse
-        // ComprehensiveDatabase WarrantyCaseVerification
-        // response
-        [Trait("accessibility", "public")]
-        [Trait("database", "BudgetData")]
-        [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "mocked")]
-        [Theory]
-        [MemberData(nameof(VerifyVerifyTestData))]
-        public async Task VerifyVerify(
-            VerifyWarrantyCaseRequest request)
-        {
-            var warrantyService = GetWarrantyService();
-            //var actual = await warrantyService.Verify();
-
-            // 
-        }
-
-        public static IEnumerable<object?[]> VerifyVerifyTestData()
-        {
-            yield return new object?[]
-            {
-                "get-x",
-                new GetCurrentWarrantyCaseVerificationResponse
-                {
-                    IsSuccess = false,
-                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
-                    IsNotFound = true,
-                    FailureMessage = "Some failure message"
-                }
-            };
-        }
-
-        // If success
-        // BudgetDatabase ExternalPartyRequest x2
-        // External Party Called x2
-        // BudgetDatabase ExternalPartyResponse x2
-        // ComprehensiveDatabase WarrantyCaseVerification x2
-        // response
-        //
-        // If failure (e.g. pre-commit validation did not meet successful condition)
-        // BudgetDatabase ExternalPartyRequest
-        // External Party Called
-        // BudgetDatabase ExternalPartyResponse
-        // ComprehensiveDatabase WarrantyCaseVerification
-        // response
-        //
-        // If failure (e.g. Commit did not meet successful condition)
-        // BudgetDatabase ExternalPartyRequest x2
-        // External Party Called x2
-        // BudgetDatabase ExternalPartyResponse x2
-        // ComprehensiveDatabase WarrantyCaseVerification x2
-        // response
-        [Trait("accessibility", "public")]
-        [Trait("database", "BudgetData")]
-        [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "mocked")]
-        [Theory]
-        [MemberData(nameof(VerifyCommitTestData))]
-        public async Task VerifyCommit(
-            VerifyWarrantyCaseRequest request)
-        {
-            var warrantyService = GetWarrantyService();
-            //var actual = await warrantyService.Verify();
-
-            // 
-        }
-
-        public static IEnumerable<object[]> VerifyCommitTestData()
-        {
-            yield return new object[]
-            {
-                "get-x",
-                new GetCurrentWarrantyCaseVerificationResponse
-                {
-                    IsSuccess = false,
-                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
-                    IsNotFound = true,
-                    FailureMessage = "Some failure message"
-                }
-            };
-        }
-
-        // If success
-        //
-        // If failure (e.g. external party network error)
-        // BudgetDatabase ExternalPartyRequest
-        // External Party Called
-        // ComprehensiveDatabase WarrantyCaseVerification
-        // response
-        [Trait("accessibility", "public")]
-        [Trait("database", "BudgetData")]
-        [Trait("database", "ComprehensiveData")]
-        [Trait("external-service", "mocked")]
-        [Theory]
-        [MemberData(nameof(VerifyCancelTestData))]
-        public async Task VerifyCancel(
-            VerifyWarrantyCaseRequest request)
-        {
-            var services = GetServices();
-
-            // injecy mocked external party too services
-
-            var serviceProvider = services.BuildServiceProvider();
-            using (var serviceScope = serviceProvider.CreateScope())
-            {
-                var warrantyService = serviceScope.ServiceProvider.GetRequiredService<IWarrantyService>();
-            }
-            //var actual = await warrantyService.Verify();
-
-            // 
-        }
-
-        public static IEnumerable<object[]> VerifyCancelTestData()
-        {
-            yield return new object[]
-            {
-                "get-x",
-                new GetCurrentWarrantyCaseVerificationResponse
-                {
-                    IsSuccess = false,
-                    FailureType = FailureType.GetWarrantyCaseVerificationFailure,
-                    IsNotFound = true,
-                    FailureMessage = "Some failure message"
-                }
-            };
-        }
-        #endregion Verify
 
         // not found (failure type + IsNotFound)
         // found: not choose other orders (orderId)

@@ -117,12 +117,13 @@ namespace ControlFlowPractise.Core
         }
 
         public async Task<Result<WarrantyProof, GetWarrantyProofFailure>> GetWarrantyProof(
+            string orderId,
             Guid requestId)
         {
             try
             {
                 var warrantyProof = await ComprehensiveDataDbContext.WarrantyProof
-                    .Where(p => p.RequestId == requestId)
+                    .Where(p => p.OrderId == orderId && p.RequestId == requestId)
                     .SingleOrDefaultAsync();
                 if (warrantyProof is null)
                 {

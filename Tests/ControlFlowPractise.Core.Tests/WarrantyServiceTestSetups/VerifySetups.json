@@ -1,123 +1,123 @@
 [
-  {
-    "targetTest": "GetWarrantyProof(get-proof-x)",
-    "warrantyCaseVerificationTestSetups": [
-      {
-        "insertOrder": 1,
-        "warrantyCaseVerification": {
-          "orderId": "get-proof-x",
-          "warrantyCaseId": "349",
-          "operation": "Create",
-          "warrantyCaseStatus": "WaitingForClaim",
-          "requestId": "ab346d35-d6d0-4cab-8d3d-24d2c1e25740",
-          "calledExternalParty": true,
-          "calledWithResponse": true,
-          "responseHasNoError": true,
-          "failureType": null,
-          "failureMessage": null,
-          "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"get-proof-x\",\"warrantyCaseId\":\"349\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":false,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
-        }
-      },
-      {
-        "insertOrder": 2,
-        "warrantyCaseVerification": {
-          "orderId": "get-proof-x",
-          "warrantyCaseId": "349",
-          "operation": "Verify",
-          "warrantyCaseStatus": "Claimed",
-          "requestId": "d9a8abbf-a7f3-4f2f-9d16-5326b79c5225",
-          "calledExternalParty": true,
-          "calledWithResponse": true,
-          "responseHasNoError": true,
-          "failureType": null,
-          "failureMessage": null,
-          "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"get-proof-x\",\"warrantyCaseId\":\"349\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":false,\"warrantyEstimatedAmount\":50,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please wait until certified.\"}]}"
-        }
-      },
-      {
-        "insertOrder": 3,
-        "warrantyCaseVerification": {
-          "orderId": "get-proof-x",
-          "warrantyCaseId": "349",
-          "operation": "Commit",
-          "warrantyCaseStatus": "Committed",
-          "requestId": "7412419a-159e-46f6-8e2f-e124297e20c0",
-          "calledExternalParty": true,
-          "calledWithResponse": true,
-          "responseHasNoError": true,
-          "failureType": null,
-          "failureMessage": null,
-          "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"get-proof-x\",\"warrantyCaseId\":\"349\",\"warrantyCaseStatus\":\"Committed\",\"conformance\":true,\"warrantyEstimatedAmount\":60,\"warrantyAmount\":60,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Committed to pay.\"}]}"
-        }
-      }
-    ],
-    "warrantyProofs": []
-  },
-  {
-    "targetTest": "GetWarrantyProof(get-proof-1)",
-    "warrantyCaseVerificationTestSetups": [
-      {
-        "insertOrder": 1,
-        "warrantyCaseVerification": {
-          "orderId": "get-proof-1",
-          "warrantyCaseId": "675",
-          "operation": "Create",
-          "warrantyCaseStatus": "WaitingForClaim",
-          "requestId": "26ea2155-d3e8-4370-a496-e31f4ae111c2",
-          "calledExternalParty": true,
-          "calledWithResponse": true,
-          "responseHasNoError": true,
-          "failureType": null,
-          "failureMessage": null,
-          "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"get-proof-1\",\"warrantyCaseId\":\"675\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":false,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
-        }
-      },
-      {
-        "insertOrder": 2,
-        "warrantyCaseVerification": {
-          "orderId": "get-proof-1",
-          "warrantyCaseId": "675",
-          "operation": "Verify",
-          "warrantyCaseStatus": "Claimed",
-          "requestId": "d11a4403-91df-4fde-90c1-58c4aa47bab6",
-          "calledExternalParty": true,
-          "calledWithResponse": true,
-          "responseHasNoError": true,
-          "failureType": null,
-          "failureMessage": null,
-          "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"get-proof-1\",\"warrantyCaseId\":\"675\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":false,\"warrantyEstimatedAmount\":50,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please wait until certified.\"}]}"
-        }
-      },
-      {
-        "insertOrder": 3,
-        "warrantyCaseVerification": {
-          "orderId": "get-proof-1",
-          "warrantyCaseId": "675",
-          "operation": "Commit",
-          "warrantyCaseStatus": "Committed",
-          "requestId": "f377da09-b602-4367-93b4-78e50c712097",
-          "calledExternalParty": true,
-          "calledWithResponse": true,
-          "responseHasNoError": true,
-          "failureType": null,
-          "failureMessage": null,
-          "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"get-proof-1\",\"warrantyCaseId\":\"675\",\"warrantyCaseStatus\":\"Committed\",\"conformance\":true,\"warrantyEstimatedAmount\":60,\"warrantyAmount\":60,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Committed to pay.\"}]}"
-        }
-      }
-    ],
-    "warrantyProofs": [
-      {
-        "orderId": "get-proof-1",
-        "warrantyCaseId": "675",
-        "requestId": "f377da09-b602-4367-93b4-78e50c712097",
-        "proof": "get-proof-1:311720(545)"
-      },
-      {
-        "orderId": "get-proof-distraction",
-        "warrantyCaseId": "880",
-        "requestId": "23a9811d-e6fc-411f-98de-82e7619d4de9",
-        "proof": "distraction"
-      }
-    ]
-  }
+  //{
+  //  "targetTest": "GetWarrantyProof(get-proof-x)",
+  //  "warrantyCaseVerificationTestSetups": [
+  //    {
+  //      "insertOrder": 1,
+  //      "warrantyCaseVerification": {
+  //        "orderId": "get-proof-x",
+  //        "warrantyCaseId": "349",
+  //        "operation": "Create",
+  //        "warrantyCaseStatus": "WaitingForClaim",
+  //        "requestId": "ab346d35-d6d0-4cab-8d3d-24d2c1e25740",
+  //        "calledExternalParty": true,
+  //        "calledWithResponse": true,
+  //        "responseHasNoError": true,
+  //        "failureType": null,
+  //        "failureMessage": null,
+  //        "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"get-proof-x\",\"warrantyCaseId\":\"349\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":false,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+  //      }
+  //    },
+  //    {
+  //      "insertOrder": 2,
+  //      "warrantyCaseVerification": {
+  //        "orderId": "get-proof-x",
+  //        "warrantyCaseId": "349",
+  //        "operation": "Verify",
+  //        "warrantyCaseStatus": "Claimed",
+  //        "requestId": "d9a8abbf-a7f3-4f2f-9d16-5326b79c5225",
+  //        "calledExternalParty": true,
+  //        "calledWithResponse": true,
+  //        "responseHasNoError": true,
+  //        "failureType": null,
+  //        "failureMessage": null,
+  //        "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"get-proof-x\",\"warrantyCaseId\":\"349\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":false,\"warrantyEstimatedAmount\":50,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please wait until certified.\"}]}"
+  //      }
+  //    },
+  //    {
+  //      "insertOrder": 3,
+  //      "warrantyCaseVerification": {
+  //        "orderId": "get-proof-x",
+  //        "warrantyCaseId": "349",
+  //        "operation": "Commit",
+  //        "warrantyCaseStatus": "Committed",
+  //        "requestId": "7412419a-159e-46f6-8e2f-e124297e20c0",
+  //        "calledExternalParty": true,
+  //        "calledWithResponse": true,
+  //        "responseHasNoError": true,
+  //        "failureType": null,
+  //        "failureMessage": null,
+  //        "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"get-proof-x\",\"warrantyCaseId\":\"349\",\"warrantyCaseStatus\":\"Committed\",\"conformance\":true,\"warrantyEstimatedAmount\":60,\"warrantyAmount\":60,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Committed to pay.\"}]}"
+  //      }
+  //    }
+  //  ],
+  //  "warrantyProofs": []
+  //},
+  //{
+  //  "targetTest": "GetWarrantyProof(get-proof-1)",
+  //  "warrantyCaseVerificationTestSetups": [
+  //    {
+  //      "insertOrder": 1,
+  //      "warrantyCaseVerification": {
+  //        "orderId": "get-proof-1",
+  //        "warrantyCaseId": "675",
+  //        "operation": "Create",
+  //        "warrantyCaseStatus": "WaitingForClaim",
+  //        "requestId": "26ea2155-d3e8-4370-a496-e31f4ae111c2",
+  //        "calledExternalParty": true,
+  //        "calledWithResponse": true,
+  //        "responseHasNoError": true,
+  //        "failureType": null,
+  //        "failureMessage": null,
+  //        "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"get-proof-1\",\"warrantyCaseId\":\"675\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":false,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+  //      }
+  //    },
+  //    {
+  //      "insertOrder": 2,
+  //      "warrantyCaseVerification": {
+  //        "orderId": "get-proof-1",
+  //        "warrantyCaseId": "675",
+  //        "operation": "Verify",
+  //        "warrantyCaseStatus": "Claimed",
+  //        "requestId": "d11a4403-91df-4fde-90c1-58c4aa47bab6",
+  //        "calledExternalParty": true,
+  //        "calledWithResponse": true,
+  //        "responseHasNoError": true,
+  //        "failureType": null,
+  //        "failureMessage": null,
+  //        "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"get-proof-1\",\"warrantyCaseId\":\"675\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":false,\"warrantyEstimatedAmount\":50,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please wait until certified.\"}]}"
+  //      }
+  //    },
+  //    {
+  //      "insertOrder": 3,
+  //      "warrantyCaseVerification": {
+  //        "orderId": "get-proof-1",
+  //        "warrantyCaseId": "675",
+  //        "operation": "Commit",
+  //        "warrantyCaseStatus": "Committed",
+  //        "requestId": "f377da09-b602-4367-93b4-78e50c712097",
+  //        "calledExternalParty": true,
+  //        "calledWithResponse": true,
+  //        "responseHasNoError": true,
+  //        "failureType": null,
+  //        "failureMessage": null,
+  //        "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"get-proof-1\",\"warrantyCaseId\":\"675\",\"warrantyCaseStatus\":\"Committed\",\"conformance\":true,\"warrantyEstimatedAmount\":60,\"warrantyAmount\":60,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Committed to pay.\"}]}"
+  //      }
+  //    }
+  //  ],
+  //  "warrantyProofs": [
+  //    {
+  //      "orderId": "get-proof-1",
+  //      "warrantyCaseId": "675",
+  //      "requestId": "f377da09-b602-4367-93b4-78e50c712097",
+  //      "proof": "get-proof-1:311720(545)"
+  //    },
+  //    {
+  //      "orderId": "get-proof-distraction",
+  //      "warrantyCaseId": "880",
+  //      "requestId": "23a9811d-e6fc-411f-98de-82e7619d4de9",
+  //      "proof": "distraction"
+  //    }
+  //  ]
+  //}
 ]

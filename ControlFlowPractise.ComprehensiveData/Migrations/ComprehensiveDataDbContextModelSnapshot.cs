@@ -89,7 +89,7 @@ namespace ControlFlowPractise.ComprehensiveData.Migrations
 
                     b.Property<string>("OrderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Proof")
                         .IsRequired()
@@ -104,7 +104,7 @@ namespace ControlFlowPractise.ComprehensiveData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RequestId")
+                    b.HasIndex("OrderId", "RequestId")
                         .IsUnique();
 
                     b.ToTable("WarrantyProof");

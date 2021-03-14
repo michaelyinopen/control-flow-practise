@@ -12,7 +12,7 @@ namespace ControlFlowPractise.ComprehensiveData.Models
 
         public string WarrantyCaseId { get; set; }
 
-        public Guid RequestId { get; set; } // get by this
+        public Guid RequestId { get; set; }// get by OrderId and RequestId
 
         public string Proof { get; set; }
 

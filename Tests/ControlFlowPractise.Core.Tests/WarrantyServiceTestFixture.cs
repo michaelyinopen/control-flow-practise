@@ -11,10 +11,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace ControlFlowPractise.Core.Tests
 {
-    public class WarrantyServiceTestFixture : IDisposable
+    public class WarrantyServiceTestFixture : IAsyncLifetime
     {
         public IServiceProvider ServiceProvider { get; set; }
 
@@ -23,18 +25,6 @@ namespace ControlFlowPractise.Core.Tests
             var services = GetServices();
 
             ServiceProvider = services.BuildServiceProvider();
-
-            using (var budgetDbContext = ServiceProvider.GetRequiredService<BudgetDataDbContext>())
-            {
-                budgetDbContext.Database.EnsureDeleted();
-                budgetDbContext.Database.Migrate();
-            }
-            using (var comprehensiveDbContext = ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>())
-            {
-                comprehensiveDbContext.Database.EnsureDeleted();
-                comprehensiveDbContext.Database.Migrate();
-            }
-            InitializeDatabaseWithTestData();
         }
 
         public IServiceCollection GetServices()
@@ -53,7 +43,30 @@ namespace ControlFlowPractise.Core.Tests
             return services;
         }
 
-        public void InitializeDatabaseWithTestData()
+        public async Task InitializeAsync()
+        {
+            Task createBudgetDatabaseTask = CreateBudgetDatabase(ServiceProvider);
+            static async Task CreateBudgetDatabase(IServiceProvider serviceProvider)
+            {
+                using var budgetDbContext = serviceProvider.GetRequiredService<BudgetDataDbContext>();
+                await budgetDbContext.Database.EnsureDeletedAsync();
+                await budgetDbContext.Database.MigrateAsync();
+            }
+
+            Task createComprehensiveDatabaseTask = CreateComprehensiveDatabase(ServiceProvider);
+            static async Task CreateComprehensiveDatabase(IServiceProvider serviceProvider)
+            {
+                using var comprehensiveDbContext = serviceProvider.GetRequiredService<ComprehensiveDataDbContext>();
+                await comprehensiveDbContext.Database.EnsureDeletedAsync();
+                await comprehensiveDbContext.Database.MigrateAsync();
+            }
+
+            await Task.WhenAll(createBudgetDatabaseTask, createComprehensiveDatabaseTask);
+
+            await InitializeDatabaseWithTestData();
+        }
+
+        private async Task InitializeDatabaseWithTestData()
         {
             List<TestSetup> testData = new List<TestSetup>();
             var assembly = Assembly.GetExecutingAssembly();
@@ -70,6 +83,23 @@ namespace ControlFlowPractise.Core.Tests
                 JsonSerializer serializer = new JsonSerializer();
                 testData.AddRange(
                     (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+            }
+            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.VerifySetups.json")!)
+            using (var reader = new StreamReader(stream))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                testData.AddRange(
+                    (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+            }
+
+            var externalPartyRequests = testData.SelectMany(d => d.ExternalPartyRequests).ToList();
+            var externalPartyResponses = testData.SelectMany(d => d.ExternalPartyResponses).ToList();
+
+            using (var budgetDbContext = ServiceProvider.GetRequiredService<BudgetDataDbContext>())
+            {
+                budgetDbContext.ExternalPartyRequest.AddRange(externalPartyRequests);
+                budgetDbContext.ExternalPartyResponse.AddRange(externalPartyResponses);
+                budgetDbContext.SaveChanges();
             }
 
             var warrantyCaseVerificationGroups = testData
@@ -92,16 +122,14 @@ namespace ControlFlowPractise.Core.Tests
             }
         }
 
-        public void Dispose()
+        public async Task DisposeAsync()
         {
-            using (var budgetDbContext = ServiceProvider.GetRequiredService<BudgetDataDbContext>())
-            {
-                budgetDbContext.Database.EnsureDeleted();
-            }
-            using (var comprehensiveDbContext = ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>())
-            {
-                comprehensiveDbContext.Database.EnsureDeleted();
-            }
+            using var budgetDbContext = ServiceProvider.GetRequiredService<BudgetDataDbContext>();
+            using var comprehensiveDbContext = ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>();
+            Task deleteBudgetDatabaseTask = budgetDbContext.Database.EnsureDeletedAsync();
+            Task deleteComprehensiveDatabaseTask = comprehensiveDbContext.Database.EnsureDeletedAsync();
+
+            await Task.WhenAll(deleteBudgetDatabaseTask, deleteComprehensiveDatabaseTask);
         }
     }
 }

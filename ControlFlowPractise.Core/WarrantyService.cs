@@ -387,7 +387,9 @@ namespace ControlFlowPractise.Core
                 return new Result<GetWarrantyProofResponse, IFailure>(latestWarrantyCaseCommitResult.Failure!);
             var latestWarrantyCaseCommit = latestWarrantyCaseCommitResult.Success!;
 
-            var getWarrantyProofResult = await ComprehensiveDataWrapper.GetWarrantyProof(latestWarrantyCaseCommit.RequestId);
+            var getWarrantyProofResult = await ComprehensiveDataWrapper.GetWarrantyProof(
+                orderId: orderId,
+                requestId: latestWarrantyCaseCommit.RequestId);
             if (!getWarrantyProofResult.IsSuccess)
                 return new Result<GetWarrantyProofResponse, IFailure>(getWarrantyProofResult.Failure!);
             var warrantyProof = getWarrantyProofResult.Success!;

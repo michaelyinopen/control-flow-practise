@@ -190,6 +190,9 @@ It is difficult to test each function in isolation, only by inspecting external 
 3. `Add-Migration <name> -Context ComprehensiveDataDbContext`
 4. how to apply migration??
 
+### Remove migration
+`Remove-Migration` -Context ComprehensiveDataDbContext
+
 ## Test with Postman
 Import `control-flow-practise\Postman\control-flow-practise.postman_collection.json` to postman, launch Api and make requests.
 
