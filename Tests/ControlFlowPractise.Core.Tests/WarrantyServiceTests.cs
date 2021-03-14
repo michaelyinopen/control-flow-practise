@@ -11,7 +11,9 @@ using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -174,7 +176,11 @@ namespace ControlFlowPractise.Core.Tests
                         opt => opt
                             .Excluding(v => v.Id)
                             .Excluding(v => v.DateTime)
-                            .Excluding(v => v.FailureMessage));
+                            .Excluding(v => v.FailureMessage)
+                            .Excluding(v => v.ConvertedResponse));
+                    var expectedConvertedResponse = JsonConvert.DeserializeObject<WarrantyCaseResponse?>(expectedWarrantyCaseVerification.ConvertedResponse ?? "");
+                    var actualConvertedResponse = JsonConvert.DeserializeObject<WarrantyCaseResponse?>(actualWarrantyCaseVerification.ConvertedResponse ?? "");
+                    actualConvertedResponse.Should().BeEquivalentTo(expectedConvertedResponse);
                 }
 
                 var actualWarrantyProofCount = comprehensiveDbContext.WarrantyProof
@@ -213,7 +219,11 @@ namespace ControlFlowPractise.Core.Tests
                         expectedExternalPartyRequest,
                         opt => opt
                             .Excluding(req => req.Id)
-                            .Excluding(req => req.DateTime));
+                            .Excluding(req => req.DateTime)
+                            .Excluding(req => req.Request));
+                    var expectedRawRequest = JsonConvert.DeserializeObject<WarrantyResponse?>(expectedExternalPartyRequest.Request ?? "");
+                    var actualRawRequest = JsonConvert.DeserializeObject<WarrantyResponse?>(actualExternalPartyRequest.Request ?? "");
+                    actualRawRequest.Should().BeEquivalentTo(expectedRawRequest);
                 }
 
                 var actualExternalPartyResponseCount = budgetDbContext.ExternalPartyResponse
@@ -231,156 +241,41 @@ namespace ControlFlowPractise.Core.Tests
                         expectedExternalPartyResponse,
                         opt => opt
                             .Excluding(res => res.Id)
-                            .Excluding(res => res.DateTime));
+                            .Excluding(res => res.DateTime)
+                            .Excluding(res => res.Response));
+                    var expectedRawResponse = JsonConvert.DeserializeObject<WarrantyResponse?>(expectedExternalPartyResponse.Response ?? "");
+                    var actualRawResponse = JsonConvert.DeserializeObject<WarrantyResponse?>(actualExternalPartyResponse.Response ?? "");
+                    actualRawResponse.Should().BeEquivalentTo(expectedRawResponse);
                 }
             }
         }
 
         public static IEnumerable<object?[]> VerifyTestData()
         {
-            // verify-create-success
-            // - BudgetDatabase ExternalPartyRequest
-            // - External Party Called
-            // - BudgetDatabase ExternalPartyResponse
-            // - ComprehensiveDatabase WarrantyCaseVerification
-            // - response
+            var assembly = Assembly.GetExecutingAssembly();
+            List<VerifyTestCaseData> testCaseDatas;
+            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.VerifySetups.json")!)
+            using (var reader = new StreamReader(stream))
             {
-                var request = new VerifyWarrantyCaseRequest(orderId: "verify-create-success")
-                {
-                    Operation = WarrantyCaseOperation.Create,
-                    TransactionDateTime = new DateTime(2021, 3, 4, 0, 52, 0, DateTimeKind.Utc),
-                    ProductId = "369",
-                    PurchaserFirstName = "Bradley",
-                    PurchaserLastName = "Blair",
-                    PurchaserEmail = "bradley.blair@email.com",
-                    VendorFirstName = "Emrys",
-                    VendorLastName = "Kinney",
-                    VendorEmail = "emrys.kinney@email.com",
-                    VendorPhoneNumber = "0491 570 156"
-                };
-                var requestId = Guid.Parse("a8718ab9-ce33-4d21-a9bf-4feb85335562");
-                var expectedExternalPartyCallRequest = new WarrantyRequest
-                {
-                    RequestId = requestId,
-                    RequestType = WarrantyRequestType.Verify,
-                    TransactionDate = "2021-03-04T11:52:00+11:00",
-                    OrderDetails = new List<OrderDetail>
-                    {
-                        new OrderDetail(
-                            orderId: "verify-create-success",
-                            purchaserDetail: new PurchaserDetail(
-                                firstName: "Bradley",
-                                lastName: "Blair",
-                                email: "bradley.blair@email.com"),
-                            vendorDetail: new VendorDetail(
-                                firstName: "Emrys",
-                                lastName: "Kinney",
-                                email: "emrys.kinney@email.com",
-                                phoneNumber: "0491 570 156"))
-                        {
-                            ProductDetails = new List<ProductDetail>
-                            {
-                                new ProductDetail("369")
-                            }
-                        }
-                    }
-                };
-                var externalPartyCallResponse = new WarrantyResponse(
-                    new WarrantyResponseHeader
-                    {
-                        RequestId = requestId,
-                        ResponseId = Guid.NewGuid(),
-                        RequestType = WarrantyRequestType.Verify,
-                        WarrantyCaseId = "757"
-                    })
-                {
-                    Body = new WarrantyResponseBody("NO")
-                    {
-                        CaseStatus = CaseStatus.WaitingForClaim,
-                        OrderReports = new List<OrderReport>
-                        {
-                            new OrderReport(
-                                orderId: "verify-create-success",
-                                conformanceIndicator: "NO")
-                            {
-                                ConformanceMessages = new List<ConformanceMessage>
-                                {
-                                    new ConformanceMessage("Please claim.")
-                                    {
-                                        Level = ConformanceLevel.Information
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-                var warrantyCaseResponse = new WarrantyCaseResponse(
-                    orderId: "verify-create-success",
-                    warrantyCaseId: "757")
-                {
-                    Operation = WarrantyCaseOperation.Create,
-                    WarrantyCaseStatus = WarrantyCaseStatus.WaitingForClaim,
-                    Conformance = false,
-                    ConformanceMessages = new List<WarrantyConformanceMessage>
-                    {
-                        new WarrantyConformanceMessage("Please claim.")
-                        {
-                            Level = WarrantyConformanceLevel.Information
-                        }
-                    }
-                };
-                var expectedResponse = new VerifyWarrantyCaseResponse
-                {
-                    IsSuccess = true,
-                    WarrantyCaseResponse = warrantyCaseResponse
-                };
-                var expectedWarrantyCaseVerificationCount = 1;
-                var expectedWarrantyCaseVerification = new WarrantyCaseVerification(
-                    orderId: "verify-create-success")
-                {
-                    WarrantyCaseId = "757",
-                    Operation = WarrantyCaseOperation.Create,
-                    WarrantyCaseStatus = WarrantyCaseStatus.WaitingForClaim,
-                    RequestId = requestId,
-                    CalledExternalParty = true,
-                    CalledWithResponse = true,
-                    ResponseHasNoError = true,
-                    ConvertedResponse = JsonConvert.SerializeObject(warrantyCaseResponse)
-                };
-                var expectedWarrantyProofCount = 0;
-                var expectedExternalPartyRequestCount = 1;
-                var expectedExternalPartyRequest = new ExternalPartyRequest(
-                    orderId: "verify-create-success",
-                    request: JsonConvert.SerializeObject(expectedExternalPartyCallRequest))
-                {
-                    Operation = WarrantyCaseOperation.Create,
-                    RequestId = requestId,
-                };
-                var expectedExternalPartyResponseCount = 1;
-                var expectedExternalPartyResponse = new ExternalPartyResponse(
-                    orderId: "verify-create-success",
-                    response: JsonConvert.SerializeObject(externalPartyCallResponse))
-                {
-                    Operation = WarrantyCaseOperation.Create,
-                    RequestId = requestId,
-                };
+                JsonSerializer serializer = new JsonSerializer();
+                testCaseDatas = (List<VerifyTestCaseData>)serializer.Deserialize(reader, typeof(List<VerifyTestCaseData>))!;
+            }
+            foreach (var testCaseData in testCaseDatas)
+            {
                 yield return new object?[]
                 {
-                    request,
-                    new List<Guid>{ requestId },
-                    new List<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)>
-                    {
-                        (expectedExternalPartyCallRequest, false, externalPartyCallResponse)
-                    },
-                    expectedResponse,
-                    expectedWarrantyCaseVerificationCount,
-                    new List<WarrantyCaseVerification>{ expectedWarrantyCaseVerification },
-                    expectedWarrantyProofCount,
-                    new List<WarrantyProof?>{ null },
-                    expectedExternalPartyRequestCount,
-                    new List<ExternalPartyRequest?>{ expectedExternalPartyRequest },
-                    expectedExternalPartyResponseCount,
-                    new List<ExternalPartyResponse?>{ expectedExternalPartyResponse }
+                    testCaseData.Request,
+                    testCaseData.RequestIds,
+                    testCaseData.ExternalPartyCalls,
+                    testCaseData.ExpectedResponse,
+                    testCaseData.ExpectedWarrantyCaseVerificationCount,
+                    testCaseData.ExpectedWarrantyCaseVerifications,
+                    testCaseData.ExpectedWarrantyProofCount,
+                    testCaseData.ExpectedWarrantyProofs,
+                    testCaseData.ExpectedExternalPartyRequestCount,
+                    testCaseData.ExpectedExternalPartyRequests,
+                    testCaseData.ExpectedExternalPartyResponseCount,
+                    testCaseData.ExpectedExternalPartyResponses
                 };
             }
             // verify-create-validation-failure (e.g. validation of request error)
