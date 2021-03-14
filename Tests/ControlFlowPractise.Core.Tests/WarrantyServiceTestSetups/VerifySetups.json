@@ -142,5 +142,56 @@
         "response": "{\"header\":{\"requestId\":\"a8718ab9-ce33-4d21-a9bf-4feb85335562\",\"responseId\":\"e5c37f37-f7fe-4d23-8ddb-b4c563f5c627\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"757\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"WaitingForClaim\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-create-success\",\"conformanceIndicator\":\"NO\",\"WarrantyEstimatedAmount\":null,\"WarrantyAmount\":null,\"ConformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}],\"WarrantyProof\":null}]}}"
       }
     ]
+  },
+
+  // verify-create-validation-failure (e.g. validation of request error)
+  // - ComprehensiveDatabase WarrantyCaseVerification
+  // - response
+  {
+    "tagertTest": "verify-create-validation-failure",
+    "request": {
+      "operation": "Create",
+      "warrantyCaseId": null,
+      "transactionDateTime": "2021-03-04T00:52:00Z",
+      "orderId": "verify-create-validation-failure",
+      "productId": "527",
+      "purchaserFirstName": null, // missing PurchaserFirstName
+      "purchaserLastName": "Cortes",
+      "purchaserEmail": "katrina.cortes@email.com",
+      "vendorFirstName": "Tasneem",
+      "vendorLastName": "Frame",
+      "vendorEmail": "tasneem.frame@email.com",
+      "vendorPhoneNumber": "0491 570 006"
+    },
+    "requestIds": [ "d52902b8-f0e5-467c-8adc-fe30e20a51e7" ],
+    "externalPartyCalls": [],
+    "expectedResponse": {
+      "isSuccess": false,
+      "warrantyCaseResponse": null,
+      "failureType": "RequestValidationFailure",
+      "failureMessage": "Some validation error."
+    },
+    "expectedWarrantyCaseVerificationCount": 1,
+    "expectedWarrantyCaseVerifications": [
+      {
+        "orderId": "verify-create-validation-failure",
+        "warrantyCaseId": null,
+        "operation": "Create",
+        "warrantyCaseStatus": null,
+        "requestId": "d52902b8-f0e5-467c-8adc-fe30e20a51e7",
+        "calledExternalParty": false,
+        "calledWithResponse": null,
+        "responseHasNoError": null,
+        "failureType": "RequestValidationFailure",
+        "failureMessage": "Some validation error.",
+        "convertedResponse": null
+      }
+    ],
+    "expectedWarrantyProofCount": 0,
+    "expectedWarrantyProofs": [],
+    "expectedExternalPartyRequestCount": 0,
+    "expectedExternalPartyRequests": [],
+    "expectedExternalPartyResponseCount": 0,
+    "expectedExternalPartyResponses": []
   }
 ]

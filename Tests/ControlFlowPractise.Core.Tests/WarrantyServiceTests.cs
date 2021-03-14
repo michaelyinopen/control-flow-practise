@@ -278,65 +278,7 @@ namespace ControlFlowPractise.Core.Tests
                     testCaseData.ExpectedExternalPartyResponses
                 };
             }
-            // verify-create-validation-failure (e.g. validation of request error)
-            // - ComprehensiveDatabase WarrantyCaseVerification
-            // - response
-            {
-                var request = new VerifyWarrantyCaseRequest(orderId: "verify-create-validation-failure")
-                {
-                    Operation = WarrantyCaseOperation.Create,
-                    TransactionDateTime = new DateTime(2021, 3, 4, 0, 52, 0, DateTimeKind.Utc),
-                    ProductId = "527",
-                    PurchaserFirstName = null, // missing PurchaserFirstName
-                    PurchaserLastName = "Cortes",
-                    PurchaserEmail = "katrina.cortes@email.com",
-                    VendorFirstName = "Tasneem",
-                    VendorLastName = "Frame",
-                    VendorEmail = "tasneem.frame@email.com",
-                    VendorPhoneNumber = "0688 527 07 91 "
-                };
-                var requestId = Guid.Parse("d52902b8-f0e5-467c-8adc-fe30e20a51e7");
-                var expectedResponse = new VerifyWarrantyCaseResponse
-                {
-                    IsSuccess = false,
-                    FailureType = FailureType.RequestValidationFailure,
-                    FailureMessage = "Some validation error."
-                };
-                var expectedWarrantyCaseVerificationCount = 1;
-                var expectedWarrantyCaseVerification = new WarrantyCaseVerification(
-                    orderId: "verify-create-validation-failure")
-                {
-                    WarrantyCaseId = null,
-                    Operation = WarrantyCaseOperation.Create,
-                    WarrantyCaseStatus = null,
-                    RequestId = requestId,
-                    CalledExternalParty = false,
-                    CalledWithResponse = null,
-                    ResponseHasNoError = null,
-                    FailureType = FailureType.RequestValidationFailure,
-                    FailureMessage = "Some validation error.",
-                    ConvertedResponse = null,
 
-                };
-                var expectedWarrantyProofCount = 0;
-                var expectedExternalPartyRequestCount = 0;
-                var expectedExternalPartyResponseCount = 0;
-                yield return new object?[]
-                {
-                    request,
-                    new List<Guid>{ requestId },
-                    new List<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)>(),
-                    expectedResponse,
-                    expectedWarrantyCaseVerificationCount,
-                    new List<WarrantyCaseVerification>{ expectedWarrantyCaseVerification },
-                    expectedWarrantyProofCount,
-                    new List<WarrantyProof?>{ null },
-                    expectedExternalPartyRequestCount,
-                    new List<ExternalPartyRequest?>(),
-                    expectedExternalPartyResponseCount,
-                    new List<ExternalPartyResponse?>()
-                };
-            }
             // verify-verify-success
             // - BudgetDatabase ExternalPartyRequest
             // - External Party Called
