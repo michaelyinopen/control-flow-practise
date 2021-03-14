@@ -68,49 +68,61 @@ namespace ControlFlowPractise.Core.Tests
 
         private async Task InitializeDatabaseWithTestData()
         {
-            List<TestSetup> testData = new List<TestSetup>();
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.GetCurrentWarrantyCaseVerificationSetups.json")!)
-            using (var reader = new StreamReader(stream))
+            List<TestSetup> testData = GetTestSetups();
+            static List<TestSetup> GetTestSetups()
             {
-                JsonSerializer serializer = new JsonSerializer();
-                testData.AddRange(
-                    (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
-            }
-            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.GetWarrantyProofSetups.json")!)
-            using (var reader = new StreamReader(stream))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                testData.AddRange(
-                    (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
-            }
-            using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.VerifySetups.json")!)
-            using (var reader = new StreamReader(stream))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                testData.AddRange(
-                    (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+                List<TestSetup> result = new List<TestSetup>();
+                var assembly = Assembly.GetExecutingAssembly();
+                using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.GetCurrentWarrantyCaseVerificationSetups.json")!)
+                using (var reader = new StreamReader(stream))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    result.AddRange(
+                        (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+                }
+                using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.GetWarrantyProofSetups.json")!)
+                using (var reader = new StreamReader(stream))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    result.AddRange(
+                        (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+                }
+                using (var stream = assembly.GetManifestResourceStream("ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups.VerifySetups.json")!)
+                using (var reader = new StreamReader(stream))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    result.AddRange(
+                        (List<TestSetup>)serializer.Deserialize(reader, typeof(List<TestSetup>))!);
+                }
+                return result;
             }
 
-            var externalPartyRequests = testData.SelectMany(d => d.ExternalPartyRequests).ToList();
-            var externalPartyResponses = testData.SelectMany(d => d.ExternalPartyResponses).ToList();
-
-            using (var budgetDbContext = ServiceProvider.GetRequiredService<BudgetDataDbContext>())
+            Task initializeBudgetDatabaseTask = InitializeBudgetDatabase(ServiceProvider, testData);
+            static async Task InitializeBudgetDatabase(
+                IServiceProvider serviceProvider,
+                List<TestSetup> testData)
             {
+                var externalPartyRequests = testData.SelectMany(d => d.ExternalPartyRequests).ToList();
+                var externalPartyResponses = testData.SelectMany(d => d.ExternalPartyResponses).ToList();
+
+                using var budgetDbContext = serviceProvider.GetRequiredService<BudgetDataDbContext>();
                 budgetDbContext.ExternalPartyRequest.AddRange(externalPartyRequests);
                 budgetDbContext.ExternalPartyResponse.AddRange(externalPartyResponses);
-                budgetDbContext.SaveChanges();
+                await budgetDbContext.SaveChangesAsync();
             }
 
-            var warrantyCaseVerificationGroups = testData
-                .SelectMany(d => d.WarrantyCaseVerificationTestSetups)
-                .GroupBy(vd => vd.InsertOrder)
-                .OrderBy(g => g.Key)
-                .ToList();
-            var warrantyProofs = testData.SelectMany(d => d.WarrantyProofs).ToList();
-
-            using (var comprehensiveDbContext = ServiceProvider.GetRequiredService<ComprehensiveDataDbContext>())
+            Task initializeComprehensiveDatabaseTask = InitializeComprehensiveDatabase(ServiceProvider, testData);
+            static async Task InitializeComprehensiveDatabase(
+                IServiceProvider serviceProvider,
+                List<TestSetup> testData)
             {
+                var warrantyCaseVerificationGroups = testData
+                    .SelectMany(d => d.WarrantyCaseVerificationTestSetups)
+                    .GroupBy(vd => vd.InsertOrder)
+                    .OrderBy(g => g.Key)
+                    .ToList();
+                var warrantyProofs = testData.SelectMany(d => d.WarrantyProofs).ToList();
+                using var comprehensiveDbContext = serviceProvider.GetRequiredService<ComprehensiveDataDbContext>();
                 foreach (var group in warrantyCaseVerificationGroups)
                 {
                     var warrantyCaseVerifications = group.Select(g => g.WarrantyCaseVerification).ToList();
@@ -118,8 +130,10 @@ namespace ControlFlowPractise.Core.Tests
                     comprehensiveDbContext.SaveChanges();
                 }
                 comprehensiveDbContext.AddRange(warrantyProofs);
-                comprehensiveDbContext.SaveChanges();
+                await comprehensiveDbContext.SaveChangesAsync();
             }
+
+            await Task.WhenAll(initializeBudgetDatabaseTask, initializeComprehensiveDatabaseTask);
         }
 
         public async Task DisposeAsync()
