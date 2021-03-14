@@ -1,6 +1,6 @@
 ﻿using ControlFlowPractise.BudgetData;
 using ControlFlowPractise.ComprehensiveData;
-using ControlFlowPractise.Core.Tests.WarrantyServiceTestData;
+using ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups;
 using ControlFlowPractise.ExternalParty;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

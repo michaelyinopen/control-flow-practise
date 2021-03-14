@@ -3,6 +3,7 @@ using ControlFlowPractise.BudgetData.Models;
 using ControlFlowPractise.Common;
 using ControlFlowPractise.ComprehensiveData;
 using ControlFlowPractise.ComprehensiveData.Models;
+using ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups;
 using ControlFlowPractise.ExternalParty;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -99,7 +100,7 @@ namespace ControlFlowPractise.Core.Tests
         public async Task Verify(
             VerifyWarrantyCaseRequest request,
             IList<Guid> requestIds,
-            IList<(WarrantyRequest ExpectedRequest, bool Throws, WarrantyResponse? Response)> externalPartyCalls,
+            IList<ExternalPartyCall> externalPartyCalls,
             VerifyWarrantyCaseResponse expectedResponse,
             int expectedWarrantyCaseVerificationCount,
             IList<WarrantyCaseVerification> expectedWarrantyCaseVerifications,
@@ -452,6 +453,7 @@ namespace ControlFlowPractise.Core.Tests
                 var request = new VerifyWarrantyCaseRequest(orderId: "verify-verify-success")
                 {
                     Operation = WarrantyCaseOperation.Verify,
+                    WarrantyCaseId = "406",
                     TransactionDateTime = new DateTime(2021, 3, 4, 0, 52, 0, DateTimeKind.Utc),
                     ProductId = "829",
                     PurchaserFirstName = "Jasleen",
@@ -467,6 +469,7 @@ namespace ControlFlowPractise.Core.Tests
                 {
                     RequestId = requestId,
                     RequestType = WarrantyRequestType.Verify,
+                    WarrantyCaseId = "406",
                     TransactionDate = "2021-03-04T11:52:00+11:00",
                     OrderDetails = new List<OrderDetail>
                     {
@@ -526,7 +529,7 @@ namespace ControlFlowPractise.Core.Tests
                     Operation = WarrantyCaseOperation.Verify,
                     WarrantyCaseStatus = WarrantyCaseStatus.Claimed,
                     WarrantyEstimatedAmount = 89,
-                    Conformance = false,
+                    Conformance = true,
                     ConformanceMessages = new List<WarrantyConformanceMessage>
                     {
                         new WarrantyConformanceMessage("Please wait until certified.")
@@ -592,6 +595,8 @@ namespace ControlFlowPractise.Core.Tests
         }
 
         // If success
+        //
+        // verify-verify-success-NonConformance (updated to wrong data)
         //
         // If failure (e.g. external party response has error)
         // BudgetDatabase ExternalPartyRequest

@@ -1,7 +1,8 @@
 ﻿using ControlFlowPractise.ComprehensiveData.Models;
+using ControlFlowPractise.ExternalParty;
 using System.Collections.Generic;
 
-namespace ControlFlowPractise.Core.Tests.WarrantyServiceTestData
+namespace ControlFlowPractise.Core.Tests.WarrantyServiceTestSetups
 {
     public class TestSetup
     {
@@ -18,6 +19,25 @@ namespace ControlFlowPractise.Core.Tests.WarrantyServiceTestData
         public WarrantyCaseVerificationTestSetup(WarrantyCaseVerification warrantyCaseVerification)
         {
             WarrantyCaseVerification = warrantyCaseVerification;
+        }
+    }
+
+    public class ExternalPartyCall
+    {
+        public WarrantyRequest ExpectedRequest { get; set; }
+
+        public bool Throws { get; set; }
+
+        public WarrantyResponse? Response { get; set; }
+
+        public ExternalPartyCall(
+            WarrantyRequest expectedRequest,
+            bool throws,
+            WarrantyResponse? response)
+        {
+            ExpectedRequest = expectedRequest;
+            Throws = throws;
+            Response = response;
         }
     }
 }

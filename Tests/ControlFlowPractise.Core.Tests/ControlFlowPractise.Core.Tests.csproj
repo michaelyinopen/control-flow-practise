@@ -13,9 +13,11 @@
   <ItemGroup>
     <None Remove="WarrantyServiceTestSetups\GetCurrentWarrantyCaseVerificationSetups.json" />
     <None Remove="WarrantyServiceTestSetups\GetWarrantyProofSetups.json" />
+    <None Remove="WarrantyServiceTestSetups\VerifySetups.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="WarrantyServiceTestSetups\VerifySetups.json" />
     <EmbeddedResource Include="WarrantyServiceTestSetups\GetWarrantyProofSetups.json" />
     <EmbeddedResource Include="WarrantyServiceTestSetups\GetCurrentWarrantyCaseVerificationSetups.json" />
   </ItemGroup>

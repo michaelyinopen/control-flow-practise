@@ -27,7 +27,7 @@ Failure after called external party will have requestId
 
 Whether of not a request is successful, depends on the updated CaseStatus of response.
 
-E.g. 1 updating order to some wrong information, will change complianceIndicator to `NO`, CaseStatus will revert to `Claimed`
+E.g. 1 updating order to some wrong information, will change complianceIndicator to `NO`, CaseStatus will revert to `Claimed` (Success)
 
 E.g. 2 attempt to Commit with wrong date, will respond with complianceIndicator `YES` and CaseStatus remains at `Certified`. However, CaseStatus does not progress to Committed.
 
@@ -36,17 +36,19 @@ Each action will have its expected response, if unsatisfied, means the http requ
 Success Condition
 | Operation  | Expected Indicator | Expected CaseStatus | Expected |
 |------------|--------------------|---------------------|----------|
-| Create | No | WaitingForClaim | WarrantyCaseId generated (Validation) |
+| Create | - | - | WarrantyCaseId generated (Validation) |
 | Verify | - | - | -
 | Verify before Commit | Yes (Validation) | Certified | WarrantyAmount not null (Validation)
 | Commit | Yes (Validation) | Committed (or Completed) | WarrantyAmount not null, have WarrantyProof (Validation)
 | Cancel | No | Cancelled
 
+Expected CaseStatus is nnot checked by validation, it is checked by successful condition.
+
 Conformance messages can have either meanings
 1. Could have subject of the latest request; or
 2. Or subject of the case status
 
-Always showing all messages could show the messages specifically for the latest request.
+Always showing all messages, ~~could show the messages specifically for the latest request? No need.~~
 
 ## From http request's perspective
 What is a successful response mean\
