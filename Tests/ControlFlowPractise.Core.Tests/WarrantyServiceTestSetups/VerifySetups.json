@@ -193,5 +193,184 @@
     "expectedExternalPartyRequests": [],
     "expectedExternalPartyResponseCount": 0,
     "expectedExternalPartyResponses": []
+  },
+
+  // verify-verify-success
+  // - BudgetDatabase ExternalPartyRequest
+  // - External Party Called
+  // - BudgetDatabase ExternalPartyResponse
+  // - ComprehensiveDatabase WarrantyCaseVerification
+  // - response
+  {
+    "tagertTest": "verify-verify-success",
+    "warrantyCaseVerificationTestSetups": [
+      {
+        "insertOrder": 1,
+        "warrantyCaseVerification": {
+          "orderId": "verify-verify-success",
+          "warrantyCaseId": "406",
+          "operation": "Create",
+          "warrantyCaseStatus": "WaitingForClaim",
+          "requestId": "6028a57e-fd43-4325-9a68-116a5708f71f",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"verify-verify-success\",\"warrantyCaseId\":\"406\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":true,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+        }
+      }
+    ],
+    "ExternalPartyRequests": [
+      {
+        "orderId": "verify-verify-success",
+        "operation": "Create",
+        "requestId": "6028a57e-fd43-4325-9a68-116a5708f71f",
+        "Request": "{\"requestId\":\"6028a57e-fd43-4325-9a68-116a5708f71f\",\"requestType\":\"Create\",\"action\":null,\"warrantyCaseId\":\"406\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-verify-success\",\"productDetails\":[{\"productId\":\"829\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Jasleen\",\"lastName\":\"Coates\",\"email\":\"jasleen.coates@email.com\"},\"vendorDetail\":{\"firstName\":\"Izaac\",\"lastName\":\"Mullen\",\"email\":\"izaac.mullen@email.com\",\"phoneNumber\":\"0491 570 157\"},\"orderTrackingNumber\":null}]}"
+      }
+    ],
+    "ExternalPartyResponses": [
+      {
+        "orderId": "verify-verify-success",
+        "operation": "Create",
+        "requestId": "6028a57e-fd43-4325-9a68-116a5708f71f",
+        "Response": "{\"header\":{\"requestId\":\"6028a57e-fd43-4325-9a68-116a5708f71f\",\"responseId\":\"44b3e32d-0e34-4113-865c-d9bb59a94a06\",\"requestType\":\"Create\",\"action\":null,\"warrantyCaseId\":\"406\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"WaitingForClaim\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-create-success\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}],\"warrantyProof\":null}]}}"
+      }
+    ],
+    "request": {
+      "operation": "Verify",
+      "warrantyCaseId": "406",
+      "transactionDateTime": "2021-03-04T00:52:00Z",
+      "orderId": "verify-verify-success",
+      "productId": "829",
+      "purchaserFirstName": "Jasleen",
+      "purchaserLastName": "Coates",
+      "purchaserEmail": "jasleen.coates@email.com",
+      "vendorFirstName": "Izaac",
+      "vendorLastName": "Mullen",
+      "vendorEmail": "izaac.mullen@email.com",
+      "vendorPhoneNumber": "0491 570 157"
+    },
+    "requestIds": [ "d5e138dc-6703-4484-a588-351fc09a352e" ],
+    "externalPartyCalls": [
+      {
+        "expectedRequest": {
+          "requestId": "d5e138dc-6703-4484-a588-351fc09a352e",
+          "requestType": "Verify",
+          "action": null,
+          "warrantyCaseId": "406",
+          "transactionDate": "2021-03-04T11:52:00+11:00",
+          "orderDetails": [
+            {
+              "orderId": "verify-verify-success",
+              "productDetails": [
+                {
+                  "productId": "829",
+                  "specification": null
+                }
+              ],
+              "purchaserDetail": {
+                "firstName": "Jasleen",
+                "lastName": "Coates",
+                "email": "jasleen.coates@email.com"
+              },
+              "vendorDetail": {
+                "firstName": "Izaac",
+                "lastName": "Mullen",
+                "email": "izaac.mullen@email.com",
+                "phoneNumber": "0491 570 157"
+              },
+              "orderTrackingNumber": null
+            }
+          ]
+        },
+        "throws": false,
+        "response": {
+          "header": {
+            "requestId": "d5e138dc-6703-4484-a588-351fc09a352e",
+            "responseId": "c50a47b1-9194-4557-819f-68ac11fd7699",
+            "requestType": "Verify",
+            "action": null,
+            "warrantyCaseId": "406",
+            "warrantyResponseErrors": []
+          },
+          "body": {
+            "caseStatus": "Claimed",
+            "conformanceIndicator": "YES",
+            "orderReports": [
+              {
+                "orderId": "verify-verify-success",
+                "conformanceIndicator": "YES",
+                "warrantyEstimatedAmount": 89,
+                "warrantyAmount": null,
+                "conformanceMessages": [
+                  {
+                    "level": "Information",
+                    "message": "Wait until certified to continue."
+                  }
+                ],
+                "warrantyProof": null
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "expectedResponse": {
+      "isSuccess": true,
+      "warrantyCaseResponse": {
+        "operation": "Verify",
+        "orderId": "verify-verify-success",
+        "warrantyCaseId": "406",
+        "warrantyCaseStatus": "Claimed",
+        "conformance": true,
+        "warrantyEstimatedAmount": 89,
+        "warrantyAmount": null,
+        "conformanceMessages": [
+          {
+            "level": "Information",
+            "message": "Wait until certified to continue."
+          }
+        ]
+      },
+      "failureType": null,
+      "failureMessage": null
+    },
+    "expectedWarrantyCaseVerificationCount": 2,
+    "expectedWarrantyCaseVerifications": [
+      {
+        "orderId": "verify-verify-success",
+        "warrantyCaseId": "406",
+        "operation": "Verify",
+        "warrantyCaseStatus": "Claimed",
+        "requestId": "d5e138dc-6703-4484-a588-351fc09a352e",
+        "calledExternalParty": true,
+        "calledWithResponse": true,
+        "responseHasNoError": true,
+        "failureType": null,
+        "failureMessage": null,
+        "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"verify-verify-success\",\"warrantyCaseId\":\"406\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":true,\"warrantyEstimatedAmount\":89,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}]}"
+      }
+    ],
+    "expectedWarrantyProofCount": 0,
+    "expectedWarrantyProofs": [],
+    "expectedExternalPartyRequestCount": 2,
+    "expectedExternalPartyRequests": [
+      {
+        "orderId": "verify-verify-success",
+        "operation": "Verify",
+        "requestId": "d5e138dc-6703-4484-a588-351fc09a352e",
+        "request": "{\"requestId\":\"d5e138dc-6703-4484-a588-351fc09a352e\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"406\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-verify-success\",\"productDetails\":[{\"productId\":\"829\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Jasleen\",\"lastName\":\"Coates\",\"email\":\"jasleen.coates@email.com\"},\"vendorDetail\":{\"firstName\":\"Izaac\",\"lastName\":\"Mullen\",\"email\":\"izaac.mullen@email.com\",\"phoneNumber\":\"0491 570 157\"},\"orderTrackingNumber\":null}]}"
+      }
+    ],
+    "expectedExternalPartyResponseCount": 2,
+    "expectedExternalPartyResponses": [
+      {
+        "orderId": "verify-verify-success",
+        "operation": "Verify",
+        "requestId": "d5e138dc-6703-4484-a588-351fc09a352e",
+        "response": "{\"header\":{\"requestId\":\"d5e138dc-6703-4484-a588-351fc09a352e\",\"responseId\":\"c50a47b1-9194-4557-819f-68ac11fd7699\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"406\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Claimed\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-verify-success\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":89,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}],\"warrantyProof\":null}]}}"
+      }
+    ]
   }
 ]
