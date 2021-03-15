@@ -245,39 +245,6 @@ namespace ControlFlowPractise.Core
             }
         }
 
-        internal VerifyWarrantyCaseResponse BuidVerifyWarrantyCaseResponse(
-            Result<WarrantyCaseResponse, IFailure> sourceResult,
-            WarrantyCaseResponse? preSavedResponse)
-        {
-            if (sourceResult.IsSuccess)
-            {
-                var warrantyCaseResponse = sourceResult.Success!;
-                return new VerifyWarrantyCaseResponse
-                {
-                    IsSuccess = true,
-                    WarrantyCaseResponse = warrantyCaseResponse,
-                    FailureType = null,
-                    FailureMessage = null,
-                };
-            }
-            else
-            {
-                var failure = sourceResult.Failure!;
-                return new VerifyWarrantyCaseResponse
-                {
-                    IsSuccess = false,
-                    WarrantyCaseResponse =
-                        failure is SuccessfulConditionFailure successfulConditionFailure
-                        ? successfulConditionFailure.WarrantyCaseResponse
-                        : failure is VerifyBeforeCommitFailure verifyBeforeCommitFailure
-                        ? verifyBeforeCommitFailure.WarrantyCaseResponse
-                        : preSavedResponse,
-                    FailureType = failure.FailureType,
-                    FailureMessage = failure.Message
-                };
-            }
-        }
-
         internal Result<WarrantyCaseResponse, IFailure> SatisfySuccessfulCondition(
             WarrantyCaseOperation operation,
             bool isPreCommitVerify,
@@ -318,6 +285,39 @@ namespace ControlFlowPractise.Core
                                 warrantyCaseResponse: response)),
                 _ => throw new InvalidOperationException()
             };
+        }
+
+        internal VerifyWarrantyCaseResponse BuidVerifyWarrantyCaseResponse(
+            Result<WarrantyCaseResponse, IFailure> sourceResult,
+            WarrantyCaseResponse? preSavedResponse)
+        {
+            if (sourceResult.IsSuccess)
+            {
+                var warrantyCaseResponse = sourceResult.Success!;
+                return new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = true,
+                    WarrantyCaseResponse = warrantyCaseResponse,
+                    FailureType = null,
+                    FailureMessage = null,
+                };
+            }
+            else
+            {
+                var failure = sourceResult.Failure!;
+                return new VerifyWarrantyCaseResponse
+                {
+                    IsSuccess = false,
+                    WarrantyCaseResponse =
+                        failure is SuccessfulConditionFailure successfulConditionFailure
+                        ? successfulConditionFailure.WarrantyCaseResponse
+                        : failure is VerifyBeforeCommitFailure verifyBeforeCommitFailure
+                        ? verifyBeforeCommitFailure.WarrantyCaseResponse
+                        : preSavedResponse,
+                    FailureType = failure.FailureType,
+                    FailureMessage = failure.Message
+                };
+            }
         }
         #endregion Verify
 

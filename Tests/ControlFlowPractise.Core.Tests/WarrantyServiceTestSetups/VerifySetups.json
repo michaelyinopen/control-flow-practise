@@ -1161,83 +1161,57 @@
     "expectedResponse": {
       "isSuccess": false,
       "warrantyCaseResponse": {
-        "operation": "Commit",
+        "operation": "Verify",
         "orderId": "verify-commit-verify-before-commit-success-condition-failure",
         "warrantyCaseId": "909",
-        "warrantyCaseStatus": "Committed",
+        "warrantyCaseStatus": "Claimed",
         "conformance": true,
         "warrantyEstimatedAmount": 69,
         "warrantyAmount": 69,
         "conformanceMessages": [
           {
             "level": "Information",
-            "message": "The warranty case is Committed."
+            "message": "Wait until certified to continue."
           }
         ]
       },
-      "failureType": null,
-      "failureMessage": null
+      "failureType": "VerifyBeforeCommitFailure",
+      "failureMessage": "Some error message about pre-Commit Verify failed successful condition."
     },
-    "expectedWarrantyCaseVerificationCount": 4,
+    "expectedWarrantyCaseVerificationCount": 3,
     "expectedWarrantyCaseVerifications": [
       {
         "orderId": "verify-commit-verify-before-commit-success-condition-failure",
         "warrantyCaseId": "909",
         "operation": "Verify",
-        "warrantyCaseStatus": "Certified",
+        "warrantyCaseStatus": "Claimed",
         "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
         "calledExternalParty": true,
         "calledWithResponse": true,
         "responseHasNoError": true,
         "failureType": null,
         "failureMessage": null,
-        "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"Certified\",\"conformance\":true,\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Certified and ready to commit.\"}]}"
-      },
-      {
-        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
-        "warrantyCaseId": "909",
-        "operation": "Commit",
-        "warrantyCaseStatus": "Committed",
-        "requestId": "7002426a-03b9-4bef-a676-6341043520a6",
-        "calledExternalParty": true,
-        "calledWithResponse": true,
-        "responseHasNoError": true,
-        "failureType": null,
-        "failureMessage": null,
-        "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"Committed\",\"conformance\":true,\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"The warranty case is Committed.\"}]}"
+        "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":true,\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}]}"
       }
     ],
-    "expectedWarrantyProofCount": 1,
-    "expectedWarrantyProofs": [
-      {
-        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
-        "warrantyCaseId": "909",
-        "requestId": "7002426a-03b9-4bef-a676-6341043520a6",
-        "proof": "verify-commit-verify-before-commit-success-condition-failure:504480(622)"
-      }
-    ],
-    "expectedExternalPartyRequestCount": 4,
+    "expectedWarrantyProofCount": 0,
+    "expectedWarrantyProofs": [],
+    "expectedExternalPartyRequestCount": 3,
     "expectedExternalPartyRequests": [
       {
         "orderId": "verify-commit-verify-before-commit-success-condition-failure",
         "operation": "Verify",
         "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
         "request": "{\"requestId\":\"9245f4c0-1987-426f-9212-0238b40f1892\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"productDetails\":[{\"productId\":\"923\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Pascal\",\"lastName\":\"Pemberton\",\"email\":\"pascal.pemberton@email.com\"},\"vendorDetail\":{\"firstName\":\"Rumaisa\",\"lastName\":\"Ballard\",\"email\":\"rumaisa.ballard@email.com\",\"phoneNumber\":\"0491 570 158\"},\"orderTrackingNumber\":null}]}"
-      },
-      {
-        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
-        "operation": "Commit",
-        "requestId": "7002426a-03b9-4bef-a676-6341043520a6",
-        "request": "{\"requestId\":\"7002426a-03b9-4bef-a676-6341043520a6\",\"requestType\":\"Commit\",\"action\":null,\"warrantyCaseId\":\"909\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"productDetails\":[{\"productId\":\"923\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Pascal\",\"lastName\":\"Pemberton\",\"email\":\"pascal.pemberton@email.com\"},\"vendorDetail\":{\"firstName\":\"Rumaisa\",\"lastName\":\"Ballard\",\"email\":\"rumaisa.ballard@email.com\",\"phoneNumber\":\"0491 570 158\"},\"orderTrackingNumber\":\"504480\"}]}"
       }
     ],
-    "expectedExternalPartyResponseCount": 4,
+    "expectedExternalPartyResponseCount": 3,
     "expectedExternalPartyResponses": [
       {
         "orderId": "verify-commit-verify-before-commit-success-condition-failure",
         "operation": "Verify",
         "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
-        "response": "{\"header\":{\"requestId\":\"9245f4c0-1987-426f-9212-0238b40f1892\",\"responseId\":\"c719aa28-827f-451e-a2ff-7190b36659b7\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Certified\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Certified and ready to commit.\"}],\"warrantyProof\":null}]}}"
+        "response": "{\"header\":{\"requestId\":\"9245f4c0-1987-426f-9212-0238b40f1892\",\"responseId\":\"19a2c121-5664-45f9-ad96-39bfc93a2636\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Claimed\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}],\"warrantyProof\":null}]}}"
       }
     ]
   }
