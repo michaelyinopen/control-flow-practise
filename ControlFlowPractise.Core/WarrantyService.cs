@@ -54,52 +54,73 @@ namespace ControlFlowPractise.Core
         public async Task<VerifyWarrantyCaseResponse> Verify(
             VerifyWarrantyCaseRequest request)
         {
-            var preCommitVerifyResult = await PreCommitVerify(request);
-            if (!preCommitVerifyResult.IsSuccess)
-            {
-                var failure = preCommitVerifyResult.Failure!;
-                var failureResponse = BuidVerifyWarrantyCaseResponse(
-                    request,
-                    new Result<WarrantyCaseResponse, IFailure>(failure));
-                return failureResponse;
-            }
+            if (request.Operation != WarrantyCaseOperation.Commit)
+                return await VerifyNonCommit(request);
+            else
+                return await VerifyCommit(request);
+        }
 
+        public async Task<VerifyWarrantyCaseResponse> VerifyNonCommit(
+            VerifyWarrantyCaseRequest request)
+        {
             var requestId = RequestIdGenerator.GenerateRequestId();
             var operation = request.Operation;
 
             var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
             var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
-            var verifyWarrantyCaseResponse = BuidVerifyWarrantyCaseResponse(request, saveResult);
+            var successfulConditionResult = SatisfySuccessfulCondition(operation, false, saveResult);
+            var verifyWarrantyCaseResponse = BuidVerifyWarrantyCaseResponse(successfulConditionResult);
             return verifyWarrantyCaseResponse;
         }
 
-        internal async Task<Result<Unit, VerifyBeforeCommitFailure>> PreCommitVerify(
+        public async Task<VerifyWarrantyCaseResponse> VerifyCommit(
             VerifyWarrantyCaseRequest request)
         {
-            if (request.Operation != WarrantyCaseOperation.Commit)
-                return new Result<Unit, VerifyBeforeCommitFailure>(Unit.Value);
+            throw new NotImplementedException();
+            //var preCommitVerifyRequestId = RequestIdGenerator.GenerateRequestId();
 
-            var requestId = RequestIdGenerator.GenerateRequestId();
-            var operation = WarrantyCaseOperation.Verify;
+            //var performVerifyActionResult = await PerformVerifyAction(
+            //    request,
+            //    WarrantyCaseOperation.Verify,
+            //    preCommitVerifyRequestId);
+            //var savePreCommitVerifyResult = await SaveWarrantyCaseResponse(
+            //    request,
+            //    WarrantyCaseOperation.Verify,
+            //    preCommitVerifyRequestId,
+            //    performVerifyActionResult);
+            //if (!savePreCommitVerifyResult.IsSuccess)
+            //{
+            //    var failure = savePreCommitVerifyResult.Failure!;
+            //    return new Result<Unit, VerifyBeforeCommitFailure>(
+            //        new VerifyBeforeCommitFailure($"Pre-commit verification failed RequestId: `{requestId}`, FailureType: `{failure.FailureType}`, FailureMessage: `{failure.Message}`."));
+            //    // return BuidVerifyWarrantyCaseResponse
+            //}
+            //var warrantyCaseResponse = savePreCommitVerifyResult.Success!;
 
-            var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
+            //var isSuccess = warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Certified
+            //    || warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+            //    || warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Completed;
+            //return isSuccess
+            //    ? new Result<Unit, VerifyBeforeCommitFailure>(Unit.Value)
+            //    : new Result<Unit, VerifyBeforeCommitFailure>(
+            //        new VerifyBeforeCommitFailure("Pre-commit verification response does not have Case Status Certified or above."));
+            //var preCommitVerifyResult = await PreCommitVerify(request);
+            //if (!preCommitVerifyResult.IsSuccess)
+            //{
+            //    var failure = preCommitVerifyResult.Failure!;
+            //    var failureResponse = BuidVerifyWarrantyCaseResponse(
+            //        request,
+            //        new Result<WarrantyCaseResponse, IFailure>(failure));
+            //    return failureResponse;
+            //}
 
-            var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
-            if (!saveResult.IsSuccess)
-            {
-                var failure = saveResult.Failure!;
-                return new Result<Unit, VerifyBeforeCommitFailure>(
-                    new VerifyBeforeCommitFailure($"Pre-commit verification failed RequestId: `{requestId}`, FailureType: `{failure.FailureType}`, FailureMessage: `{failure.Message}`."));
-            }
-            var warrantyCaseResponse = saveResult.Success!;
+            //var requestId = RequestIdGenerator.GenerateRequestId();
+            //var operation = request.Operation;
 
-            var isSuccess = warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Certified
-                || warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Committed
-                || warrantyCaseResponse.WarrantyCaseStatus == WarrantyCaseStatus.Completed;
-            return isSuccess
-                ? new Result<Unit, VerifyBeforeCommitFailure>(Unit.Value)
-                : new Result<Unit, VerifyBeforeCommitFailure>(
-                    new VerifyBeforeCommitFailure("Pre-commit verification response does not have Case Status Certified or above."));
+            //var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
+            //var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
+            //var verifyWarrantyCaseResponse = BuidVerifyWarrantyCaseResponse(request, savePreCommitVerifyResult);
+            //return verifyWarrantyCaseResponse;
         }
 
         // success means called Thrid Party, saved raw request and raw response, (and saved warrantyProof), and returns a converted response
@@ -237,38 +258,17 @@ namespace ControlFlowPractise.Core
         }
 
         internal VerifyWarrantyCaseResponse BuidVerifyWarrantyCaseResponse(
-            VerifyWarrantyCaseRequest request,
             Result<WarrantyCaseResponse, IFailure> sourceResult)
         {
             if (sourceResult.IsSuccess)
             {
                 var warrantyCaseResponse = sourceResult.Success!;
-
-                bool isSuccess;
-                FailureType? failureType;
-                string? failureMessage;
-
-                var successfulConditionResult = SatisfySuccessfulCondition(request, warrantyCaseResponse);
-                if (successfulConditionResult.IsSuccess)
-                {
-                    isSuccess = true;
-                    failureType = null;
-                    failureMessage = null;
-                }
-                else
-                {
-                    var successfulConditionFailure = successfulConditionResult.Failure!;
-                    isSuccess = false;
-                    failureType = FailureType.SuccessfulConditionFailure;
-                    failureMessage = successfulConditionFailure.Message;
-                }
-
                 return new VerifyWarrantyCaseResponse
                 {
-                    IsSuccess = isSuccess,
+                    IsSuccess = true,
                     WarrantyCaseResponse = warrantyCaseResponse,
-                    FailureType = failureType,
-                    FailureMessage = failureMessage
+                    FailureType = null,
+                    FailureMessage = null,
                 };
             }
             else
@@ -277,45 +277,55 @@ namespace ControlFlowPractise.Core
                 return new VerifyWarrantyCaseResponse
                 {
                     IsSuccess = false,
+                    WarrantyCaseResponse = failure is SuccessfulConditionFailure successfulConditionFailure
+                        ? successfulConditionFailure.WarrantyCaseResponse
+                        : null,
                     FailureType = failure.FailureType,
                     FailureMessage = failure.Message
                 };
             }
         }
 
-        internal Result<Unit, SuccessfulConditionFailure> SatisfySuccessfulCondition(
-            VerifyWarrantyCaseRequest request,
-            WarrantyCaseResponse response)
+        internal Result<WarrantyCaseResponse, IFailure> SatisfySuccessfulCondition(
+            WarrantyCaseOperation operation,
+            bool isPreCommitVerify,
+            Result<WarrantyCaseResponse, IFailure> responseResult)
         {
-            switch (request.Operation)
+            if (!responseResult.IsSuccess)
+                return new Result<WarrantyCaseResponse, IFailure>(responseResult.Failure!);
+
+            var response = responseResult.Success!;
+            var successResult = new Result<WarrantyCaseResponse, IFailure>(response);
+            return operation switch
             {
-                case WarrantyCaseOperation.Create:
-                case WarrantyCaseOperation.Verify:
-                    return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
-                case WarrantyCaseOperation.Commit:
-                    if (response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
-                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed)
-                    {
-                        return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
-                    }
-                    else
-                    {
-                        return new Result<Unit, SuccessfulConditionFailure>(
-                            new SuccessfulConditionFailure("Cancel operation did not have resposne of WarrantyCaseStatus Committed or Completed"));
-                    }
-                case WarrantyCaseOperation.Cancel:
-                    if (response.WarrantyCaseStatus == WarrantyCaseStatus.Cancelled)
-                    {
-                        return new Result<Unit, SuccessfulConditionFailure>(Unit.Value);
-                    }
-                    else
-                    {
-                        return new Result<Unit, SuccessfulConditionFailure>(
-                            new SuccessfulConditionFailure("Cancel operation did not have resposne of WarrantyCaseStatus Cancelled"));
-                    }
-                default:
-                    throw new InvalidOperationException();
-            }
+                WarrantyCaseOperation.Create => successResult,
+                WarrantyCaseOperation.Verify when isPreCommitVerify =>
+                    response.WarrantyCaseStatus == WarrantyCaseStatus.Certified
+                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed
+                        ? successResult
+                        : new Result<WarrantyCaseResponse, IFailure>(
+                            new SuccessfulConditionFailure(
+                                message: "Pre-commit Verify operation did not have response of WarrantyCaseStatus Certified, Committed or Completed",
+                                warrantyCaseResponse: response)),
+                WarrantyCaseOperation.Verify => successResult,
+                WarrantyCaseOperation.Commit =>
+                    response.WarrantyCaseStatus == WarrantyCaseStatus.Committed
+                        || response.WarrantyCaseStatus == WarrantyCaseStatus.Completed
+                        ? successResult
+                        : new Result<WarrantyCaseResponse, IFailure>(
+                            new SuccessfulConditionFailure(
+                                message: "Commit operation did not have response of WarrantyCaseStatus Committed or Completed",
+                                warrantyCaseResponse: response)),
+                WarrantyCaseOperation.Cancel =>
+                    response.WarrantyCaseStatus == WarrantyCaseStatus.Cancelled
+                        ? successResult
+                        : new Result<WarrantyCaseResponse, IFailure>(
+                            new SuccessfulConditionFailure(
+                                message: "Cancel operation did not have response of WarrantyCaseStatus Cancelled",
+                                warrantyCaseResponse: response)),
+                _ => throw new InvalidOperationException()
+            };
         }
         #endregion Verify
 

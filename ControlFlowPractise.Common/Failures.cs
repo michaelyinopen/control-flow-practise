@@ -20,11 +20,11 @@ namespace ControlFlowPractise.Common
         ResponseConversionFailure,
         SaveWarrantyCaseVerificationFailure,
         SuccessfulConditionFailure,
+        VerifyBeforeCommitFailure,
         NetworkFailure,
         ServiceNotAvailableFailure,
         InvalidRequestFailure,
-        WarrantyServiceInternalErrorFailure,
-        VerifyBeforeCommitFailure
+        WarrantyServiceInternalErrorFailure
     }
 
     public interface IFailure
@@ -176,9 +176,29 @@ namespace ControlFlowPractise.Common
     {
         public FailureType FailureType { get; } = FailureType.SuccessfulConditionFailure;
         public string Message { get; }
-        public SuccessfulConditionFailure(string message)
+        public WarrantyCaseResponse WarrantyCaseResponse { get; }
+        public SuccessfulConditionFailure(
+            string message,
+            WarrantyCaseResponse warrantyCaseResponse)
         {
             Message = message;
+            WarrantyCaseResponse = warrantyCaseResponse;
+        }
+    }
+
+    public class VerifyBeforeCommitFailure : IFailure
+    {
+        public FailureType FailureType { get; } = FailureType.VerifyBeforeCommitFailure;
+        public string Message { get; }
+
+        // if VerifyBeforeCommitFailure is saved but successful condition failed
+        public WarrantyCaseResponse? WarrantyCaseResponse { get; }// if VerifyBeforeCommitFailure is saved but successful condition failed
+        public VerifyBeforeCommitFailure(
+            string message,
+            WarrantyCaseResponse? warrantyCaseResponse)
+        {
+            Message = message;
+            WarrantyCaseResponse = warrantyCaseResponse;
         }
     }
     #endregion internal failures
@@ -224,14 +244,4 @@ namespace ControlFlowPractise.Common
         }
     }
     #endregion external party returned error
-
-    public class VerifyBeforeCommitFailure : IFailure
-    {
-        public FailureType FailureType { get; } = FailureType.VerifyBeforeCommitFailure;
-        public string Message { get; }
-        public VerifyBeforeCommitFailure(string message)
-        {
-            Message = message;
-        }
-    }
 }

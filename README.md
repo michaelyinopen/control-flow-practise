@@ -132,6 +132,8 @@ Just use `Result` and `Unit`. Yes, the maps, binds are missing, and code is impe
 
 Violating some core principles of Functional Programming, because this way is easy(familiar).
 
+Result.Failure can carry more information, e.g. SuccessfulConditionFailure has WarrantyCaseResponse. 
+
 ## Success Condition
 There could be cases where successful response, but expected `Indicator` and `CaseStatus` does not meet the condition for success, therefore overall is a failure. Need a way to represent this. (Failure with VerifyWarrantyCaseResponse as a property?)
 
@@ -140,6 +142,11 @@ Http response structure
 {
   Success: bool
   // can have value even if there is failure
+  // If there is saved WarrantyCaseVerification without failure,
+  // there will be a response
+  // e.g. there will be response if
+  // - PreCommitVerify saved but failed successful condition
+  // - Commit saved but failed successful condition
   Respose?: VerifyWarrantyCaseResponse
   Failure?: something,
 }
@@ -191,7 +198,7 @@ It is difficult to test each function in isolation, only by inspecting external 
 4. how to apply migration??
 
 ### Remove migration
-`Remove-Migration` -Context ComprehensiveDataDbContext
+`Remove-Migration -Context ComprehensiveDataDbContext`
 
 ## Test with Postman
 Import `control-flow-practise\Postman\control-flow-practise.postman_collection.json` to postman, launch Api and make requests.

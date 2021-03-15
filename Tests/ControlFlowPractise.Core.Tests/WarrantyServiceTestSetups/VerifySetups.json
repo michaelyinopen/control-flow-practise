@@ -1006,5 +1006,239 @@
         "response": "{\"header\":{\"requestId\":\"7002426a-03b9-4bef-a676-6341043520a6\",\"responseId\":\"717be386-a90a-4ee0-8e68-1ad7ddbe95a1\",\"requestType\":\"Commit\",\"action\":null,\"warrantyCaseId\":\"616\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Committed\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-commit-success\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"The warranty case is Committed.\"}],\"warrantyProof\":\"verify-commit-success:504480(622)\"}]}}"
       }
     ]
+  },
+
+  // verify-commit-verify-before-commit-success-condition-failure
+  // BudgetDatabase ExternalPartyRequest
+  // External Party Called
+  // BudgetDatabase ExternalPartyResponse
+  // ComprehensiveDatabase WarrantyCaseVerification
+  // response
+  {
+    "tagertTest": "verify-commit-verify-before-commit-success-condition-failure",
+    "warrantyCaseVerificationTestSetups": [
+      {
+        "insertOrder": 1,
+        "warrantyCaseVerification": {
+          "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+          "warrantyCaseId": "909",
+          "operation": "Create",
+          "warrantyCaseStatus": "WaitingForClaim",
+          "requestId": "9d00174b-9cd4-4939-8b83-95d3499dc1a6",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":true,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+        }
+      },
+      {
+        "insertOrder": 2,
+        "warrantyCaseVerification": {
+          "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+          "warrantyCaseId": "909",
+          "operation": "Verify",
+          "warrantyCaseStatus": "Claimed",
+          "requestId": "e5c69ff9-7acf-4691-9239-5388830ff4c6",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":true,\"warrantyEstimatedAmount\":69,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}]}"
+        }
+      }
+    ],
+    "ExternalPartyRequests": [
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Create",
+        "requestId": "9d00174b-9cd4-4939-8b83-95d3499dc1a6",
+        "request": "{\"requestId\":\"7002426a-03b9-4bef-a676-6341043520a6\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":null,\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"productDetails\":[{\"productId\":\"923\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Pascal\",\"lastName\":\"Pemberton\",\"email\":\"pascal.pemberton@email.com\"},\"vendorDetail\":{\"firstName\":\"Rumaisa\",\"lastName\":\"Ballard\",\"email\":\"rumaisa.ballard@email.com\",\"phoneNumber\":\"0491 570 158\"},\"orderTrackingNumber\":null}]}"
+      },
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Verify",
+        "requestId": "e5c69ff9-7acf-4691-9239-5388830ff4c6",
+        "request": "{\"requestId\":\"e5c69ff9-7acf-4691-9239-5388830ff4c6\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"productDetails\":[{\"productId\":\"923\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Pascal\",\"lastName\":\"Pemberton\",\"email\":\"pascal.pemberton@email.com\"},\"vendorDetail\":{\"firstName\":\"Rumaisa\",\"lastName\":\"Ballard\",\"email\":\"rumaisa.ballard@email.com\",\"phoneNumber\":\"0491 570 158\"},\"orderTrackingNumber\":null}]}"
+      }
+    ],
+    "ExternalPartyResponses": [
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Create",
+        "requestId": "9d00174b-9cd4-4939-8b83-95d3499dc1a6",
+        "response": "{\"header\":{\"requestId\":\"9d00174b-9cd4-4939-8b83-95d3499dc1a6\",\"responseId\":\"d012728e-ce77-411e-b4d1-39b111c70809\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"WaitingForClaim\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}],\"warrantyProof\":null}]}}"
+      },
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Verify",
+        "requestId": "e5c69ff9-7acf-4691-9239-5388830ff4c6",
+        "response": "{\"header\":{\"requestId\":\"e5c69ff9-7acf-4691-9239-5388830ff4c6\",\"responseId\":\"a4ab3ac8-5fa5-41ac-a26a-aabe3c6ff3ca\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Claimed\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":69,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}],\"warrantyProof\":null}]}}"
+      }
+    ],
+    "request": {
+      "operation": "Commit",
+      "warrantyCaseId": "909",
+      "transactionDateTime": "2021-03-04T00:52:00Z",
+      "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+      "productId": "923",
+      "purchaserFirstName": "Pascal",
+      "purchaserLastName": "Pemberton",
+      "purchaserEmail": "pascal.pemberton@email.com",
+      "vendorFirstName": "Rumaisa",
+      "vendorLastName": "Ballard",
+      "vendorEmail": "rumaisa.ballard@email.com",
+      "vendorPhoneNumber": "0491 570 158",
+      "OrderTrackingNumber": "557404"
+    },
+    "requestIds": [ "9245f4c0-1987-426f-9212-0238b40f1892" ],
+    "externalPartyCalls": [
+      {
+        "expectedRequest": {
+          "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
+          "requestType": "Verify",
+          "action": null,
+          "warrantyCaseId": "909",
+          "transactionDate": "2021-03-04T11:52:00+11:00",
+          "orderDetails": [
+            {
+              "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+              "productDetails": [
+                {
+                  "productId": "923",
+                  "specification": null
+                }
+              ],
+              "purchaserDetail": {
+                "firstName": "Pascal",
+                "lastName": "Pemberton",
+                "email": "pascal.pemberton@email.com"
+              },
+              "vendorDetail": {
+                "firstName": "Rumaisa",
+                "lastName": "Ballard",
+                "email": "rumaisa.ballard@email.com",
+                "phoneNumber": "0491 570 158"
+              },
+              "orderTrackingNumber": null
+            }
+          ]
+        },
+        "throws": false,
+        "response": {
+          "header": {
+            "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
+            "responseId": "19a2c121-5664-45f9-ad96-39bfc93a2636",
+            "requestType": "Verify",
+            "action": null,
+            "warrantyCaseId": "909",
+            "warrantyResponseErrors": []
+          },
+          "body": {
+            "caseStatus": "Claimed",
+            "conformanceIndicator": "YES",
+            "orderReports": [
+              {
+                "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+                "conformanceIndicator": "YES",
+                "warrantyEstimatedAmount": 69,
+                "warrantyAmount": 69,
+                "conformanceMessages": [
+                  {
+                    "level": "Information",
+                    "message": "Wait until certified to continue."
+                  }
+                ],
+                "warrantyProof": null
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "expectedResponse": {
+      "isSuccess": false,
+      "warrantyCaseResponse": {
+        "operation": "Commit",
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "warrantyCaseId": "909",
+        "warrantyCaseStatus": "Committed",
+        "conformance": true,
+        "warrantyEstimatedAmount": 69,
+        "warrantyAmount": 69,
+        "conformanceMessages": [
+          {
+            "level": "Information",
+            "message": "The warranty case is Committed."
+          }
+        ]
+      },
+      "failureType": null,
+      "failureMessage": null
+    },
+    "expectedWarrantyCaseVerificationCount": 4,
+    "expectedWarrantyCaseVerifications": [
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "warrantyCaseId": "909",
+        "operation": "Verify",
+        "warrantyCaseStatus": "Certified",
+        "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
+        "calledExternalParty": true,
+        "calledWithResponse": true,
+        "responseHasNoError": true,
+        "failureType": null,
+        "failureMessage": null,
+        "convertedResponse": "{\"operation\":\"Verify\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"Certified\",\"conformance\":true,\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Certified and ready to commit.\"}]}"
+      },
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "warrantyCaseId": "909",
+        "operation": "Commit",
+        "warrantyCaseStatus": "Committed",
+        "requestId": "7002426a-03b9-4bef-a676-6341043520a6",
+        "calledExternalParty": true,
+        "calledWithResponse": true,
+        "responseHasNoError": true,
+        "failureType": null,
+        "failureMessage": null,
+        "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"warrantyCaseId\":\"909\",\"warrantyCaseStatus\":\"Committed\",\"conformance\":true,\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"The warranty case is Committed.\"}]}"
+      }
+    ],
+    "expectedWarrantyProofCount": 1,
+    "expectedWarrantyProofs": [
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "warrantyCaseId": "909",
+        "requestId": "7002426a-03b9-4bef-a676-6341043520a6",
+        "proof": "verify-commit-verify-before-commit-success-condition-failure:504480(622)"
+      }
+    ],
+    "expectedExternalPartyRequestCount": 4,
+    "expectedExternalPartyRequests": [
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Verify",
+        "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
+        "request": "{\"requestId\":\"9245f4c0-1987-426f-9212-0238b40f1892\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"productDetails\":[{\"productId\":\"923\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Pascal\",\"lastName\":\"Pemberton\",\"email\":\"pascal.pemberton@email.com\"},\"vendorDetail\":{\"firstName\":\"Rumaisa\",\"lastName\":\"Ballard\",\"email\":\"rumaisa.ballard@email.com\",\"phoneNumber\":\"0491 570 158\"},\"orderTrackingNumber\":null}]}"
+      },
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Commit",
+        "requestId": "7002426a-03b9-4bef-a676-6341043520a6",
+        "request": "{\"requestId\":\"7002426a-03b9-4bef-a676-6341043520a6\",\"requestType\":\"Commit\",\"action\":null,\"warrantyCaseId\":\"909\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"productDetails\":[{\"productId\":\"923\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Pascal\",\"lastName\":\"Pemberton\",\"email\":\"pascal.pemberton@email.com\"},\"vendorDetail\":{\"firstName\":\"Rumaisa\",\"lastName\":\"Ballard\",\"email\":\"rumaisa.ballard@email.com\",\"phoneNumber\":\"0491 570 158\"},\"orderTrackingNumber\":\"504480\"}]}"
+      }
+    ],
+    "expectedExternalPartyResponseCount": 4,
+    "expectedExternalPartyResponses": [
+      {
+        "orderId": "verify-commit-verify-before-commit-success-condition-failure",
+        "operation": "Verify",
+        "requestId": "9245f4c0-1987-426f-9212-0238b40f1892",
+        "response": "{\"header\":{\"requestId\":\"9245f4c0-1987-426f-9212-0238b40f1892\",\"responseId\":\"c719aa28-827f-451e-a2ff-7190b36659b7\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"909\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Certified\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-commit-verify-before-commit-success-condition-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":69,\"warrantyAmount\":69,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Certified and ready to commit.\"}],\"warrantyProof\":null}]}}"
+      }
+    ]
   }
 ]
