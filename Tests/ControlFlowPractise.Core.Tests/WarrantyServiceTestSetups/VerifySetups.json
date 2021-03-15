@@ -374,7 +374,7 @@
     ]
   },
 
-  // verify-verify-success-non-conformance
+  // verify-verify-success-non-conformance (updated to wrong data)
   // - BudgetDatabase ExternalPartyRequest
   // - External Party Called
   // - BudgetDatabase ExternalPartyResponse
@@ -549,6 +549,158 @@
         "operation": "Verify",
         "requestId": "a58a4d18-82a1-4566-bc20-77941e883269",
         "response": "{\"header\":{\"requestId\":\"a58a4d18-82a1-4566-bc20-77941e883269\",\"responseId\":\"d9f082b9-950d-4882-9493-dac5167f3f16\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"972\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Claimed\",\"conformanceIndicator\":\"NO\",\"orderReports\":[{\"orderId\":\"verify-verify-success-non-conformance\",\"conformanceIndicator\":\"NO\",\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Error\",\"message\":\"Incorrect vendor phone number.\"}],\"warrantyProof\":null}]}}"
+      }
+    ]
+  },
+
+  // verify-verify-warranty-service-internal-error
+  // - BudgetDatabase ExternalPartyRequest
+  // - External Party Called
+  // - BudgetDatabase ExternalPartyResponse
+  // - ComprehensiveDatabase WarrantyCaseVerification
+  // - response
+  {
+    "tagertTest": "verify-verify-warranty-service-internal-error",
+    "warrantyCaseVerificationTestSetups": [
+      {
+        "insertOrder": 1,
+        "warrantyCaseVerification": {
+          "orderId": "verify-verify-warranty-service-internal-error",
+          "warrantyCaseId": "358",
+          "operation": "Create",
+          "warrantyCaseStatus": "WaitingForClaim",
+          "requestId": "e9db8ab2-a768-4097-9668-8fbfdf94a24c",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Create\",\"orderId\":\"verify-verify-warranty-service-internal-error\",\"warrantyCaseId\":\"358\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":true,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+        }
+      }
+    ],
+    "ExternalPartyRequests": [
+      {
+        "orderId": "verify-verify-warranty-service-internal-error",
+        "operation": "Create",
+        "requestId": "e9db8ab2-a768-4097-9668-8fbfdf94a24c",
+        "Request": "{\"requestId\":\"e9db8ab2-a768-4097-9668-8fbfdf94a24c\",\"requestType\":\"Create\",\"action\":null,\"warrantyCaseId\":\"358\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-verify-warranty-service-internal-error\",\"productDetails\":[{\"productId\":\"513\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Jasleen\",\"lastName\":\"Coates\",\"email\":\"jasleen.coates@email.com\"},\"vendorDetail\":{\"firstName\":\"Izaac\",\"lastName\":\"Mullen\",\"email\":\"izaac.mullen@email.com\",\"phoneNumber\":\"0491 570 157\"},\"orderTrackingNumber\":null}]}"
+      }
+    ],
+    "ExternalPartyResponses": [
+      {
+        "orderId": "verify-verify-warranty-service-internal-error",
+        "operation": "Create",
+        "requestId": "e9db8ab2-a768-4097-9668-8fbfdf94a24c",
+        "Response": "{\"header\":{\"requestId\":\"e9db8ab2-a768-4097-9668-8fbfdf94a24c\",\"responseId\":\"fc9ba221-316a-4b41-9265-cb7d2ff36d03\",\"requestType\":\"Create\",\"action\":null,\"warrantyCaseId\":\"358\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"WaitingForClaim\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-create-success\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}],\"warrantyProof\":null}]}}"
+      }
+    ],
+    "request": {
+      "operation": "Verify",
+      "warrantyCaseId": "358",
+      "transactionDateTime": "2021-03-04T00:52:00Z",
+      "orderId": "verify-verify-warranty-service-internal-error",
+      "productId": "513",
+      "purchaserFirstName": "Jasleen",
+      "purchaserLastName": "Coates",
+      "purchaserEmail": "jasleen.coates@email.com",
+      "vendorFirstName": "Izaac",
+      "vendorLastName": "Mullen",
+      "vendorEmail": "izaac.mullen@email.com",
+      "vendorPhoneNumber": "0000 000 000" // change to a wrong phone number
+    },
+    "requestIds": [ "cc5a2c7b-d19f-4508-b03d-c1a2a774aa51" ],
+    "externalPartyCalls": [
+      {
+        "expectedRequest": {
+          "requestId": "cc5a2c7b-d19f-4508-b03d-c1a2a774aa51",
+          "requestType": "Verify",
+          "action": null,
+          "warrantyCaseId": "358",
+          "transactionDate": "2021-03-04T11:52:00+11:00",
+          "orderDetails": [
+            {
+              "orderId": "verify-verify-warranty-service-internal-error",
+              "productDetails": [
+                {
+                  "productId": "513",
+                  "specification": null
+                }
+              ],
+              "purchaserDetail": {
+                "firstName": "Jasleen",
+                "lastName": "Coates",
+                "email": "jasleen.coates@email.com"
+              },
+              "vendorDetail": {
+                "firstName": "Izaac",
+                "lastName": "Mullen",
+                "email": "izaac.mullen@email.com",
+                "phoneNumber": "0000 000 000"
+              },
+              "orderTrackingNumber": null
+            }
+          ]
+        },
+        "throws": false,
+        "response": {
+          "header": {
+            "requestId": "cc5a2c7b-d19f-4508-b03d-c1a2a774aa51",
+            "responseId": "2e7788fa-7f4f-48e3-9702-f1070267f2bc",
+            "requestType": "Verify",
+            "action": null,
+            "warrantyCaseId": "358",
+            "warrantyResponseErrors": [
+              {
+                "type": "InternalError",
+                "message":  "Something went wrong."
+              }
+            ]
+          },
+          "body": null
+        }
+      }
+    ],
+    "expectedResponse": {
+      "isSuccess": false,
+      "warrantyCaseResponse": null,
+      "failureType": "WarrantyServiceInternalErrorFailure",
+      "failureMessage": "Something"
+    },
+    "expectedWarrantyCaseVerificationCount": 2,
+    "expectedWarrantyCaseVerifications": [
+      {
+        "orderId": "verify-verify-warranty-service-internal-error",
+        "warrantyCaseId": "358",
+        "operation": "Verify",
+        "warrantyCaseStatus": null,
+        "requestId": "cc5a2c7b-d19f-4508-b03d-c1a2a774aa51",
+        "calledExternalParty": true,
+        "calledWithResponse": true,
+        "responseHasNoError": false,
+        "failureType": "WarrantyServiceInternalErrorFailure",
+        "failureMessage": "Something",
+        "convertedResponse": null
+      }
+    ],
+    "expectedWarrantyProofCount": 0,
+    "expectedWarrantyProofs": [],
+    "expectedExternalPartyRequestCount": 2,
+    "expectedExternalPartyRequests": [
+      {
+        "orderId": "verify-verify-warranty-service-internal-error",
+        "operation": "Verify",
+        "requestId": "cc5a2c7b-d19f-4508-b03d-c1a2a774aa51",
+        "request": "{\"requestId\":\"cc5a2c7b-d19f-4508-b03d-c1a2a774aa51\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"358\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-verify-warranty-service-internal-error\",\"productDetails\":[{\"productId\":\"513\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Jasleen\",\"lastName\":\"Coates\",\"email\":\"jasleen.coates@email.com\"},\"vendorDetail\":{\"firstName\":\"Izaac\",\"lastName\":\"Mullen\",\"email\":\"izaac.mullen@email.com\",\"phoneNumber\":\"0000 000 000\"},\"orderTrackingNumber\":null}]}"
+      }
+    ],
+    "expectedExternalPartyResponseCount": 2,
+    "expectedExternalPartyResponses": [
+      {
+        "orderId": "verify-verify-warranty-service-internal-error",
+        "operation": "Verify",
+        "requestId": "cc5a2c7b-d19f-4508-b03d-c1a2a774aa51",
+        "response": "{\"header\":{\"requestId\":\"cc5a2c7b-d19f-4508-b03d-c1a2a774aa51\",\"responseId\":\"2e7788fa-7f4f-48e3-9702-f1070267f2bc\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"358\",\"warrantyResponseErrors\":[{\"type\":\"InternalError\",\"message\":\"Something went wrong.\"}]},\"body\":null}"
       }
     ]
   }

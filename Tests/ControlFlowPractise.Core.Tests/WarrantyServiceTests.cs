@@ -178,6 +178,9 @@ namespace ControlFlowPractise.Core.Tests
                             .Excluding(v => v.DateTime)
                             .Excluding(v => v.FailureMessage)
                             .Excluding(v => v.ConvertedResponse));
+                    Assert.Equal(
+                        expectedWarrantyCaseVerification.FailureMessage is null,
+                        actualWarrantyCaseVerification.FailureMessage is null);
                     var expectedConvertedResponse = JsonConvert.DeserializeObject<WarrantyCaseResponse?>(expectedWarrantyCaseVerification.ConvertedResponse ?? "");
                     var actualConvertedResponse = JsonConvert.DeserializeObject<WarrantyCaseResponse?>(actualWarrantyCaseVerification.ConvertedResponse ?? "");
                     actualConvertedResponse.Should().BeEquivalentTo(expectedConvertedResponse);
@@ -278,8 +281,6 @@ namespace ControlFlowPractise.Core.Tests
                     testCaseData.ExpectedExternalPartyResponses
                 };
             }
-            // verify-verify-success-NonConformance (updated to wrong data)
-            //
             // verify-verify-WarrantyServiceInternalError-failure
             // BudgetDatabase ExternalPartyRequest
             // External Party Called
