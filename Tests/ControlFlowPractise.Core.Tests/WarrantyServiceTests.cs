@@ -124,13 +124,15 @@ namespace ControlFlowPractise.Core.Tests
             services.AddSingleton(_ => mockedRequestIdGenerator.Object);
 
             List<WarrantyRequest> actualExternalPartyCallRequests = new List<WarrantyRequest>();
+            var externalPartyProxyCallSequence = new MockSequence();
 
             var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>(MockBehavior.Strict);
             foreach (var externalPartyCall in externalPartyCalls)
             {
                 var mockedExternalPartyProxySetup = mockedExternalPartyProxy
-                        .Setup(m => m.Call(It.IsAny<WarrantyRequest>()))
-                        .Callback<WarrantyRequest>(warrantyRequest => actualExternalPartyCallRequests.Add(warrantyRequest));
+                    .InSequence(externalPartyProxyCallSequence)
+                    .Setup(m => m.Call(It.IsAny<WarrantyRequest>()))
+                    .Callback<WarrantyRequest>(warrantyRequest => actualExternalPartyCallRequests.Add(warrantyRequest));
                 if (externalPartyCall.Throws)
                     mockedExternalPartyProxySetup.Throws(new NetworkException());
                 else
@@ -169,7 +171,7 @@ namespace ControlFlowPractise.Core.Tests
                     var actualWarrantyCaseVerification = comprehensiveDbContext.WarrantyCaseVerification
                         .Where(v => v.OrderId == request.OrderId)
                         .OrderByDescending(v => v.DateTime)
-                        .Skip(i)
+                        .Skip(expectedWarrantyCaseVerifications.Count - 1 - i)
                         .First();
                     actualWarrantyCaseVerification.Should().BeEquivalentTo(
                         expectedWarrantyCaseVerification,
@@ -281,20 +283,6 @@ namespace ControlFlowPractise.Core.Tests
                     testCaseData.ExpectedExternalPartyResponses
                 };
             }
-            // verify-verify-WarrantyServiceInternalError-failure
-            // BudgetDatabase ExternalPartyRequest
-            // External Party Called
-            // BudgetDatabase ExternalPartyResponse
-            // ComprehensiveDatabase WarrantyCaseVerification
-            // response
-            //
-            // verify-commit-success
-            // BudgetDatabase ExternalPartyRequest x2
-            // External Party Called x2
-            // BudgetDatabase ExternalPartyResponse x2
-            // ComprehensiveDatabase WarrantyCaseVerification x2
-            // response
-            //
             // verify-commit-VerifyBeforeCommit-success-condition-failure
             // BudgetDatabase ExternalPartyRequest
             // External Party Called

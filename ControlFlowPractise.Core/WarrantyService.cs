@@ -54,9 +54,6 @@ namespace ControlFlowPractise.Core
         public async Task<VerifyWarrantyCaseResponse> Verify(
             VerifyWarrantyCaseRequest request)
         {
-            var requestId = RequestIdGenerator.GenerateRequestId();
-            var operation = request.Operation;
-
             var preCommitVerifyResult = await PreCommitVerify(request);
             if (!preCommitVerifyResult.IsSuccess)
             {
@@ -66,6 +63,9 @@ namespace ControlFlowPractise.Core
                     new Result<WarrantyCaseResponse, IFailure>(failure));
                 return failureResponse;
             }
+
+            var requestId = RequestIdGenerator.GenerateRequestId();
+            var operation = request.Operation;
 
             var performVerifyActionResult = await PerformVerifyAction(request, operation, requestId);
             var saveResult = await SaveWarrantyCaseResponse(request, operation, requestId, performVerifyActionResult);
