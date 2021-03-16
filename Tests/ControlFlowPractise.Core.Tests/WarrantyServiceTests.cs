@@ -283,13 +283,6 @@ namespace ControlFlowPractise.Core.Tests
                     testCaseData.ExpectedExternalPartyResponses
                 };
             }
-            //
-            // verify-commit-success-condition-failure
-            // BudgetDatabase ExternalPartyRequest x2
-            // External Party Called x2
-            // BudgetDatabase ExternalPartyResponse x2
-            // ComprehensiveDatabase WarrantyCaseVerification x2
-            // response
 
             // verify-cancel-success
             //
