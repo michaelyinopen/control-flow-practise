@@ -31,9 +31,9 @@ namespace ControlFlowPractise.Core.Tests
         {
             var services = new ServiceCollection();
             services.AddDbContextPool<BudgetDataDbContext>(options =>
-                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestBudgetDataDb"));
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestCoreBudgetDataDb"));
             services.AddDbContextPool<ComprehensiveDataDbContext>(options =>
-                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb"));
+                options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestCoreComprehensiveDataDb"));
 
             var mockedExternalPartyProxy = new Mock<IExternalPartyProxy>(MockBehavior.Strict);
             services.AddScoped(_ => mockedExternalPartyProxy.Object);

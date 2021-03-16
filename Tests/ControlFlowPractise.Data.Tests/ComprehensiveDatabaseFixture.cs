@@ -1,27 +1,32 @@
 ﻿using ControlFlowPractise.ComprehensiveData;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace ControlFlowPractise.Data.Tests
 {
-    public class ComprehensiveDatabaseFixture : IDisposable
+    public class ComprehensiveDatabaseFixture : IAsyncLifetime
     {
+        public DbContextOptions<ComprehensiveDataDbContext> DbContextOptions { get; private set; }
+
         public ComprehensiveDatabaseFixture()
         {
             DbContextOptions = new DbContextOptionsBuilder<ComprehensiveDataDbContext>()
                 .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ControlFlowPractise.TestComprehensiveDataDb")
                 .Options;
-
-            using var context = new ComprehensiveDataDbContext(DbContextOptions);
-            context.Database.Migrate();
         }
 
-        public void Dispose()
+        public async Task InitializeAsync()
         {
             using var context = new ComprehensiveDataDbContext(DbContextOptions);
-            context.Database.EnsureDeleted();
+            await context.Database.EnsureDeletedAsync();
+            await context.Database.MigrateAsync();
         }
 
-        public DbContextOptions<ComprehensiveDataDbContext> DbContextOptions { get; private set; }
+        public async Task DisposeAsync()
+        {
+            using var context = new ComprehensiveDataDbContext(DbContextOptions);
+            await context.Database.EnsureDeletedAsync();
+        }
     }
 }
