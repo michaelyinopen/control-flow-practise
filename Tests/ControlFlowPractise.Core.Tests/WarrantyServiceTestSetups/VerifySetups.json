@@ -1684,5 +1684,141 @@
         "response": "{\"header\":{\"requestId\":\"93cef58c-89b1-4269-a726-a28077c08871\",\"responseId\":\"ad92e0ae-9ba9-4c2a-a811-f54b69c401ea\",\"requestType\":\"Verify\",\"action\":\"Cancel\",\"warrantyCaseId\":\"850\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Cancelled\",\"conformanceIndicator\":\"NO\",\"orderReports\":null}}"
       }
     ]
+  },
+
+  // verify-cancel-network-failure
+  // BudgetDatabase ExternalPartyRequest
+  // External Party Called
+  // ComprehensiveDatabase WarrantyCaseVerification
+  // response
+  {
+    "tagertTest": "verify-cancel-network-failure",
+    "warrantyCaseVerificationTestSetups": [
+      {
+        "insertOrder": 1,
+        "warrantyCaseVerification": {
+          "orderId": "verify-cancel-network-failure",
+          "warrantyCaseId": "385",
+          "operation": "Create",
+          "warrantyCaseStatus": "WaitingForClaim",
+          "requestId": "f17cecf6-255d-487a-b8a9-b2d4a951b59f",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"verify-cancel-network-failure\",\"warrantyCaseId\":\"385\",\"warrantyCaseStatus\":\"WaitingForClaim\",\"conformance\":true,\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}]}"
+        }
+      },
+      {
+        "insertOrder": 2,
+        "warrantyCaseVerification": {
+          "orderId": "verify-cancel-network-failure",
+          "warrantyCaseId": "385",
+          "operation": "Verify",
+          "warrantyCaseStatus": "Claimed",
+          "requestId": "2d9be581-42f7-47ad-9fdc-13485abee97e",
+          "calledExternalParty": true,
+          "calledWithResponse": true,
+          "responseHasNoError": true,
+          "failureType": null,
+          "failureMessage": null,
+          "convertedResponse": "{\"operation\":\"Commit\",\"orderId\":\"verify-cancel-network-failure\",\"warrantyCaseId\":\"385\",\"warrantyCaseStatus\":\"Claimed\",\"conformance\":true,\"warrantyEstimatedAmount\":48,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}]}"
+        }
+      }
+    ],
+    "ExternalPartyRequests": [
+      {
+        "orderId": "verify-cancel-network-failure",
+        "operation": "Create",
+        "requestId": "f17cecf6-255d-487a-b8a9-b2d4a951b59f",
+        "request": "{\"requestId\":\"f17cecf6-255d-487a-b8a9-b2d4a951b59f\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":null,\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-cancel-network-failure\",\"productDetails\":[{\"productId\":\"426\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Blanche\",\"lastName\":\"Hickman\",\"email\":\"blanche.hickman@email.com\"},\"vendorDetail\":{\"firstName\":\"Christiana\",\"lastName\":\"Rowley\",\"email\":\"christiana.rowley@email.com\",\"phoneNumber\":\"0491 570 159\"},\"orderTrackingNumber\":null}]}"
+      },
+      {
+        "orderId": "verify-cancel-network-failure",
+        "operation": "Verify",
+        "requestId": "2d9be581-42f7-47ad-9fdc-13485abee97e",
+        "request": "{\"requestId\":\"2d9be581-42f7-47ad-9fdc-13485abee97e\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"385\",\"transactionDate\":\"2021-03-04T11:52:00+11:00\",\"orderDetails\":[{\"orderId\":\"verify-cancel-network-failure\",\"productDetails\":[{\"productId\":\"426\",\"specification\":null}],\"purchaserDetail\":{\"firstName\":\"Blanche\",\"lastName\":\"Hickman\",\"email\":\"blanche.hickman@email.com\"},\"vendorDetail\":{\"firstName\":\"Christiana\",\"lastName\":\"Rowley\",\"email\":\"christiana.rowley@email.com\",\"phoneNumber\":\"0491 570 159\"},\"orderTrackingNumber\":null}]}"
+      }
+    ],
+    "ExternalPartyResponses": [
+      {
+        "orderId": "verify-cancel-network-failure",
+        "operation": "Create",
+        "requestId": "f17cecf6-255d-487a-b8a9-b2d4a951b59f",
+        "response": "{\"header\":{\"requestId\":\"f17cecf6-255d-487a-b8a9-b2d4a951b59f\",\"responseId\":\"52f67331-6c9c-4b16-ab7c-fd982cd1abf2\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"385\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"WaitingForClaim\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-cancel-network-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":null,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Please claim.\"}],\"warrantyProof\":null}]}}"
+      },
+      {
+        "orderId": "verify-cancel-network-failure",
+        "operation": "Verify",
+        "requestId": "2d9be581-42f7-47ad-9fdc-13485abee97e",
+        "response": "{\"header\":{\"requestId\":\"2d9be581-42f7-47ad-9fdc-13485abee97e\",\"responseId\":\"7e57ae65-e1eb-477d-b589-6fe1d3222864\",\"requestType\":\"Verify\",\"action\":null,\"warrantyCaseId\":\"385\",\"warrantyResponseErrors\":[]},\"body\":{\"caseStatus\":\"Claimed\",\"conformanceIndicator\":\"YES\",\"orderReports\":[{\"orderId\":\"verify-cancel-network-failure\",\"conformanceIndicator\":\"YES\",\"warrantyEstimatedAmount\":48,\"warrantyAmount\":null,\"conformanceMessages\":[{\"level\":\"Information\",\"message\":\"Wait until certified to continue.\"}],\"warrantyProof\":null}]}}"
+      }
+    ],
+    "request": {
+      "operation": "Cancel",
+      "warrantyCaseId": "385",
+      "transactionDateTime": "2021-03-04T00:52:00Z",
+      "orderId": "verify-cancel-network-failure",
+      "productId": "426",
+      "purchaserFirstName": "Blanche",
+      "purchaserLastName": "Hickman",
+      "purchaserEmail": "blanche.hickman@email.com",
+      "vendorFirstName": "Christiana",
+      "vendorLastName": "Rowley",
+      "vendorEmail": "christiana.rowley@email.com",
+      "vendorPhoneNumber": "0491 570 159",
+      "OrderTrackingNumber": null
+    },
+    "requestIds": [ "93cef58c-89b1-4269-a726-a28077c08871" ],
+    "externalPartyCalls": [
+      {
+        "expectedRequest": {
+          "requestId": "93cef58c-89b1-4269-a726-a28077c08871",
+          "requestType": "Verify",
+          "action": "Cancel",
+          "warrantyCaseId": "385",
+          "transactionDate": null,
+          "orderDetails": null
+        },
+        "throws": true,
+        "response": null
+      }
+    ],
+    "expectedResponse": {
+      "isSuccess": false,
+      "warrantyCaseResponse": null,
+      "failureType": "NetworkFailure",
+      "failureMessage": "Some network failure message."
+    },
+    "expectedWarrantyCaseVerificationCount": 3,
+    "expectedWarrantyCaseVerifications": [
+      {
+        "orderId": "verify-cancel-network-failure",
+        "warrantyCaseId": "385",
+        "operation": "Cancel",
+        "warrantyCaseStatus": null,
+        "requestId": "93cef58c-89b1-4269-a726-a28077c08871",
+        "calledExternalParty": true,
+        "calledWithResponse": false,
+        "responseHasNoError": null,
+        "failureType": "NetworkFailure",
+        "failureMessage": "Some network failure message.",
+        "convertedResponse": null
+      }
+    ],
+    "expectedWarrantyProofCount": 0,
+    "expectedWarrantyProofs": [],
+    "expectedExternalPartyRequestCount": 3,
+    "expectedExternalPartyRequests": [
+      {
+        "orderId": "verify-cancel-network-failure",
+        "operation": "Cancel",
+        "requestId": "93cef58c-89b1-4269-a726-a28077c08871",
+        "request": "{\"requestId\":\"93cef58c-89b1-4269-a726-a28077c08871\",\"requestType\":\"Verify\",\"action\":\"Cancel\",\"warrantyCaseId\":\"385\",\"transactionDate\":null,\"orderDetails\":null}"
+      }
+    ],
+    "expectedExternalPartyResponseCount": 2,
+    "expectedExternalPartyResponses": []
   }
 ]

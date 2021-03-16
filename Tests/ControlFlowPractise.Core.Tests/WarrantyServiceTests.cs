@@ -283,14 +283,6 @@ namespace ControlFlowPractise.Core.Tests
                     testCaseData.ExpectedExternalPartyResponses
                 };
             }
-
-            // verify-cancel-success
-            //
-            // verify-cancel-network-failure
-            // BudgetDatabase ExternalPartyRequest
-            // External Party Called
-            // ComprehensiveDatabase WarrantyCaseVerification
-            // response
         }
 
         // not found (failure type + IsNotFound)
