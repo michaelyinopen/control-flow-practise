@@ -1,6 +1,10 @@
 # control-flow-practise
 
-## Objective
+## Goal
+
+To practise control flow and error handling in an ASP.NET core project.
+
+The main operation:
 
 1. Accept http request
 2. Validate request
@@ -13,6 +17,54 @@
     2. Convert response
 8. Save converted response
 9. Return http response
+
+There could be errors in each step, that terminates the operation, or changes the execution of subsequent steps.
+
+The challenge is to implement this somewhat complex control flow and to handle the errors gracefully.
+
+## Story
+
+This project features an imaginary story of machine's warranty. In a machine transaction, a warranty is purchased together with the machine. The buyer buys the machine and warranty from the seller, but the warranty is issued by the manufacturer directly.
+
+To make this transaction, seller has to ask for the price of the warranty before. Seller also have to provide the transaction information to the manufaturer for calculatin the price, and for keeping record.
+
+This project is how the seller communicates with the manufacturer about warranty information.
+* The manufacturer provides a service with a .net library for us to use.
+* The seller has projects that handle all other aspects of the transaction. This project exposes http request endpoints that internal services can call.
+
+### ControlFlowPractise.ExternalParty
+
+Warranty service of the manufacturer needs a record of some details
+
+- Order
+- Product(s) in the order
+- Buyer
+- Vendor
+- Transaction date time
+- Warranty amount ($)
+
+All unique products, now a warranty case only has one order,\
+and each order only has one product
+
+### Warranty service
+- Create warranty case
+- Verify/ Ask for estimate/ Check for update/ Query/ Call/ Make updates
+  - response status
+    - waiting for claim
+    - claimed (can have estimation)
+    - certified (ready to commit) (must have final quote)
+    - committed (committed to pay)
+    - completed (everything after payment is also done)
+    - cancelled
+- Commit (money is reserved, committed to pay)
+- Cancel
+
+Header, body
+conformance indicator = conformance messages, level: error, warning, information
+
+Warranties the entire order, not individual products
+
+WarrantyProof returned in response of commit
 
 ## Error handling
 How to handle error at each step
@@ -66,39 +118,6 @@ Endpoints to read data
 6. commit sends more info and saves additional info separately
 7. Daily error report
 
-## Story
-Buying a machine, ask for the price of the warranty\
-Warranty service of the manufacturer needs a record of some details
-
-- Order
-- Product(s) in the order
-- Buyer
-- Vendor
-- Transaction date time
-- Warranty amount ($)
-
-All unique products, now a warranty case only has one order,\
-and each order only has one product
-
-### Warranty service
-- Create warranty case
-- Verify/ Ask for estimate/ Check for update/ Query/ Call/ Make updates
-  - response status
-    - waiting for claim
-    - claimed (can have estimation)
-    - certified (ready to commit) (must have final quote)
-    - committed (committed to pay)
-    - completed (everything after payment is also done)
-    - cancelled
-- Commit (money is reserved, committed to pay)
-- Cancel
-
-Header, body
-conformance indicator = conformance messages, level: error, warning, information
-
-Warranties the entire order, not individual products
-
-WarrantyProof returned in response of commit
 
 # Design
 

@@ -254,7 +254,7 @@ namespace ControlFlowPractise.Core
                 return responseResult;
 
             var response = responseResult.Success!;
-            var successResult = new Result<WarrantyCaseResponse, IFailure>(response);
+            var successResult = responseResult;
             return operation switch
             {
                 WarrantyCaseOperation.Create => successResult,
