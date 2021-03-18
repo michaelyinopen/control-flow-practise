@@ -2,7 +2,7 @@
 
 ## Goal
 
-To practise control flow and error handling in an ASP.NET core project.
+To practise control flow and error handling in an ASP.NET Core project.
 
 The main operation:
 
@@ -24,13 +24,13 @@ The challenge is to implement this somewhat complex control flow and to handle t
 
 ## Story
 
-This project features an imaginary story of machine's warranty. In a machine transaction, a warranty is purchased together with the machine. The buyer buys the machine and warranty from the seller, but the warranty is issued by the manufacturer directly.
+This project features an imaginary story of machine's warranty. In a machine transaction, a warranty is purchased together with the machine. The buyer buys the machine and the warranty from the seller, but the warranty is issued by the manufacturer directly.
 
-To make this transaction, seller has to ask for the price of the warranty before. Seller also have to provide the transaction information to the manufaturer for calculatin the price, and for keeping record.
+To make this transaction, the seller has to ask for the price of the warranty before. The seller also has to provide the transaction information to the manufaturer for calculating the price, and for record keeping.
 
 This project is how the seller communicates with the manufacturer about warranty information.
 * The manufacturer provides a service with a .net library for us to use.
-* The seller has projects that handle all other aspects of the transaction. This project exposes http request endpoints that internal services can call.
+* The seller has projects that handle all other aspects of the transaction. This project exposes http request endpoints that those services can call.
 
 ### ControlFlowPractise.ExternalParty
 
