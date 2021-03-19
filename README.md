@@ -18,7 +18,7 @@ The main operation:
 8. Save converted response
 9. Return http response
 
-There could be errors in each step, that terminates the operation, or changes the execution of subsequent steps.
+There could be errors in each step, that terminate the operation, or change the execution of subsequent steps.
 
 The challenge is to implement this somewhat complex control flow and to handle the errors gracefully.
 
