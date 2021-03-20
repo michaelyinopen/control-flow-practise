@@ -41,9 +41,21 @@ This project is how the seller communicates with the manufacturer about warranty
 ## Projects
 ### ControlFlowPractise.ExternalParty
 
-//
-All unique products, now a warranty case only has one order,\
-and each order only has one product
+// internal requirement
+
+The seller(our organisation) assigned us(software developers) to develop something to communicating with manufacturer's warranty service, so that our transactions can include warranties.
+
+**This project is responsible for communicating with manufacturer's warranty service and keeping the records, in the the process of completing a transaction.**
+
+We decided to build an ASP.NET Core Web API project, that has its own process and its own data storage. It exposed http endpoints for other parts of seller's system to make requests.
+
+It is developed as a micro-service
+* because the functionality is fairly independent from other parts of sellers system
+* it can be developed, deployed and updated somewhat separately
+
+
+
+
 
 ### Warranty service
 - Create warranty case
@@ -120,7 +132,7 @@ Endpoints to read data
 
 # Design
 
-## Project structure
+<!-- ## Project structure
 Separate project with considerations of
 
 1. Build
@@ -140,7 +152,7 @@ ControlFlowPractise
 Not have a Client project, to avoid coupling bwtween this service and consumer,\
 and cannot avoid to manually track what models are exposed and what was updated
 
-Models converted to Data Model inside Data project
+Models converted to Data Model inside Data project -->
 
 ## Syntax
 use nullable reference type and have constructors to initialize non-nullable properties, because cannot use C# 9 features like record type
@@ -173,6 +185,8 @@ Http response structure
 Non-conformance is a success, except when violating success condition
 
 ## Data storage
+Models converted to Data Model inside the Data project.
+
 Each accepted request has an entry, regardless of successful or fail.\
 Each raw request is an entry.\
 Each raw response is an entry.\
@@ -232,10 +246,7 @@ The pre-commit validation is saved as WarrantyCaseVerification in Comprehensive 
 
 # todo
 
-- naming warranty request/ external party request
-- failure messages
-- check GetCurrentWarrantyCaseVerification filters logic
-- check FailureClassification
+- Review readme and cross check with Wiki (Story is different)
 
 # Useful
 > With direct equalities on each of the columns in the key of the index, we can sort by the last column in the index.
