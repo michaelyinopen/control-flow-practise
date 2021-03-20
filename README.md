@@ -26,23 +26,22 @@ The challenge is to implement this somewhat complex control flow and to handle t
 
 This project features an imaginary story of machine's warranty. In a machine transaction, a warranty is purchased together with the machine. The buyer buys the machine and the warranty from the seller, but the warranty is issued by the manufacturer directly.
 
-To make this transaction, the seller has to ask for the price of the warranty before. The seller also has to provide the transaction information to the manufaturer for calculating the price, and for record keeping.
-
 This project is how the seller communicates with the manufacturer about warranty information.
-* The manufacturer provides a service with a .net library for us to use.
-* The seller has projects that handle all other aspects of the transaction. This project exposes http request endpoints that those services can call.
 
+[More info on Story](https://github.com/michaelyinopen/control-flow-practise/wiki/Story).
+
+// to see design and implementation detail, goto the wiki page
+
+// how to run or test
+
+// move all to wiki/////////////////////////
+
+---
+
+## Projects
 ### ControlFlowPractise.ExternalParty
 
-Warranty service of the manufacturer needs a record of some details
-
-- Order
-- Product(s) in the order
-- Buyer
-- Vendor
-- Transaction date time
-- Warranty amount ($)
-
+//
 All unique products, now a warranty case only has one order,\
 and each order only has one product
 
