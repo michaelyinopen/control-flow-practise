@@ -134,7 +134,7 @@ namespace ControlFlowPractise.Core.Tests
                     .Setup(m => m.Call(It.IsAny<WarrantyRequest>()))
                     .Callback<WarrantyRequest>(warrantyRequest => actualExternalPartyCallRequests.Add(warrantyRequest));
                 if (externalPartyCall.Throws)
-                    mockedExternalPartyProxySetup.Throws(new NetworkException());
+                    mockedExternalPartyProxySetup.Throws(new NetworkException("Network exception."));
                 else
                     mockedExternalPartyProxySetup.ReturnsAsync(externalPartyCall.Response!);
             }

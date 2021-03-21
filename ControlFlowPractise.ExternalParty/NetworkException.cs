@@ -6,5 +6,8 @@ namespace ControlFlowPractise.ExternalParty
 {
     public class NetworkException : Exception
     {
+        public NetworkException(string? message)
+            : base(message)
+        { }
     }
 }

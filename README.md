@@ -30,10 +30,50 @@ This project is how the seller communicates with the manufacturer about warranty
 
 [More info on Story](https://github.com/michaelyinopen/control-flow-practise/wiki/Story).
 
-// how to run or test
+## How to run locally
+### Prerequisite
+- Visual Studio 2019(+) installed with IIS Express and localDb
 
-// database migration/ ef core
+Steps
 
+1. Clone repository
+2. Open ControlFlowPractise.sln
+3. Set ControlFlowPractise.Api as startup project and hit F5 (Debug using IIS express)
+
+You can make requests to the url `http://localhost:54208`.
+
+### Example requests with Postman
+Import `Postman\control-flow-practise.postman_collection.json` in postman, and send the sample requests.\
+All requests will respond with `status: 200` but have content `"isSuccess": false` because the external party service is not implemented.
+
+## How to run tests
+
+In visual studio, view Test Explorer. Build the solution, then run all tests.
+
+## Databases
+Connection strings are in appsettings.json `ConnectionStrings` section.
+
+The Api project will create or apply migrations at runtime. If there is an alternative database migration strategy, remove related code in Startup.cs Configure method.
+
+### Database Commands
+1. In Visual Studio set Api as startup project
+2. In Package Manager Console, Set one of the Data projects as default project
+
+```
+Add-Migration <name> -Context ComprehensiveDataDbContext
+```
+
+```
+Remove-Migration -Context ComprehensiveDataDbContext
+```
+
+```
+Update-Database -Context ComprehensiveDataDbContext
+```
+
+## Wiki
+
+[Check out the wiki for details and design decisions](https://github.com/michaelyinopen/control-flow-practise/wiki).
 // to see design and implementation detail, goto the wiki page
 
 // move all to wiki/////////////////////////

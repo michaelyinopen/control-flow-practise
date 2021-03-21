@@ -6,7 +6,167 @@
 	},
 	"item": [
 		{
+			"name": "Verify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"operation\": \"Create\",\r\n      \"warrantyCaseId\": null,\r\n      \"transactionDateTime\": \"2021-03-04T00:52:00Z\",\r\n      \"orderId\": \"1\",\r\n      \"productId\": \"369\",\r\n      \"purchaserFirstName\": \"Bradley\",\r\n      \"purchaserLastName\": \"Blair\",\r\n      \"purchaserEmail\": \"bradley.blair@email.com\",\r\n      \"vendorFirstName\": \"Emrys\",\r\n      \"vendorLastName\": \"Kinney\",\r\n      \"vendorEmail\": \"emrys.kinney@email.com\",\r\n      \"vendorPhoneNumber\": \"0491 570 156\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:54208/warranty-case",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54208",
+					"path": [
+						"warranty-case"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Verify",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"operation\": \"Create\",\r\n      \"warrantyCaseId\": null,\r\n      \"transactionDateTime\": \"2021-03-04T00:52:00Z\",\r\n      \"orderId\": \"1\",\r\n      \"productId\": \"369\",\r\n      \"purchaserFirstName\": \"Bradley\",\r\n      \"purchaserLastName\": \"Blair\",\r\n      \"purchaserEmail\": \"bradley.blair@email.com\",\r\n      \"vendorFirstName\": \"Emrys\",\r\n      \"vendorLastName\": \"Kinney\",\r\n      \"vendorEmail\": \"emrys.kinney@email.com\",\r\n      \"vendorPhoneNumber\": \"0491 570 156\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:54208/warranty-case",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "54208",
+							"path": [
+								"warranty-case"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Length",
+							"value": "136"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-IIS/10.0"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 21 Mar 2021 06:56:11 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"isSuccess\": false,\n    \"warrantyCaseResponse\": null,\n    \"failureType\": \"NetworkFailure\",\n    \"failureMessage\": \"Exception when calling External Party.\"\n}"
+				}
+			]
+		},
+		{
 			"name": "GetCurrentWarrantyCaseVerification",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54208/warranty-case?orderId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54208",
+					"path": [
+						"warranty-case"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GetCurrentWarrantyCaseVerification",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:54208/warranty-case?orderId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "54208",
+							"path": [
+								"warranty-case"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Length",
+							"value": "189"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-IIS/10.0"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 21 Mar 2021 06:34:13 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"isSuccess\": false,\n    \"warrantyCaseResponse\": null,\n    \"failureType\": \"GetWarrantyCaseVerificationFailure\",\n    \"isNotFound\": true,\n    \"failureMessage\": \"WarrantyCaseVerification of OrderId: `1` is not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GetWarrantyProof",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -29,60 +189,60 @@
 					]
 				}
 			},
-			"response": []
-		},
-		{
-			"name": "GetWarrantyProof",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:54208/warranty-case?orderId=1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "54208",
-					"path": [
-						"warranty-case"
-					],
-					"query": [
+			"response": [
+				{
+					"name": "GetWarrantyProof",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:54208/warranty-case/warranty-proof?orderId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "54208",
+							"path": [
+								"warranty-case",
+								"warranty-proof"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
 						{
-							"key": "orderId",
-							"value": "1"
+							"key": "Content-Length",
+							"value": "228"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Server",
+							"value": "Microsoft-IIS/10.0"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 21 Mar 2021 06:56:50 GMT"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Verify",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"orderId\": \"1\",\r\n    \"operation\": \"Create\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:54208/warranty-case",
-					"protocol": "http",
-					"host": [
-						"localhost"
 					],
-					"port": "54208",
-					"path": [
-						"warranty-case"
-					]
+					"cookie": [],
+					"body": "{\n    \"isSuccess\": false,\n    \"orderId\": \"1\",\n    \"warrantyCaseId\": null,\n    \"requestId\": null,\n    \"warrantyProof\": null,\n    \"failureType\": \"GetWarrantyCaseVerificationFailure\",\n    \"isNotFound\": true,\n    \"failureMessage\": \"There is no successful commit of OrderId: `1`.\"\n}"
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

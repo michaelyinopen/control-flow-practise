@@ -15,7 +15,14 @@ namespace ControlFlowPractise.ExternalParty
     {
         public async Task<WarrantyResponse> Call(WarrantyRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch
+            {
+                throw new NetworkException("Exception when calling External Party.");
+            }
         }
     }
 }
