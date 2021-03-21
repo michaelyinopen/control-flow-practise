@@ -53,8 +53,17 @@ namespace ControlFlowPractise.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            BudgetDataDbContext budgetDataDbContext,
+            ComprehensiveDataDbContext comprehensiveDataDbContext)
         {
+            // creates or apply migrations to the databases
+            // remove this if there is an alternative migration strategy
+            budgetDataDbContext.Database.Migrate();
+            comprehensiveDataDbContext.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
