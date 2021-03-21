@@ -28,7 +28,7 @@ This project features an imaginary story of machine's warranty. In a machine tra
 
 This project is how the seller communicates with the manufacturer about warranty information.
 
-[More info on Story](https://github.com/michaelyinopen/control-flow-practise/wiki/Story).
+[More info on the Story](https://github.com/michaelyinopen/control-flow-practise/wiki/Story).
 
 ## How to run locally
 ### Prerequisite
@@ -57,7 +57,7 @@ The Api project will create or apply migrations at runtime. If there is an alter
 
 ### Database Commands
 1. In Visual Studio set Api as startup project
-2. In Package Manager Console, Set one of the Data projects as default project
+2. In Package Manager Console, Set the target Data project as default project
 
 ```
 Add-Migration <name> -Context ComprehensiveDataDbContext
@@ -74,6 +74,7 @@ Update-Database -Context ComprehensiveDataDbContext
 ## Wiki
 
 [Check out the wiki for details and design decisions](https://github.com/michaelyinopen/control-flow-practise/wiki).
+
 // to see design and implementation detail, goto the wiki page
 
 // move all to wiki/////////////////////////
