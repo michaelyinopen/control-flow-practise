@@ -74,3 +74,6 @@ Update-Database -Context ComprehensiveDataDbContext
 ## Wiki
 
 [Check out the wiki for details and design decisions](https://github.com/michaelyinopen/control-flow-practise/wiki).
+
+## Usage Specification
+Directly read [[Usage Specification]] for how to consume the service.
