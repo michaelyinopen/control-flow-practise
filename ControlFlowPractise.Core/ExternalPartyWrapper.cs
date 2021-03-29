@@ -21,6 +21,7 @@ namespace ControlFlowPractise.Core
             try
             {
                 var warrantyResponse = await ExternalPartyProxy.Call(request);
+                // potentially save the raw string response, before converting or deserializing to C# object?
                 return new Result<WarrantyResponse, IFailure>(warrantyResponse);
             }
             catch (NetworkException e)
