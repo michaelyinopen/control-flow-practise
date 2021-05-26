@@ -24,6 +24,8 @@ There could be errors in each step, that terminate the operation, or change the 
 
 The challenge is to implement this somewhat complex control flow and to handle the errors gracefully.
 
+![Verify Diagram](Verify-sized.svg)
+
 ## Story
 
 This project features an imaginary story of machine's warranty. In a machine transaction, a warranty is purchased together with the machine. The buyer buys the machine and the warranty from the seller, but the warranty is issued by the manufacturer directly.
